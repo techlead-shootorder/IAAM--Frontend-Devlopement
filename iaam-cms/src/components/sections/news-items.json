@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_sections_news_items",
+  "info": {
+    "displayName": "newsItems"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "date": {
+      "type": "datetime"
+    },
+    "link": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}
