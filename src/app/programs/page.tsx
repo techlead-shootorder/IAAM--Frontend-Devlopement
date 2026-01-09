@@ -58,7 +58,7 @@ function HeroSection() {
         <div className="absolute inset-0" />
       </div>
       <div className="relative container mx-auto px-4 h-full flex flex-col justify-center max-w-6xl">
-        <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-white italic mb-4 max-w-2xl leading-tight">
+        <h1 className="font-sans text-3xl md:text-4xl lg:text-5xl text-white mb-4 max-w-2xl leading-tight">
           Connecting the Advance<br />
           Materials Science, Industry &<br />
           Policy for Global Impact
@@ -88,7 +88,7 @@ function AboutSection() {
     <SectionContainer>
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
         <div>
-          <h2 className="font-serif text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-6 leading-tight">
+          <h2 className="font-sans text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-6 leading-tight">
             The Advanced Materials Global Connect Program is a flagship global initiative of the International Association of Advanced Materials
           </h2>
           <p className="text-[hsl(210,20%,20%)]/70 mb-4">
@@ -116,7 +116,7 @@ function AboutSection() {
 function OverviewSection() {
   return (
     <SectionContainer bgColor="bg-gray-50">
-      <h2 className="font-serif text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
+      <h2 className="font-sans text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
         Overview & Vision
       </h2>
       <p className="text-[hsl(210,20%,20%)]/70 mb-8">One Global Network. One Shared Future.</p>
@@ -127,12 +127,12 @@ function OverviewSection() {
             src="/Our_Role.jpg" 
             alt="Overview" 
             width={400}
-            height={280}
+            height={230}
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="md:w-3/5 bg-[hsl(197,63%,22%)] p-6 md:p-8">
-          <h3 className="font-serif text-xl text-white font-bold mb-4">
+        <div className="md:w-3/5 bg-[hsl(197,63%,22%)] p-6 md:p-8 flex flex-col justify-center">
+          <h3 className="font-sans text-2xl text-white font-bold mb-4">
             The Advanced Materials Global Connect Program
           </h3>
           <p className="text-white/90">
@@ -148,14 +148,14 @@ function OverviewSection() {
 function WhyGlobalConnectSection() {
   return (
     <SectionContainer>
-      <h2 className="font-serif text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
+      <h2 className="font-sans text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
         Why Global Connect
       </h2>
       <p className="text-[hsl(210,20%,20%)]/70 mb-8">From fragmented efforts to coordinated global action</p>
       
       <div className="flex flex-col md:flex-row overflow-hidden rounded-sm shadow-sm">
         <div className="md:w-3/5 bg-[hsl(197,63%,22%)] p-6 md:p-8 flex flex-col justify-center">
-          <h3 className="font-serif text-xl text-white font-bold mb-4">
+          <h3 className="font-sans text-2xl text-white font-bold mb-4">
             The Advanced Materials Global Connect Program
           </h3>
           <p className="text-white/90">
@@ -180,7 +180,7 @@ function WhyGlobalConnectSection() {
 function StrategicObjectivesSection() {
   return (
     <SectionContainer bgColor="bg-gray-50">
-      <h2 className="font-serif text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
+      <h2 className="font-sans text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
         Strategic Objectives
       </h2>
       <p className="text-[hsl(210,20%,20%)]/70 mb-8">Turning collaboration into measurable outcomes</p>
@@ -196,24 +196,24 @@ function StrategicObjectivesSection() {
           />
         </div>
         <div className="md:w-3/5 bg-[hsl(197,63%,22%)] p-6 md:p-8 flex flex-col justify-center">
-          <h3 className="font-serif text-xl text-white font-bold mb-4">
+          <h3 className="font-sans text-xl text-white font-bold mb-4">
             The program is structured to:
           </h3>
           <ul className="text-white/90 space-y-2">
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
               <span>Enable cross-border research and innovation</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
               <span>Accelerate translation from laboratory to industry</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
               <span>Align materials development with global sustainability and net-zero goals</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
               <span>Strengthen science–industry–policy dialogue</span>
             </li>
           </ul>
@@ -227,7 +227,7 @@ function StrategicObjectivesSection() {
 function CollaborationFrameworkSection() {
   return (
     <SectionContainer>
-      <h2 className="font-serif text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
+      <h2 className="font-sans text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
         Global Collaboration Framework
       </h2>
       <p className="text-[hsl(210,20%,20%)]/70 mb-8">Global reach with local relevance</p>
@@ -239,15 +239,15 @@ function CollaborationFrameworkSection() {
           </p>
           <ul className="text-[hsl(210,20%,20%)]/70 space-y-1.5 mb-4">
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-[hsl(210,20%,20%)] rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-[hsl(210,20%,20%)] rounded-full mt-2 shrink-0" />
               <span>Regional hubs</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-[hsl(210,20%,20%)] rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-[hsl(210,20%,20%)] rounded-full mt-2 shrink-0" />
               <span>National Councils and Societies</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-[hsl(210,20%,20%)] rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-[hsl(210,20%,20%)] rounded-full mt-2 shrink-0" />
               <span>Thematic programs and task forces</span>
             </li>
           </ul>
@@ -273,7 +273,7 @@ function CollaborationFrameworkSection() {
 function WhoCanParticipateSection() {
   return (
     <SectionContainer bgColor="bg-gray-50">
-      <h2 className="font-serif text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
+      <h2 className="font-sans text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
         Who Can Participate
       </h2>
       <p className="text-[hsl(210,20%,20%)]/70 mb-8">Open, inclusive, and global</p>
@@ -289,24 +289,24 @@ function WhoCanParticipateSection() {
           />
         </div>
         <div className="md:w-3/5 bg-[hsl(197,63%,22%)] p-6 md:p-8 flex flex-col justify-center">
-          <h3 className="font-serif text-xl text-white font-bold mb-4">
+          <h3 className="font-sans text-xl text-white font-bold mb-4">
             Participation is open to:
           </h3>
           <ul className="text-white/90 space-y-2">
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
               <span>Researchers and scientists</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
               <span>Industry professionals and innovators</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
               <span>Policymakers and institutions</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
               <span>Universities, startups, and research centers</span>
             </li>
           </ul>
@@ -320,7 +320,7 @@ function WhoCanParticipateSection() {
 function GetInvolvedSection() {
   return (
     <SectionContainer>
-      <h2 className="font-serif text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
+      <h2 className="font-sans text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
         How to Get Involved
       </h2>
       <p className="text-[hsl(210,20%,20%)]/70 mb-8">Your gateway to the global materials community</p>
@@ -346,35 +346,37 @@ function GetInvolvedSection() {
 }
 
 // Be a Part CTA Section
+
 function CTASection() {
   return (
-    <section className="bg-[hsl(197,63%,22%)] py-12 md:py-16">
-      <div className="container mx-auto px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div>
-              <h2 className="font-serif text-xl md:text-2xl font-bold text-white mb-2">
-                Be a Part of the Global IAAM Community
-              </h2>
-              <p className="text-white/80">
-                Connect Globally. Grow Professionally. Create impact
-              </p>
-
-              <button className="bg-[hsl(197,63%,15%)] font-bold border border-white/30 text-white px-6 py-3 rounded-sm hover:bg-[hsl(197,63%,10%)] transition-colors">
-                Apply for Membership
-              </button>
-              <button className="bg-[hsl(197,63%,15%)] font-bold border border-white/30 text-white px-6 py-3 rounded-sm hover:bg-[hsl(197,63%,10%)] transition-colors">
-                Renew Membership
-              </button>
-            </div>
-            <div className="flex gap-3 h-full width-[200px] relative bg-gray-200 z-10">
-              
-            </div>
+    <SectionContainer bgColor="bg-white" className="py-0">
+      <div className="grid md:grid-cols-2 gap-0 items-stretch">
+        {/* Left side - CTA Content */}
+        <div className="bg-[hsl(197,63%,22%)] p-8 md:p-12 flex flex-col justify-center">
+          <h2 className="font-sans text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
+            Be a Part of the Global IAAM Community
+          </h2>
+          <p className="text-white/90 mb-8 text-base">
+            Connect Globally. Grow Professionally. Create impact
+          </p>
+          
+          <div className="flex flex-wrap gap-4">
+            <button className="bg-[hsl(197,63%,15%)] font-semibold border border-white/30 text-white px-6 py-3 rounded hover:bg-[hsl(197,63%,10%)] transition-colors">
+              Apply for Membership
+            </button>
+            <button className="bg-[hsl(197,63%,15%)] font-semibold border border-white/30 text-white px-6 py-3 rounded hover:bg-[hsl(197,63%,10%)] transition-colors">
+              Renew Membership
+            </button>
           </div>
         </div>
+        
+        {/* Right side - Gray area */}
+        <div className="bg-gray-200 min-h-[300px] md:min-h-0">
+          {/* Empty gray area matching the first image */}
+        </div>
       </div>
-    </section>
-  )
+    </SectionContainer>
+  );
 }
 
 // Benefits Section
@@ -408,7 +410,7 @@ function BenefitsSection() {
 
   return (
     <SectionContainer bgColor="bg-gray-50">
-      <h2 className="font-serif text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-8">
+      <h2 className="font-sans text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-8">
         Benefits of Joining Advanced Materials Global Connect
       </h2>
       
@@ -434,7 +436,7 @@ function IntegrationSection() {
     <SectionContainer>
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
         <div>
-          <h3 className="font-serif text-xl md:text-2xl text-[hsl(210,20%,20%)] font-bold mb-2">
+          <h3 className="font-sans text-xl md:text-2xl text-[hsl(210,20%,20%)] font-bold mb-2">
             Research–Industry–Policy Integration
           </h3>
           <p className="font-semibold text-[hsl(210,20%,20%)] mb-3">
@@ -446,7 +448,7 @@ function IntegrationSection() {
         </div>
         
         <div>
-          <h3 className="font-serif text-xl md:text-2xl text-[hsl(210,20%,20%)] font-bold mb-2">
+          <h3 className="font-sans text-xl md:text-2xl text-[hsl(210,20%,20%)] font-bold mb-2">
             Net-Zero & Sustainability Alignment
           </h3>
           <p className="font-semibold text-[hsl(210,20%,20%)] mb-3">
@@ -465,7 +467,7 @@ function IntegrationSection() {
 function PriorityThemesSection() {
   return (
     <SectionContainer bgColor="bg-gray-50">
-      <h2 className="font-serif text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
+      <h2 className="font-sans text-2xl md:text-3xl text-[hsl(210,20%,20%)] font-bold mb-2">
         Priority Themes & Focus Areas
       </h2>
       <p className="text-[hsl(210,20%,20%)]/70 mb-8">Materials shaping the next decade</p>
@@ -481,28 +483,28 @@ function PriorityThemesSection() {
           />
         </div>
         <div className="md:w-3/5 bg-[hsl(197,63%,22%)] p-6 md:p-8 flex flex-col justify-center">
-          <h3 className="font-serif text-xl text-white font-bold mb-4">
+          <h3 className="font-sans text-xl text-white font-bold mb-4">
             Key focus areas include:
           </h3>
           <ul className="text-white/90 space-y-2">
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
               <span>Net-zero and climate-positive materials</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
               <span>Energy systems, hydrogen, and storage technologies</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
               <span>Advanced functional and smart materials</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
               <span>Materials for healthcare, AI, and digital technologies</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
               <span>Circular economy and sustainable manufacturing</span>
             </li>
           </ul>

@@ -19,7 +19,7 @@ export default function HeroSection() {
       {/* 🔹 Content */}
       <div className="relative container mx-auto px-4 py-16 md:py-24 lg:py-32">
         <div className="max-w-xl text-white">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif leading-tight mb-4 animate-fade-in">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-sans leading-tight mb-4 animate-fade-in">
             Advancing Materials Toward a Climate-neutral World
           </h1>
 
