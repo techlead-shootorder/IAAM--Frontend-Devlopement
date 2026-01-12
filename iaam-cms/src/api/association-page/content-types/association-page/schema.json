@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "association_pages",
+  "info": {
+    "singularName": "association-page",
+    "pluralName": "association-pages",
+    "displayName": "Association Page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "AssociationHero": {
+      "type": "component",
+      "component": "sections.hero-section",
+      "repeatable": false
+    },
+    "AssociationAbout": {
+      "type": "component",
+      "component": "sections.association-about",
+      "repeatable": false
+    },
+    "AssociationOurRole": {
+      "type": "component",
+      "component": "sections.association-our-role",
+      "repeatable": false
+    },
+    "AssociationVisionMission": {
+      "type": "component",
+      "component": "sections.association-vision-mission",
+      "repeatable": false
+    },
+    "AssociationGlobalImpact": {
+      "type": "component",
+      "component": "sections.association-global-impact",
+      "repeatable": false
+    }
+  }
+}

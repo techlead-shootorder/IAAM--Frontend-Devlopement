@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import { JoinSectionData } from "@/types/joinSection"
+import { JoinSectionData } from "@/types/home/joinSection"
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 

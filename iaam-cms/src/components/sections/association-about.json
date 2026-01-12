@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_sections_association_abouts",
+  "info": {
+    "displayName": "associationAbout"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "paragraph1": {
+      "type": "blocks"
+    },
+    "paragraph2": {
+      "type": "blocks"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  },
+  "config": {}
+}

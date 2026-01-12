@@ -430,6 +430,51 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAssociationPageAssociationPage
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'association_pages';
+  info: {
+    displayName: 'Association Page';
+    pluralName: 'association-pages';
+    singularName: 'association-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    AssociationAbout: Schema.Attribute.Component<
+      'sections.association-about',
+      false
+    >;
+    AssociationGlobalImpact: Schema.Attribute.Component<
+      'sections.association-global-impact',
+      false
+    >;
+    AssociationHero: Schema.Attribute.Component<'sections.hero-section', false>;
+    AssociationOurRole: Schema.Attribute.Component<
+      'sections.association-our-role',
+      false
+    >;
+    AssociationVisionMission: Schema.Attribute.Component<
+      'sections.association-vision-mission',
+      false
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::association-page.association-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiHomePageHomePage extends Struct.CollectionTypeSchema {
   collectionName: 'home_pages';
   info: {
@@ -972,6 +1017,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::association-page.association-page': ApiAssociationPageAssociationPage;
       'api::home-page.home-page': ApiHomePageHomePage;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

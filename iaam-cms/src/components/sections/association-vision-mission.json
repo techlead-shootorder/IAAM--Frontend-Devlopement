@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_sections_association_vision_missions",
+  "info": {
+    "displayName": "AssociationVisionMission"
+  },
+  "options": {},
+  "attributes": {
+    "sectionTitle": {
+      "type": "string"
+    },
+    "sectionSubtitle": {
+      "type": "string"
+    },
+    "visionTitle": {
+      "type": "string"
+    },
+    "visionDescription": {
+      "type": "blocks"
+    },
+    "missionTitle": {
+      "type": "string"
+    },
+    "missionIntro": {
+      "type": "string"
+    },
+    "MissionPoint": {
+      "type": "component",
+      "component": "sections.mission-points",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

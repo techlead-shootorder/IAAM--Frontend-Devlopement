@@ -26,6 +26,64 @@ export interface SectionsAboutSection extends Struct.ComponentSchema {
   };
 }
 
+export interface SectionsAssociationAbout extends Struct.ComponentSchema {
+  collectionName: 'components_sections_association_abouts';
+  info: {
+    displayName: 'associationAbout';
+  };
+  attributes: {
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    paragraph1: Schema.Attribute.Blocks;
+    paragraph2: Schema.Attribute.Blocks;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SectionsAssociationGlobalImpact
+  extends Struct.ComponentSchema {
+  collectionName: 'components_sections_association_global_impacts';
+  info: {
+    displayName: 'AssociationGlobalImpact';
+  };
+  attributes: {
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    impactIntro: Schema.Attribute.String;
+    ImpactPoint: Schema.Attribute.Component<'sections.impact-point', true>;
+    impactTitle: Schema.Attribute.String;
+    sectionSubtitle: Schema.Attribute.String;
+    sectionTitle: Schema.Attribute.String;
+  };
+}
+
+export interface SectionsAssociationOurRole extends Struct.ComponentSchema {
+  collectionName: 'components_sections_association_our_roles';
+  info: {
+    displayName: 'AssociationOurRole';
+  };
+  attributes: {
+    description: Schema.Attribute.Blocks;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SectionsAssociationVisionMission
+  extends Struct.ComponentSchema {
+  collectionName: 'components_sections_association_vision_missions';
+  info: {
+    displayName: 'AssociationVisionMission';
+  };
+  attributes: {
+    missionIntro: Schema.Attribute.String;
+    MissionPoint: Schema.Attribute.Component<'sections.mission-points', true>;
+    missionTitle: Schema.Attribute.String;
+    sectionSubtitle: Schema.Attribute.String;
+    sectionTitle: Schema.Attribute.String;
+    visionDescription: Schema.Attribute.Blocks;
+    visionTitle: Schema.Attribute.String;
+  };
+}
+
 export interface SectionsCards extends Struct.ComponentSchema {
   collectionName: 'components_sections_cards';
   info: {
@@ -76,6 +134,32 @@ export interface SectionsHero extends Struct.ComponentSchema {
     description: Schema.Attribute.Blocks;
     image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     title: Schema.Attribute.String;
+  };
+}
+
+export interface SectionsHeroSection extends Struct.ComponentSchema {
+  collectionName: 'components_sections_hero_sections';
+  info: {
+    displayName: 'heroSection';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios'
+    >;
+    buttonLink: Schema.Attribute.String;
+    buttonText: Schema.Attribute.String;
+    subtitle: Schema.Attribute.Text;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SectionsImpactPoint extends Struct.ComponentSchema {
+  collectionName: 'components_sections_impact_points';
+  info: {
+    displayName: 'ImpactPoint';
+  };
+  attributes: {
+    text: Schema.Attribute.String;
   };
 }
 
@@ -131,6 +215,16 @@ export interface SectionsLeftSummit extends Struct.ComponentSchema {
   attributes: {};
 }
 
+export interface SectionsMissionPoints extends Struct.ComponentSchema {
+  collectionName: 'components_sections_mission_points';
+  info: {
+    displayName: 'missionPoints';
+  };
+  attributes: {
+    text: Schema.Attribute.String;
+  };
+}
+
 export interface SectionsNewsItems extends Struct.ComponentSchema {
   collectionName: 'components_sections_news_items';
   info: {
@@ -169,14 +263,21 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'sections.about-cards': SectionsAboutCards;
       'sections.about-section': SectionsAboutSection;
+      'sections.association-about': SectionsAssociationAbout;
+      'sections.association-global-impact': SectionsAssociationGlobalImpact;
+      'sections.association-our-role': SectionsAssociationOurRole;
+      'sections.association-vision-mission': SectionsAssociationVisionMission;
       'sections.cards': SectionsCards;
       'sections.events': SectionsEvents;
       'sections.events-section': SectionsEventsSection;
       'sections.hero': SectionsHero;
+      'sections.hero-section': SectionsHeroSection;
+      'sections.impact-point': SectionsImpactPoint;
       'sections.join-section': SectionsJoinSection;
       'sections.left-card': SectionsLeftCard;
       'sections.left-submit': SectionsLeftSubmit;
       'sections.left-summit': SectionsLeftSummit;
+      'sections.mission-points': SectionsMissionPoints;
       'sections.news-items': SectionsNewsItems;
       'sections.news-section': SectionsNewsSection;
     }

@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_sections_impact_points",
+  "info": {
+    "displayName": "ImpactPoint"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

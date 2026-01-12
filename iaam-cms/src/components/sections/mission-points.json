@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_sections_mission_points",
+  "info": {
+    "displayName": "missionPoints"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

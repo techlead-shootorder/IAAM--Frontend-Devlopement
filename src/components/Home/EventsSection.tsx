@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { EventsSectionData } from "@/types/eventsSection";
+import { EventsSectionData } from "@/types/home/eventsSection";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
