@@ -5,21 +5,44 @@ import { NewsSectionData } from "@/types/home/newsSection";
 import SectionContainer from "../common/SectionContainer";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
 
 async function NewsSection() {
   try {
     const res = await fetch(
       `${NEXT_PUBLIC_STRAPI_URL}/api/home-pages?populate[newsSection][populate]=*`,
-      { next: { revalidate: 60 } }
+      {
+        headers: {
+          Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+        },
+        next: { revalidate: 60 },
+      }
     );
 
-    if (!res.ok) throw new Error("Failed to fetch news section");
-
-    const json = await res.json();
-    const news: NewsSectionData = json.data?.[0]?.newsSection;
+    let news: NewsSectionData | null = null;
+    try {
+      if (res.ok) {
+        const json = await res.json();
+        news = json.data?.[0]?.newsSection;
+      }
+    } catch (e) {
+      console.error("Error parsing news data:", e);
+    }
 
     if (!news) {
-      return <section className="py-24 text-center">Loading news…</section>;
+      news = {
+        id: 0,
+        title: "Latest News",
+        subtitle: "Stay updated",
+        featuredTitle: "Featured Article",
+        featuredDescription: [{ type: "paragraph", children: [{ type: "text", text: "Check back soon for the latest news and updates." }] }],
+        featuredImage: { url: "/news-placeholder.jpg", alternativeText: "News" },
+        allArticlesText: [{ type: "paragraph", children: [{ type: "text", text: "View All" }] }],
+        allArticlesLink: "/news",
+        newsletterButtonText: "Subscribe",
+        newsletterButtonLink: "/newsletter",
+        newsItems: [],
+      };
     }
 
     const descriptionText = news.featuredDescription

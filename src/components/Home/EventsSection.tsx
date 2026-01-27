@@ -3,6 +3,7 @@ import Link from "next/link";
 import SectionContainer from "../common/SectionContainer";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
 
 type Event = {
   id: number;
@@ -18,24 +19,32 @@ type Event = {
 export default async function EventsSection() {
   try {
     const response = await fetch(
-      `${NEXT_PUBLIC_STRAPI_URL}/api/event-page?populate[featuredEvent][populate]=heroImage&populate[upcomingEvents][populate]=heroImage`,
-      { next: { revalidate: 60 } }
+      `${NEXT_PUBLIC_STRAPI_URL}/api/events?populate=*`,
+      {
+        headers: {
+          Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+        },
+        next: { revalidate: 60 },
+      }
     );
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch events");
+    let events: Event[] = [];
+    try {
+      if (response.ok) {
+        const json = await response.json();
+        events = json.data || [];
+      }
+    } catch (e) {
+      console.error("Error parsing events:", e);
     }
 
-    const json = await response.json();
-    const page = json.data;
-
-    const featured: Event | null = page?.featuredEvent || null;
-    const upcoming: Event[] = page?.upcomingEvents || [];
+    const featured: Event | null = events[0] || null;
+    const upcoming: Event[] = events;
 
     if (!featured && upcoming.length === 0) {
       return (
         <SectionContainer>
-          <p className="text-center">No events found.</p>
+          <p className="text-center">No events available at the moment.</p>
         </SectionContainer>
       );
     }

@@ -4,21 +4,39 @@ import { AboutSectionData } from "@/types/home/aboutSection";
 import SectionContainer from "../common/SectionContainer";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
 
 async function AboutSection() {
   try {
     const res = await fetch(
       `${NEXT_PUBLIC_STRAPI_URL}/api/home-pages?populate[aboutSection][populate]=*`,
-      { next: { revalidate: 60 } }
+      {
+        headers: {
+          Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+        },
+        next: { revalidate: 60 },
+      }
     );
 
-    if (!res.ok) throw new Error("Failed to fetch about section");
-
-    const json = await res.json();
-    const about: AboutSectionData = json.data?.[0]?.aboutSection;
+    let about: AboutSectionData | null = null;
+    try {
+      if (res.ok) {
+        const json = await res.json();
+        about = json.data?.[0]?.aboutSection;
+      }
+    } catch (e) {
+      console.error("Error parsing about data:", e);
+    }
 
     if (!about) {
-      return <section className="py-24 text-center">Loading...</section>;
+      about = {
+        title: "About Us",
+        description: [{ type: "paragraph", children: [{ type: "text", text: "Learn more about our organization." }] }],
+        image: { url: "/about-placeholder.jpg", alternativeText: "About" },
+        buttonText: "Learn More",
+        buttonLink: "/about",
+        about_cards: [],
+      };
     }
 
     const mainText = about.description
