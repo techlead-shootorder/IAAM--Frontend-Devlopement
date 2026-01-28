@@ -12,10 +12,10 @@ export default function RootPage() {
       <Header />
       <main>
         <HomeHero />
-        <JoinSection />
+        {/* <JoinSection />
         <EventsSection />
         <HomeAbout />
-        <NewsSection />
+        <NewsSection /> */}
       </main>
       <Footer />
     </div>

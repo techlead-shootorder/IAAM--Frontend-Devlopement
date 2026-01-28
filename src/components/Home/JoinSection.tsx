@@ -3,7 +3,6 @@ import Link from "next/link"
 import { JoinSectionData } from "@/types/home/joinSection"
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
-const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
 
 const SectionContainer = ({
   children,
@@ -22,12 +21,10 @@ const SectionContainer = ({
 );
 
 async function getJoinSectionData(): Promise<JoinSectionData | null> {
+  const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.53.89.25:1337';
   const res = await fetch(
-    `${NEXT_PUBLIC_STRAPI_URL}/api/home-pages?populate[joinSection][populate]=*`,
+    `${baseUrl}/api/home-pages?populate[joinSection][populate]=*`,
     {
-      headers: {
-        Authorization: `Bearer ${STRAPI_API_TOKEN}`,
-      },
       next: { revalidate: 60 },
     }
   )

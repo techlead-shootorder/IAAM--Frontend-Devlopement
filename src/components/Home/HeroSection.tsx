@@ -1,90 +1,55 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { HeroData } from "@/types/home/heroSection";
+import { HeroBannerData } from "@/types/home/heroSection";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
-const STRAPI_API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_API_TOKEN;
 
-export default function HeroSection() {
-  const [heroData, setHeroData] = useState<HeroData | null>(null);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+async function getHeroData(): Promise<HeroBannerData | null> {
+  try {
+    const proxyUrl = new URL('/api/strapi', 'http://localhost:3000');
+    proxyUrl.searchParams.append('endpoint', 'home');
+    proxyUrl.searchParams.append('populate[HeroBanner][populate]', '*');
+    proxyUrl.searchParams.append('populate[SecondFold][populate][SecondCard][populate]', 'Image');
+    proxyUrl.searchParams.append('populate[SecondFold][populate][FirstCard][populate]', '*');
+    proxyUrl.searchParams.append('populate[SecondFold][populate][ThirdCards][populate]', '*');
+    
+    const response = await fetch(proxyUrl.toString(), {
+      next: { revalidate: 60 },
+    });
 
-  useEffect(() => {
-    const fetchHero = async () => {
-      try {
-        const response = await fetch(
-          `${NEXT_PUBLIC_STRAPI_URL}/api/home-pages?populate=hero.image`,
-          {
-            headers: {
-              Authorization: `Bearer ${STRAPI_API_TOKEN}`,
-            },
-          }
-        );
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Error:", response.status, errorText);
+      throw new Error(`Failed to fetch hero data: ${response.status}`);
+    }
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch hero data");
-        }
-
-        const data = await response.json();
-        setHeroData(data.data?.[0]?.hero);
-      } catch (error) {
-        console.error("Error in HeroSection:", error);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHero();
-  }, []);
-
-  const dummyHeroData: HeroData = {
-    title: "Welcome to IAAM",
-    description: [{ type: "paragraph", children: [{ type: "text", text: "International Association for Advanced Materials" }] }],
-    buttonText: "Learn More",
-    buttonLink: "#",
-    image: { data: null },
-  };
-
-  const hero = heroData || dummyHeroData;
-
-  const descriptionText = hero.description
-    .map((block) => block.children.map((child) => child.text).join(""))
-    .join("\n")
-    .trim();
-
-  const imageUrl = hero.image?.data?.attributes?.url
-    ? `${NEXT_PUBLIC_STRAPI_URL}${hero.image.data.attributes.url}`
-    : "./hero-conference.png";
-
-  if (error) {
-    return (
-      <section className="relative h-[400px] md:h-[500px] bg-gray-100 flex items-center justify-center">
-        <div className="text-center p-4">
-          <p className="text-red-500 mb-2">Error loading hero section</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Retry
-          </button>
-        </div>
-      </section>
-    );
+    const data = await response.json();
+    console.log("Hero API Response:", JSON.stringify(data, null, 2));
+    console.log("HeroBanner data:", data.data?.HeroBanner);
+    return data.data?.HeroBanner;
+  } catch (error) {
+    console.error("Error in HeroSection:", error);
+    return null;
   }
+}
+
+export default async function HeroSection() {
+  const heroData = await getHeroData();
+
+  if (!heroData) {
+    return null;
+  }
+
+  const imageUrl = heroData.HeroBanner?.formats?.large?.url
+    ? `${NEXT_PUBLIC_STRAPI_URL}${heroData.HeroBanner.formats.large.url.startsWith('/') ? '' : '/'}${heroData.HeroBanner.formats.large.url}`
+    : "/hero-conference.png";
 
   return (
     <section className="relative h-[400px] md:h-[500px]">
       <div className="absolute inset-0">
         <Image
           src={imageUrl}
-          alt={
-            heroData?.image?.data?.attributes?.alternativeText || "Hero Image"
-          }
+          alt={heroData.HeroBanner?.alternativeText || "Hero Banner"}
           fill
           className="object-cover"
           priority
@@ -93,16 +58,16 @@ export default function HeroSection() {
       </div>
       <div className="relative container mx-auto px-4 h-full flex flex-col justify-center max-w-6xl">
         <h1 className="font-sans text-3xl md:text-4xl lg:text-5xl text-white mb-4 max-w-xl leading-tight">
-          {hero.title}
+          {heroData.HeroBannerTitle || "Welcome to IAAM"}
         </h1>
         <p className="text-white/90 text-base md:text-lg mb-8 max-w-xl">
-          {descriptionText}
+          {heroData.HeroBannerDescription || "International Association for Advanced Materials"}
         </p>
         <Link
-          href={hero.buttonLink}
+          href="#"
           className="bg-[hsl(197,63%,22%)] font-bold hover:bg-white hover:text-[hsl(197,63%,22%)] text-white px-6 py-3 rounded-sm w-fit transition-colors"
         >
-          {hero.buttonText}
+          {heroData.HeroBannerButtonLabel || "Learn More"}
         </Link>
       </div>
     </section>

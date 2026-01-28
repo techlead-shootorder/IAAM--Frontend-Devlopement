@@ -4,16 +4,12 @@ import { AboutSectionData } from "@/types/home/aboutSection";
 import SectionContainer from "../common/SectionContainer";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
-const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
 
 async function AboutSection() {
   try {
     const res = await fetch(
       `${NEXT_PUBLIC_STRAPI_URL}/api/home-pages?populate[aboutSection][populate]=*`,
       {
-        headers: {
-          Authorization: `Bearer ${STRAPI_API_TOKEN}`,
-        },
         next: { revalidate: 60 },
       }
     );

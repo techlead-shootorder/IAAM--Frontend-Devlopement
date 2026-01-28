@@ -1,29 +1,27 @@
-export interface HeroImage {
-  data: {
-    id: number;
-    attributes: {
-      url: string;
-      alternativeText: string | null;
-      formats: {
-        thumbnail: { url: string };
-        small: { url: string };
-        medium: { url: string };
-        large: { url: string };
-      };
-    };
-  } | null;
+export interface ImageObject {
+  id: number;
+  documentId: string;
+  name: string;
+  alternativeText: string | null;
+  caption: string | null;
+  url: string;
+  formats?: {
+    thumbnail?: { url: string };
+    small?: { url: string };
+    medium?: { url: string };
+    large?: { url: string };
+  };
+}
+
+export interface HeroBannerData {
+  id: number;
+  HeroBannerTitle: string;
+  HeroBannerDescription: string;
+  HeroBannerButtonLabel: string;
+  HeroBanner?: ImageObject;
+  Links?: Array<any>;
 }
 
 export interface HeroData {
-  title: string;
-  description: Array<{
-    type: string;
-    children: Array<{
-      type: string;
-      text: string;
-    }>;
-  }>;
-  buttonText: string;
-  buttonLink: string;
-  image: HeroImage;
+  HeroBanner?: HeroBannerData;
 }

@@ -5,16 +5,12 @@ import { NewsSectionData } from "@/types/home/newsSection";
 import SectionContainer from "../common/SectionContainer";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
-const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
 
 async function NewsSection() {
   try {
     const res = await fetch(
       `${NEXT_PUBLIC_STRAPI_URL}/api/home-pages?populate[newsSection][populate]=*`,
       {
-        headers: {
-          Authorization: `Bearer ${STRAPI_API_TOKEN}`,
-        },
         next: { revalidate: 60 },
       }
     );
@@ -55,7 +51,7 @@ async function NewsSection() {
       .join("");
 
     const imageUrl = news.featuredImage?.url
-      ? `${NEXT_PUBLIC_STRAPI_URL}${news.featuredImage.url}`
+      ? `${NEXT_PUBLIC_STRAPI_URL}${news.featuredImage.url.startsWith('/') ? '' : '/'}${news.featuredImage.url}`
       : "/sdsg-goals.jpg";
 
     return (

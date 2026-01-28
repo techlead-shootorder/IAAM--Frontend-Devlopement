@@ -3,7 +3,6 @@ import Link from "next/link";
 import SectionContainer from "../common/SectionContainer";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
-const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
 
 type Event = {
   id: number;
@@ -21,9 +20,6 @@ export default async function EventsSection() {
     const response = await fetch(
       `${NEXT_PUBLIC_STRAPI_URL}/api/events?populate=*`,
       {
-        headers: {
-          Authorization: `Bearer ${STRAPI_API_TOKEN}`,
-        },
         next: { revalidate: 60 },
       }
     );
@@ -61,7 +57,7 @@ export default async function EventsSection() {
             <div className="space-y-6">
               {featured.heroImage?.url && (
                 <Image
-                  src={`${NEXT_PUBLIC_STRAPI_URL}${featured.heroImage.url}`}
+                  src={`${NEXT_PUBLIC_STRAPI_URL}${featured.heroImage.url.startsWith('/') ? '' : '/'}${featured.heroImage.url}`}
                   alt={featured.title}
                   width={800}
                   height={400}
