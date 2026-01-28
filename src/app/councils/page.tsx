@@ -8,6 +8,18 @@ import { getCouncilsData } from "@/lib/api";
 export default async function Page() {
   const data = await getCouncilsData();
 
+  if (!data) {
+    return (
+      <div className="bg-white min-h-screen">
+        <Header />
+        <div className="py-20 text-center">
+          <p className="text-gray-600">Failed to load councils data</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white min-h-screen">
       <Header />

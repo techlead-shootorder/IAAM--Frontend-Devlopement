@@ -8,6 +8,18 @@ import { getSocietiesData } from "@/lib/api";
 export default async function Page() {
   const data = await getSocietiesData();
 
+  if (!data) {
+    return (
+      <div className="bg-white min-h-screen">
+        <Header />
+        <div className="py-20 text-center">
+          <p className="text-gray-600">Failed to load societies data</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white min-h-screen">
       <Header />

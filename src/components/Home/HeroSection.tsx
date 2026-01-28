@@ -6,14 +6,14 @@ const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 async function getHeroData(): Promise<HeroBannerData | null> {
   try {
-    const proxyUrl = new URL('/api/strapi', 'http://localhost:3000');
-    proxyUrl.searchParams.append('endpoint', 'home');
-    proxyUrl.searchParams.append('populate[HeroBanner][populate]', '*');
-    proxyUrl.searchParams.append('populate[SecondFold][populate][SecondCard][populate]', 'Image');
-    proxyUrl.searchParams.append('populate[SecondFold][populate][FirstCard][populate]', '*');
-    proxyUrl.searchParams.append('populate[SecondFold][populate][ThirdCards][populate]', '*');
+    const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.53.89.25:1337';
+    const strapiUrl = new URL(`${baseUrl}/api/home`);
+    strapiUrl.searchParams.append('populate[HeroBanner][populate]', '*');
+    strapiUrl.searchParams.append('populate[SecondFold][populate][SecondCard][populate]', 'Image');
+    strapiUrl.searchParams.append('populate[SecondFold][populate][FirstCard][populate]', '*');
+    strapiUrl.searchParams.append('populate[SecondFold][populate][ThirdCards][populate]', '*');
     
-    const response = await fetch(proxyUrl.toString(), {
+    const response = await fetch(strapiUrl.toString(), {
       next: { revalidate: 60 },
     });
 

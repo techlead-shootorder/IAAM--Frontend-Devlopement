@@ -7,14 +7,14 @@ const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 async function getJoinSectionData(): Promise<JoinSectionData | null> {
   try {
-    const proxyUrl = new URL("/api/strapi", "http://localhost:3000")
+    const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.53.89.25:1337';
+    const strapiUrl = new URL(`${baseUrl}/api/home`)
 
-    proxyUrl.searchParams.append("endpoint", "home")
-    proxyUrl.searchParams.append("populate[SecondFold][populate][FirstCard][populate]", "*")
-    proxyUrl.searchParams.append("populate[SecondFold][populate][SecondCard][populate]", "Image")
-    proxyUrl.searchParams.append("populate[SecondFold][populate][ThirdCards][populate]", "*")
+    strapiUrl.searchParams.append("populate[SecondFold][populate][FirstCard][populate]", "*")
+    strapiUrl.searchParams.append("populate[SecondFold][populate][SecondCard][populate]", "Image")
+    strapiUrl.searchParams.append("populate[SecondFold][populate][ThirdCards][populate]", "*")
 
-    const res = await fetch(proxyUrl.toString(), {
+    const res = await fetch(strapiUrl.toString(), {
       next: { revalidate: 60 },
     })
 
@@ -36,10 +36,11 @@ export default async function JoinSection() {
 
   const { SectionTitle, FirstCard, SecondCard, ThirdCards } = data;
 
+  const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.53.89.25:1337';
   const imageUrl = SecondCard?.Image?.formats?.large?.url
-      ? `${NEXT_PUBLIC_STRAPI_URL}${SecondCard.Image.formats.large.url}`
+      ? `${baseUrl}${SecondCard.Image.formats.large.url.startsWith('/') ? '' : '/'}${SecondCard.Image.formats.large.url}`
       : SecondCard?.Image?.url
-      ? `${NEXT_PUBLIC_STRAPI_URL}${SecondCard.Image.url}`
+      ? `${baseUrl}${SecondCard.Image.url.startsWith('/') ? '' : '/'}${SecondCard.Image.url}`
       : "/speaker-discussion.png";
 
   return (

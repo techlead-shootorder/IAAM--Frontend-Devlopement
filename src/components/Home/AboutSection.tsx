@@ -6,12 +6,11 @@ const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 async function getAboutData() {
   try {
-    const proxyUrl = new URL("/api/strapi", "http://localhost:3000");
+    const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.53.89.25:1337';
+    const strapiUrl = new URL(`${baseUrl}/api/home`);
+    strapiUrl.searchParams.append("populate[ThirdFold][populate]", "*");
 
-    proxyUrl.searchParams.append("endpoint", "home");
-    proxyUrl.searchParams.append("populate[ThirdFold][populate]", "*");
-
-    const response = await fetch(proxyUrl.toString(), {
+    const response = await fetch(strapiUrl.toString(), {
       next: { revalidate: 60 },
     });
 
@@ -45,11 +44,12 @@ export default async function AboutSection() {
       block.children.map((child: any) => child.text).join("")
     ).join(" ") || "";
 
+  const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.53.89.25:1337';
   const imageUrl =
     about?.Image?.formats?.large?.url
-      ? `${NEXT_PUBLIC_STRAPI_URL}${about.Image.formats.large.url}`
+      ? `${baseUrl}${about.Image.formats.large.url.startsWith('/') ? '' : '/'}${about.Image.formats.large.url}`
       : about?.Image?.url
-      ? `${NEXT_PUBLIC_STRAPI_URL}${about.Image.url}`
+      ? `${baseUrl}${about.Image.url.startsWith('/') ? '' : '/'}${about.Image.url}`
       : "/about-placeholder.jpg";
 
   return (
