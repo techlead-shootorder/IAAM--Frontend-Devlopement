@@ -17,8 +17,9 @@ type Event = {
 
 export default async function EventsSection() {
   try {
+    const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.53.89.25:1337';
     const response = await fetch(
-      `${NEXT_PUBLIC_STRAPI_URL}/api/events?populate=*`,
+      `${baseUrl}/api/events?populate=*`,
       {
         next: { revalidate: 60 },
       }

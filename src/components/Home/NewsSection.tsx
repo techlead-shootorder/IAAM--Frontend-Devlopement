@@ -8,8 +8,9 @@ const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 async function NewsSection() {
   try {
+    const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.53.89.25:1337';
     const res = await fetch(
-      `${NEXT_PUBLIC_STRAPI_URL}/api/home-pages?populate[newsSection][populate]=*`,
+      `${baseUrl}/api/home-pages?populate[newsSection][populate]=*`,
       {
         next: { revalidate: 60 },
       }
