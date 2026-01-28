@@ -92,156 +92,74 @@ export default function MembershipDropdown() {
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="fixed inset-0 top-[145px] z-50 w-screen bg-white border-t border-gray-200 shadow-xl overflow-hidden">
+        <div className="fixed inset-0 top-[145px] z-50 w-screen bg-white border-t border-gray-200 shadow-lg overflow-hidden">
           <div className="flex h-full">
-            {/* Left Panel - Fixed */}
-            <div className="w-[280px] flex-shrink-0 border-r border-gray-200">
-              {/* Image */}
-              <div className="h-[180px] overflow-hidden relative">
-                <Image
-                  src="./Contact_IAAM.jpg"
-                  alt="Membership"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              
-              {/* Button */}
-              <div className="bg-[hsl(197,63%,22%)] px-4 py-3">
-                <a
-                  href="#"
-                  className="text-white font-semibold text-sm hover:text-white/80 transition-colors"
-                >
-                  {membershipData.leftPanel.buttonText}
-                </a>
-              </div>
-
-              {/* Content */}
-              <div className="p-4">
-                <h3 className="font-bold text-gray-900 text-base leading-tight mb-3">
-                  {membershipData.leftPanel.title}
-                </h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {membershipData.leftPanel.description}
-                </p>
-              </div>
+            {/* Left Panel - Hidden on smaller screens */}
+            <div className="hidden lg:block w-1/5 flex-shrink-0 border-r border-gray-100 bg-gray-50 p-6">
+              <h3 className="font-bold text-gray-900 text-lg mb-2 leading-snug">
+                {membershipData.leftPanel.title}
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed mb-6">
+                {membershipData.leftPanel.description}
+              </p>
+              <a
+                href="#"
+                className="inline-block w-full text-center bg-[hsl(197,63%,22%)] text-white font-semibold text-sm px-4 py-3 rounded hover:bg-[hsl(197,63%,18%)] transition-colors"
+              >
+                {membershipData.leftPanel.buttonText}
+              </a>
             </div>
 
             {/* Right Panel - Scrollable */}
             <div className="flex-1 overflow-y-auto">
-              <div className="p-6">
-                  {/* Header */}
-                  <div className="mb-6">
-                    <h2 className="font-bold text-gray-900 text-xl mb-3">
-                      Membership
-                    </h2>
-                    <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                      {membershipData.description}
-                    </p>
-                    <a
-                      href="#"
-                      className="inline-flex items-center gap-1 text-[hsl(197,63%,22%)] font-semibold text-sm hover:text-[hsl(197,63%,32%)] transition-colors"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                      {membershipData.learnMoreLink}
-                    </a>
-                  </div>
+              <div className="max-w-7xl mx-auto px-8 py-8">
+                {/* Header */}
+                <div className="mb-8">
+                  <h2 className="font-bold text-gray-900 text-2xl mb-4">
+                    Membership
+                  </h2>
+                  <p className="text-sm text-gray-600 leading-relaxed mb-4 max-w-2xl">
+                    {membershipData.description}
+                  </p>
+                  <a
+                    href="#"
+                    className="inline-flex items-center gap-2 text-[hsl(197,63%,22%)] font-semibold text-sm hover:text-[hsl(197,63%,32%)] transition-colors"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                    {membershipData.learnMoreLink}
+                  </a>
+                </div>
 
-                  {/* Links Grid */}
-                  <div className="grid grid-cols-3 gap-6">
-                    {/* Column 1 */}
-                    <div className="space-y-6">
-                      {membershipData.sections.slice(0, 2).map((section, idx) => (
-                        <div key={idx}>
-                          {section.title && (
-                            <h4 className="font-bold text-[hsl(197,63%,22%)] text-sm mb-2">
-                              {section.title}
-                            </h4>
-                          )}
-                          <div className="space-y-1.5">
-                            {section.links.map((link, linkIdx) => (
-                              <a
-                                key={linkIdx}
-                                href={link.href}
-                                className={`block text-xs leading-relaxed transition-colors ${
-                                  link.isHighlighted
-                                    ? 'text-[hsl(197,63%,22%)] hover:text-[hsl(197,63%,32%)]'
-                                    : 'text-gray-600 hover:text-gray-900'
-                                }`}
-                              >
-                                {link.label}
-                                {link.isExternal && (
-                                  <ExternalLink className="inline-block w-3 h-3 ml-1" />
-                                )}
-                              </a>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
+                {/* Links Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {membershipData.sections.map((section, idx) => (
+                    <div key={idx}>
+                      {section.title && (
+                        <h4 className="font-bold text-[hsl(197,63%,22%)] text-sm mb-4">
+                          {section.title}
+                        </h4>
+                      )}
+                      <div className="space-y-3">
+                        {section.links.map((link, linkIdx) => (
+                          <a
+                            key={linkIdx}
+                            href={link.href}
+                            className={`block text-sm leading-relaxed transition-colors ${
+                              link.isHighlighted
+                                ? 'text-[hsl(197,63%,22%)] font-medium hover:text-[hsl(197,63%,32%)]'
+                                : 'text-gray-600 hover:text-gray-900'
+                            }`}
+                          >
+                            {link.label}
+                            {link.isExternal && (
+                              <ExternalLink className="inline-block w-3 h-3 ml-1" />
+                            )}
+                          </a>
+                        ))}
+                      </div>
                     </div>
-
-                    {/* Column 2 */}
-                    <div className="space-y-6">
-                      {membershipData.sections.slice(2, 4).map((section, idx) => (
-                        <div key={idx}>
-                          {section.title && (
-                            <h4 className="font-bold text-[hsl(197,63%,22%)] text-sm mb-2">
-                              {section.title}
-                            </h4>
-                          )}
-                          <div className="space-y-1.5">
-                            {section.links.map((link, linkIdx) => (
-                              <a
-                                key={linkIdx}
-                                href={link.href}
-                                className={`block text-xs leading-relaxed transition-colors ${
-                                  link.isHighlighted
-                                    ? 'text-[hsl(197,63%,22%)] hover:text-[hsl(197,63%,32%)]'
-                                    : 'text-gray-600 hover:text-gray-900'
-                                }`}
-                              >
-                                {link.label}
-                                {link.isExternal && (
-                                  <ExternalLink className="inline-block w-3 h-3 ml-1" />
-                                )}
-                              </a>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Column 3 */}
-                    <div className="space-y-6">
-                      {membershipData.sections.slice(4).map((section, idx) => (
-                        <div key={idx}>
-                          {section.title && (
-                            <h4 className="font-bold text-[hsl(197,63%,22%)] text-sm mb-2">
-                              {section.title}
-                            </h4>
-                          )}
-                          <div className="space-y-1.5">
-                            {section.links.map((link, linkIdx) => (
-                              <a
-                                key={linkIdx}
-                                href={link.href}
-                                className={`block text-xs leading-relaxed transition-colors ${
-                                  link.isHighlighted
-                                    ? 'text-[hsl(197,63%,22%)] hover:text-[hsl(197,63%,32%)]'
-                                    : 'text-gray-600 hover:text-gray-900'
-                                }`}
-                              >
-                                {link.label}
-                                {link.isExternal && (
-                                  <ExternalLink className="inline-block w-3 h-3 ml-1" />
-                                )}
-                              </a>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
