@@ -92,9 +92,8 @@ export default function MembershipDropdown() {
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="fixed left-0 right-0 top-[145px] z-50 flex justify-center px-4">
-          <div className="w-[1000px] max-w-full bg-white border border-gray-200 shadow-xl rounded-sm">
-            <div className="flex">
+        <div className="fixed inset-0 top-[145px] z-50 w-screen bg-white border-t border-gray-200 shadow-xl overflow-hidden">
+          <div className="flex h-full">
             {/* Left Panel - Fixed */}
             <div className="w-[280px] flex-shrink-0 border-r border-gray-200">
               {/* Image */}
@@ -129,9 +128,8 @@ export default function MembershipDropdown() {
             </div>
 
             {/* Right Panel - Scrollable */}
-            <div className="flex-1">
-              <div className="h-[450px] overflow-y-auto">
-                <div className="p-6">
+            <div className="flex-1 overflow-y-auto">
+              <div className="p-6">
                   {/* Header */}
                   <div className="mb-6">
                     <h2 className="font-bold text-gray-900 text-xl mb-3">
@@ -244,11 +242,9 @@ export default function MembershipDropdown() {
                       ))}
                     </div>
                   </div>
-                </div>
               </div>
             </div>
           </div>
-        </div>
         </div>
       )}   
     </div>
