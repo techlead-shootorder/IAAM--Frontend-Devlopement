@@ -1,24 +1,42 @@
-export interface JoinCard {
-  id: number
-  title: string
-  description: string
-  link: string | null
-  variant: "primary" | "light"
+export interface StrapiImageFormat {
+  url: string
+  width: number
+  height: number
 }
 
-export interface LeftCard {
+export interface StrapiImage {
+  url: string
+  alternativeText: string | null
+  formats?: {
+    large?: StrapiImageFormat
+    medium?: StrapiImageFormat
+    small?: StrapiImageFormat
+    thumbnail?: StrapiImageFormat
+  }
+}
+
+export interface FirstCard {
   id: number
-  title: string
-  description: {
-    type: string
-    children: { type: string; text: string }[]
-  }[]
-  buttonText: string
-  buttonLink: string
+  Cardtitle: string
+  CardDescription: string
+  CardButtonLabel: string
+  CardButtonLink: string
+}
+
+export interface JoinCard {
+  id: number
+  Heading: string
+  Description: string
+  Link: string | null
+}
+
+export interface SecondCard {
+  Image: StrapiImage
 }
 
 export interface JoinSectionData {
-  title: string
-  cards: JoinCard[]
-  leftCard: LeftCard[]
+  SectionTitle: string
+  FirstCard: FirstCard
+  SecondCard: SecondCard
+  ThirdCards: JoinCard[]
 }

@@ -1,141 +1,128 @@
-import Image from "next/image"
-import Link from "next/link"
-import { JoinSectionData } from "@/types/home/joinSection"
+import Image from "next/image";
+import Link from "next/link";
+import SectionContainer from "../common/SectionContainer";
+import { JoinSectionData } from "@/types/home/joinSection";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-const SectionContainer = ({
-  children,
-  className = "",
-  bgColor = "bg-white",
-}: {
-  children: React.ReactNode;
-  className?: string;
-  bgColor?: string;
-}) => (
-  <section className={`py-16 ${bgColor} ${className}`}>
-    <div className="container mx-auto px-4">
-      <div className="max-w-6xl mx-auto">{children}</div>
-    </div>
-  </section>
-);
-
 async function getJoinSectionData(): Promise<JoinSectionData | null> {
-  const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.53.89.25:1337';
-  const res = await fetch(
-    `${baseUrl}/api/home-pages?populate[joinSection][populate]=*`,
-    {
-      next: { revalidate: 60 },
-    }
-  )
-
   try {
-    if (res.ok) {
-      const json = await res.json()
-      const data = json?.data?.[0]?.joinSection
-      if (data) return data
-    }
-  } catch (e) {
-    console.error("Error parsing join data:", e)
-  }
+    const proxyUrl = new URL("/api/strapi", "http://localhost:3000")
 
-  return null
+    proxyUrl.searchParams.append("endpoint", "home")
+    proxyUrl.searchParams.append("populate[SecondFold][populate][FirstCard][populate]", "*")
+    proxyUrl.searchParams.append("populate[SecondFold][populate][SecondCard][populate]", "Image")
+    proxyUrl.searchParams.append("populate[SecondFold][populate][ThirdCards][populate]", "*")
+
+    const res = await fetch(proxyUrl.toString(), {
+      next: { revalidate: 60 },
+    })
+
+    if (!res.ok) throw new Error("JoinSection fetch failed")
+
+    const json = await res.json()
+
+    return json?.data?.SecondFold as JoinSectionData
+  } catch (error) {
+    console.error("JoinSection error:", error)
+    return null
+  }
 }
 
+
 export default async function JoinSection() {
-  const data = await getJoinSectionData()
+  const data = await getJoinSectionData();
+  if (!data) return null;
 
-  if (!data) return null
+  const { SectionTitle, FirstCard, SecondCard, ThirdCards } = data;
 
-  const left = data.leftCard[0]
-
-  const leftDescription =
-    left?.description
-      ?.map(block => block.children.map(c => c.text).join(""))
-      .join("") || ""
+  const imageUrl = SecondCard?.Image?.formats?.large?.url
+      ? `${NEXT_PUBLIC_STRAPI_URL}${SecondCard.Image.formats.large.url}`
+      : SecondCard?.Image?.url
+      ? `${NEXT_PUBLIC_STRAPI_URL}${SecondCard.Image.url}`
+      : "/speaker-discussion.png";
 
   return (
-    <SectionContainer bgColor="bg-gray-50">
-    <section className="bg-gray-50 py-16">
-      <div className="max-w-7xl mx-auto px-4">
+    <SectionContainer>
+      {/* ===== TITLE ===== */}
+      <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-12">
+        {SectionTitle}
+      </h2>
 
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12">
-          {data.title}
-        </h2>
+      <div className="grid lg:grid-cols-12 gap-6 items-stretch">
 
-        <div className="grid lg:grid-cols-12 gap-6">
-
-          {/* Left Card */}
-          <div className="lg:col-span-4">
-            <div className="bg-[hsl(197,63%,22%)] text-white p-8 h-full flex flex-col rounded-sm">
-
-              <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                {left.title}
+        {/* ========== LEFT BIG CARD (FirstCard) ========== */}
+        <div className="lg:col-span-4">
+          <div className="h-full bg-[hsl(197,63%,22%)] text-white p-8 flex flex-col justify-between rounded-sm">
+            <div>
+              <h3 className="text-3xl font-bold mb-4">
+                {FirstCard?.Cardtitle}
               </h3>
 
-              <p className="text-white/90 mb-8 flex-grow">
-                {leftDescription}
+              <p className="text-white/90">
+                {FirstCard?.CardDescription}
               </p>
-
-              <Link
-                href={left.buttonLink}
-                className="border-2 border-white text-center py-4 px-6 font-semibold hover:bg-white hover:text-[hsl(197,63%,22%)] transition rounded-xl"
-              >
-                {left.buttonText}
-              </Link>
-
             </div>
+
+            <Link
+              href={FirstCard?.CardButtonLink || "#"}
+              className="mt-8 inline-block border-2 border-white text-center py-4 px-6 font-semibold hover:bg-white hover:text-[hsl(197,63%,22%)] transition rounded-xl"
+            >
+              {FirstCard?.CardButtonLabel}
+            </Link>
           </div>
+        </div>
 
-          {/* Center Image */}
-          <div className="lg:col-span-3 hidden lg:block">
-            <Image
-              src="/speaker-discussion.png"
-              alt="IAAM Speaker"
-              width={400}
-              height={600}
-              className="w-full h-full object-cover rounded-sm"
-            />
-          </div>
+        {/* ========== CENTER IMAGE ========== */}
+        <div className="lg:col-span-3 hidden lg:block relative">
+          <Image
+            src={imageUrl}
+            alt="IAAM Community"
+            fill
+            className="object-cover rounded-sm"
+            priority
+          />
+        </div>
 
-          {/* Right Cards */}
-          <div className="lg:col-span-5 grid sm:grid-cols-2 gap-4">
+        {/* ========== RIGHT 4 CARDS (ThirdCards) ========== */}
+        <div className="lg:col-span-5 grid sm:grid-cols-2 gap-4 auto-rows-fr">
+          {ThirdCards?.map((card: any, index: number) => {
+            const isDark = index < 2;
 
-            {data.cards.map(card => (
+            return (
               <div
                 key={card.id}
-                className={`p-6 ${
-                  card.variant === "primary"
+                className={`p-6 rounded-sm ${
+                  isDark
                     ? "bg-[hsl(197,63%,22%)] text-white"
                     : "bg-[hsl(197,30%,95%)]"
                 }`}
               >
                 <h4
-                  className={`font-bold mb-2 ${
-                    card.variant === "primary"
+                  className={`font-bold mb-3 ${
+                    isDark
                       ? "text-white"
                       : "text-[hsl(197,63%,22%)]"
                   }`}
                 >
-                  {card.title}
+                  {card.Heading}
                 </h4>
 
                 <p
                   className={`text-sm ${
-                    card.variant === "primary"
+                    isDark
                       ? "text-white/90"
                       : "text-gray-700"
                   }`}
                 >
-                  {card.description}
+                  {card.Description}
                 </p>
               </div>
-            ))}
-
-          </div>
+            );
+          })}
         </div>
+
       </div>
-    </section>
     </SectionContainer>
-  )
+  );
 }
