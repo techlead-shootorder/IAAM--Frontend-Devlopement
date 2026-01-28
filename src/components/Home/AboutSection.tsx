@@ -1,101 +1,105 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AboutSectionData } from "@/types/home/aboutSection";
 import SectionContainer from "../common/SectionContainer";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
-const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
 
-async function AboutSection() {
+async function getAboutData() {
   try {
-    const res = await fetch(
-      `${NEXT_PUBLIC_STRAPI_URL}/api/home-pages?populate[aboutSection][populate]=*`,
-      {
-        headers: {
-          Authorization: `Bearer ${STRAPI_API_TOKEN}`,
-        },
-        next: { revalidate: 60 },
-      }
-    );
+    const proxyUrl = new URL("/api/strapi", "http://localhost:3000");
 
-    let about: AboutSectionData | null = null;
-    try {
-      if (res.ok) {
-        const json = await res.json();
-        about = json.data?.[0]?.aboutSection;
-      }
-    } catch (e) {
-      console.error("Error parsing about data:", e);
+    proxyUrl.searchParams.append("endpoint", "home");
+    proxyUrl.searchParams.append("populate[ThirdFold][populate]", "*");
+
+    const response = await fetch(proxyUrl.toString(), {
+      next: { revalidate: 60 },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("About API Error:", response.status, errorText);
+      throw new Error("Failed to fetch About data");
     }
 
-    if (!about) {
-      about = {
-        title: "About Us",
-        description: [{ type: "paragraph", children: [{ type: "text", text: "Learn more about our organization." }] }],
-        image: { url: "/about-placeholder.jpg", alternativeText: "About" },
-        buttonText: "Learn More",
-        buttonLink: "/about",
-        about_cards: [],
-      };
-    }
-
-    const mainText = about.description
-      .map(b => b.children.map(c => c.text).join(""))
-      .join(" ");
-
-    return (
-      <SectionContainer>
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
-
-          <div className="order-last md:order-first">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-800 mb-6">
-              {about.title}
-            </h2>
-
-            <p className="text-slate-700 mb-8">{mainText}</p>
-
-            <div className="grid sm:grid-cols-2 gap-4 mb-6">
-              {about.about_cards.map(card => {
-                const cardText = card.description
-                  .map(b => b.children.map(c => c.text).join(""))
-                  .join(" ");
-
-                return (
-                  <div key={card.id} className="p-4 bg-gray-200 rounded">
-                    <h4 className="font-bold text-slate-800 mb-2">
-                      {card.title}
-                    </h4>
-                    <p className="text-sm text-slate-700">{cardText}</p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <Link
-              href={about.buttonLink}
-              className="block text-center bg-[hsl(197,63%,22%)] text-white px-6 py-3 font-semibold rounded hover:bg-[hsl(197,63%,15%)] transition"
-            >
-              {about.buttonText}
-            </Link>
-          </div>
-
-          <div className="order-first md:order-last">
-            <Image
-              src={`${NEXT_PUBLIC_STRAPI_URL}${about.image.url}`}
-              alt={about.image.alternativeText || "About Image"}
-              width={600}
-              height={550}
-              className="w-full h-[550px] object-cover rounded shadow-lg"
-            />
-          </div>
-
-        </div>
-      </SectionContainer>
-    );
+    const json = await response.json();
+    return json?.data?.ThirdFold || null;
   } catch (error) {
-    console.error("AboutSection error:", error);
-    return <section className="py-24 text-center text-red-500">Failed to load about section</section>;
+    console.error("AboutSection fetch error:", error);
+    return null;
   }
 }
 
-export default AboutSection;
+export default async function AboutSection() {
+  const about = await getAboutData();
+
+  if (!about) {
+    return (
+      <section className="py-24 text-center text-red-500">
+        Failed to load about section
+      </section>
+    );
+  }
+
+  const descriptionText =
+    about.Description?.map((block: any) =>
+      block.children.map((child: any) => child.text).join("")
+    ).join(" ") || "";
+
+  const imageUrl =
+    about?.Image?.formats?.large?.url
+      ? `${NEXT_PUBLIC_STRAPI_URL}${about.Image.formats.large.url}`
+      : about?.Image?.url
+      ? `${NEXT_PUBLIC_STRAPI_URL}${about.Image.url}`
+      : "/about-placeholder.jpg";
+
+  return (
+    <SectionContainer>
+      <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
+
+        <div className="order-last md:order-first">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-800 mb-6">
+            {about.Heading}
+          </h2>
+
+          <p className="text-slate-700 mb-8">
+            {descriptionText}
+          </p>
+
+          <div className="grid sm:grid-cols-2 gap-4 mb-6">
+            {about.Cards?.map((card: any) => (
+              <div
+                key={card.id}
+                className="p-4 bg-gray-200 rounded"
+              >
+                <h4 className="font-bold text-slate-800 mb-2">
+                  {card.Heading}
+                </h4>
+                <p className="text-sm text-slate-700">
+                  {card.Description}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <Link
+            href="#"
+            className="block text-center bg-[hsl(197,63%,22%)] text-white px-6 py-3 font-semibold rounded hover:bg-[hsl(197,63%,15%)] transition"
+          >
+            Learn More
+          </Link>
+        </div>
+
+        <div className="order-first md:order-last relative h-[550px] w-full">
+          <Image
+            src={imageUrl}
+            alt={about.Image?.alternativeText || "About Image"}
+            fill
+            priority
+            className="object-cover rounded shadow-lg"
+          />
+        </div>
+
+      </div>
+    </SectionContainer>
+  );
+}
