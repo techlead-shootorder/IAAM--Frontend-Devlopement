@@ -1,6 +1,11 @@
 import Link from "next/link";
 
-export default function Breadcrumb({ items }) {
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
   return (
     <div style={{ position: "relative", width: "100%", background: "white", marginTop: "30px" }}>
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 24px", display: "flex", gap: "8px", fontSize: "15px", color: "#003399" }}>
