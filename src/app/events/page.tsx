@@ -5,9 +5,20 @@ import Link from "next/link";
 
 const API = process.env.NEXT_PUBLIC_STRAPI_URL;
 
+interface Event {
+  id: number;
+  slug: string;
+  title: string;
+  shortDescription: string;
+  heroImage: {
+    url: string;
+  };
+}
+
 async function getEventsPage() {
+  const baseUrl = API?.replace(/\/$/, '') || 'http://13.53.89.25:1337';
   const res = await fetch(
-    `${API}/api/event-page?populate[featuredEvent][populate]=heroImage&populate[upcomingEvents][populate]=heroImage`,
+    `${baseUrl}/api/event-page?populate[featuredEvent][populate]=heroImage&populate[upcomingEvents][populate]=heroImage`,
     { cache: "no-store" }
   );
 
@@ -53,7 +64,7 @@ export default async function EventsPage() {
           {heroImage && (
             <div className="relative h-[320px] md:h-[380px] rounded-xl overflow-hidden shadow-xl">
               <Image
-                src={`${API}${heroImage.url}`}
+                src={`${API}${heroImage.url.startsWith('/') ? '' : '/'}${heroImage.url}`}
                 alt={heroTitle}
                 fill
                 className="object-cover"
@@ -81,7 +92,7 @@ export default async function EventsPage() {
 
                 <div className="relative h-[260px] md:h-full">
                   <Image
-                    src={`${API}${featuredEvent.heroImage.url}`}
+                    src={`${API}${featuredEvent.heroImage.url.startsWith('/') ? '' : '/'}${featuredEvent.heroImage.url}`}
                     alt={featuredEvent.title}
                     fill
                     className="object-cover group-hover:scale-105 transition"
@@ -116,7 +127,7 @@ export default async function EventsPage() {
           </h3>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {upcomingEvents.map((event) => (
+            {upcomingEvents.map((event: Event) => (
               <Link
                 key={event.id}
                 href={`/events/${event.slug}`}
@@ -124,7 +135,7 @@ export default async function EventsPage() {
               >
                 <div className="relative h-48">
                   <Image
-                    src={`${API}${event.heroImage.url}`}
+                    src={`${API}${event.heroImage.url.startsWith('/') ? '' : '/'}${event.heroImage.url}`}
                     alt={event.title}
                     fill
                     className="object-cover group-hover:scale-105 transition"
