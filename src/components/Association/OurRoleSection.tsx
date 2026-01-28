@@ -2,6 +2,7 @@ import Image from "next/image";
 import { AssociationOurRole } from "@/types/association/ourRoleSection";
 import { getText } from "@/lib/strapiText";
 import SectionContainer from "../common/SectionContainer";
+import { getProxiedImageUrl } from "@/lib/imageProxy";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -27,7 +28,7 @@ export default async function OurRoleSection() {
 
         <div className="md:w-2/5">
           <Image
-            src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${data.image.url}`}
+            src={getProxiedImageUrl(data.image.url)}
             alt={data.title}
             width={data.image.width}
             height={data.image.height}

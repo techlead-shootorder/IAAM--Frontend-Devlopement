@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { LeadershipSectionData } from "@/types/association/leadershipSection";
 import SectionContainer from "../common/SectionContainer";
+import { getProxiedImageUrl } from "@/lib/imageProxy";
 
 async function getLeadershipData(): Promise<LeadershipSectionData | null> {
   const res = await fetch(
@@ -43,7 +44,7 @@ export default async function LeadershipSection() {
 
         <div className="md:w-2/5">
           <Image
-            src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${image.url}`}
+            src={getProxiedImageUrl(image.url)}
             alt={data.title}
             width={image.width}
             height={image.height}

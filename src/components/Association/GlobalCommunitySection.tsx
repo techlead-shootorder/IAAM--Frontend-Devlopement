@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { GlobalCommunitySectionData } from "@/types/association/globalCommunity";
 import SectionContainer from "../common/SectionContainer";
+import { getProxiedImageUrl } from "@/lib/imageProxy";
 
 async function getGlobalCommunity(): Promise<GlobalCommunitySectionData | null> {
   const res = await fetch(
@@ -21,7 +22,7 @@ export default async function GlobalCommunitySection() {
       <div className="flex flex-col md:flex-row overflow-hidden rounded-sm shadow-sm">
         <div className="md:w-2/5">
           <Image
-            src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${data.image.url}`}
+            src={getProxiedImageUrl(data.image.url)}
             alt={data.title}
             width={data.image.width}
             height={data.image.height}

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { StrategicPrioritiesSectionData } from "@/types/association/strategicPriorities";
 import SectionContainer from "../common/SectionContainer";
+import { getProxiedImageUrl } from "@/lib/imageProxy";
 
 async function getStrategicData(): Promise<StrategicPrioritiesSectionData | null> {
   const res = await fetch(
@@ -23,7 +24,7 @@ export default async function StrategicPrioritiesSection() {
         {/* Image */}
         <div>
           <Image
-            src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${data.image.url}`}
+            src={getProxiedImageUrl(data.image.url)}
             alt={data.title}
             width={data.image.width}
             height={data.image.height}

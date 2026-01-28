@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { AssociationGlobalImpact } from "@/types/association/globalImpactSection";
 import SectionContainer from "../common/SectionContainer";
+import { getProxiedImageUrl } from "@/lib/imageProxy";
 
 async function getGlobalImpact(): Promise<AssociationGlobalImpact> {
   const res = await fetch(
@@ -28,7 +29,7 @@ export default async function GlobalImpactSection() {
       <div className="flex flex-col md:flex-row overflow-hidden rounded-sm shadow-sm">
         <div className="md:w-2/5">
           <Image
-            src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${data.image.url}`}
+            src={getProxiedImageUrl(data.image.url)}
             alt={data.impactTitle}
             width={data.image.width}
             height={data.image.height}

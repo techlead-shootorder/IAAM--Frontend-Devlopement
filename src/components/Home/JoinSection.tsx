@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SectionContainer from "../common/SectionContainer";
 import { JoinSectionData } from "@/types/home/joinSection";
+import { getProxiedImageUrl } from "@/lib/imageProxy";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -36,11 +37,10 @@ export default async function JoinSection() {
 
   const { SectionTitle, FirstCard, SecondCard, ThirdCards } = data;
 
-  const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.53.89.25:1337';
   const imageUrl = SecondCard?.Image?.formats?.large?.url
-      ? `${baseUrl}${SecondCard.Image.formats.large.url.startsWith('/') ? '' : '/'}${SecondCard.Image.formats.large.url}`
+      ? getProxiedImageUrl(SecondCard.Image.formats.large.url)
       : SecondCard?.Image?.url
-      ? `${baseUrl}${SecondCard.Image.url.startsWith('/') ? '' : '/'}${SecondCard.Image.url}`
+      ? getProxiedImageUrl(SecondCard.Image.url)
       : "/speaker-discussion.png";
 
   return (

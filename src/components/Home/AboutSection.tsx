@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import SectionContainer from "../common/SectionContainer";
+import { getProxiedImageUrl } from "@/lib/imageProxy";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -44,12 +45,11 @@ export default async function AboutSection() {
       block.children.map((child: any) => child.text).join("")
     ).join(" ") || "";
 
-  const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.53.89.25:1337';
   const imageUrl =
     about?.Image?.formats?.large?.url
-      ? `${baseUrl}${about.Image.formats.large.url.startsWith('/') ? '' : '/'}${about.Image.formats.large.url}`
+      ? getProxiedImageUrl(about.Image.formats.large.url)
       : about?.Image?.url
-      ? `${baseUrl}${about.Image.url.startsWith('/') ? '' : '/'}${about.Image.url}`
+      ? getProxiedImageUrl(about.Image.url)
       : "/about-placeholder.jpg";
 
   return (

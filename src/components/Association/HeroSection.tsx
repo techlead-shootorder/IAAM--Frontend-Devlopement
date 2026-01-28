@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { AssociationHeroData } from "@/types/association/heroSection";
+import { getProxiedImageUrl } from "@/lib/imageProxy";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -19,7 +20,7 @@ async function HeroSection() {
   if (!hero) return null;
 
   const imageUrl = hero.backgroundImage?.url
-    ? `${NEXT_PUBLIC_STRAPI_URL}${hero.backgroundImage.url}`
+    ? getProxiedImageUrl(hero.backgroundImage.url)
     : "/Association_Banner.jpg";
 
   return (

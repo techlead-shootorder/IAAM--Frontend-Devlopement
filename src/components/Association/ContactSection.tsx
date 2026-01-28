@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ContactSectionData } from "@/types/association/contact";
 import SectionContainer from "../common/SectionContainer";
+import { getProxiedImageUrl } from "@/lib/imageProxy";
 
 async function getContactSection(): Promise<ContactSectionData | null> {
   const res = await fetch(
@@ -43,7 +44,7 @@ export default async function ContactSection() {
 
         <div className="md:w-1/2">
           <Image
-            src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${data.image.url}`}
+            src={getProxiedImageUrl(data.image.url)}
             alt={data.subTitle}
             width={data.image.width}
             height={data.image.height}
