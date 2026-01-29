@@ -8,7 +8,7 @@ import { Home, ChevronDown, Search, Menu, X } from 'lucide-react'
 import MembershipDropdown from "@/components/MembershipDropdown"
 
 const topNavLinks = [
-  { label: 'The Association', href: 'association' },
+  { label: 'The Association', href: '/the-association' },
   { label: 'Society', href: 'societies' },
   { label: 'Councils', href: 'councils' },
   { label: 'Join IAAM', href: '#' },
