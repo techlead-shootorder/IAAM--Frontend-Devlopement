@@ -8,8 +8,8 @@ import EventsSection from "@/components/Home/EventsSection";
 import HomeAbout from "@/components/Home/AboutSection";
 import NewsSection from "@/components/Home/NewsSection";
 
-import AssociationHero from "@/components/HeroComp/HeroSection";
-import AssociationContent from "@/components/HeroComp/ContentSection";
+import HeroSection from "@/components/HeroComp/HeroSection";
+import ContentSection from "@/components/HeroComp/ContentSection";
 import Breadcrumb from "@/components/Breadcrumb";
 
 import { getTopContentBySlug } from "@/lib/api";
@@ -19,7 +19,7 @@ export default async function Page({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params; // ✅ FIX
+  const { slug } = await params;
 
   // Block events
   if (slug === "events") notFound();
@@ -50,7 +50,7 @@ export default async function Page({
       <Header />
 
       <div className="relative">
-        <AssociationHero data={data} />
+        <HeroSection data={data} />
 
         <div className="relative bg-white z-20">
           <Breadcrumb
@@ -61,7 +61,7 @@ export default async function Page({
           />
         </div>
 
-        <AssociationContent sections={data.Section} />
+        <ContentSection sections={data.Section} />
       </div>
 
       <Footer />

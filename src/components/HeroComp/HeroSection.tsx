@@ -9,24 +9,15 @@ type Props = {
 export default function HeroSection({ data }: Props) {
   const hero = data?.HeroBanner;
 
-  const imageUrl = hero?.HeroBanner?.url
-    ? `${API}${hero.HeroBanner.url}`
-    : "";
-
-  // 🔹 Dynamic (from Strapi)
+  const imageUrl = hero?.HeroBanner?.url? `${API}${hero.HeroBanner.url}`: "";
   const dynamicLabel = hero?.HeroBannerButtonLabel;
   const dynamicLink = hero?.HeroBannerButtonLink;
 
-  // 🔹 Static fallback
   const staticLabel = "Join or Renew Membership";
   const staticLink = "/membership";
 
-  // 🔹 Final CTA (priority: dynamic > static)
   const ctaLabel = dynamicLabel || staticLabel;
   const ctaLink = dynamicLink || staticLink;
-
-  // Debug (optional)
-  console.log("CTA FINAL:", { ctaLabel, ctaLink });
 
   return (
     <section className="relative w-full h-[460px] overflow-hidden bg-black">
@@ -45,12 +36,12 @@ export default function HeroSection({ data }: Props) {
       {/* ===== CONTENT ===== */}
       <div className="relative z-30 max-w-7xl mx-auto px-6 h-full flex flex-col justify-center text-white">
         {/* Page Title */}
-        <span className="text-sm uppercase tracking-wider text-sky-300 mb-3">
+        <span className="text-sm uppercase tracking-wider text-[hsl(197,70%,38%)] mb-3">
           {data?.PageTitle}
         </span>
 
         {/* Heading */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold max-w-3xl leading-tight">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl max-w-3xl leading-tight">
           {hero?.HeroBannerTitle}
         </h1>
 
