@@ -54,3 +54,15 @@ body {
 .hero-slide-in {
   animation: slideInRight 0.8s ease-out forwards;
 }
+
+.hero-heading {
+  animation: slideInRight 0.8s ease-out forwards;
+}
+
+.hero-subheading {
+  animation: slideInRight 0.8s ease-out forwards 0.8s;
+}
+
+.hero-button {
+  animation: slideInRight 0.8s ease-out forwards 1.6s;
+}
