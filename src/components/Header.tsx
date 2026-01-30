@@ -1,187 +1,157 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Home, ChevronDown, Search, Menu, X } from 'lucide-react'
-
-import MembershipDropdown from "@/components/MembershipDropdown"
-
-const topNavLinks = [
-  { label: 'The Association', href: 'association' },
-  { label: 'Society', href: 'societies' },
-  { label: 'Councils', href: 'councils' },
-  { label: 'Join IAAM', href: '#' },
-]
-
-const topNavRightLinks = [
-  { label: 'Programs', href: 'programs' },
-  { label: 'Charters', href: '#' },
-  { label: 'Careers', href: '#' },
-  { label: 'Contact Us', href: '#' },
-]
-
-const mainNavLinks = [
-  { label: 'Membership', href: '#', hasDropdown: true },
-  { label: 'Meetings & Events', href: '#', hasDropdown: true },
-  { label: 'Innovation & Sustainability', href: '#', hasDropdown: true },
-  { label: 'Journals & Proceedings', href: '#', hasDropdown: true },
-  { label: 'Awards & Recognitions', href: '#', hasDropdown: true },
-  { label: 'Discover IAAM', href: '#', hasDropdown: true },
-]
+import { Home, Menu, X, Search } from 'lucide-react'
+import { getMainMenu, getTopMenu } from '@/lib/api'
+import MainDropdown from './MainDropdown'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mainNav, setMainNav] = useState<any[]>([])
+  const [topLeft, setTopLeft] = useState<any[]>([])
+  const [topRight, setTopRight] = useState<any[]>([])
+
+  useEffect(() => {
+    getMainMenu().then(setMainNav)
+
+    getTopMenu().then((res) => {
+      setTopLeft(res.left)
+      setTopRight(res.right)
+    })
+  }, [])
 
   return (
-    <header className="w-full sticky top-0 z-[999]">
+    <header className="w-full sticky top-0 z-[999] bg-white">
 
-      {/* ===== TOP BAR ===== */}
-      <div className="hidden md:block text-[hsl(197,63%,22%)] bg-gray-300 font-semibold">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between py-2 text-xs">
+      {/* ================= TOP BAR ================= */}
+      <div className="hidden md:block bg-gray-300 text-[hsl(197,63%,22%)] font-semibold text-xs">
+        <div className="container mx-auto px-4 py-2 flex justify-between">
 
-            {/* LEFT */}
-            <div className="hidden md:flex items-center gap-1">
-              <Link href="/" className="px-2">
-                <Home className="h-3 w-3 text-black" />
-              </Link>
-
-              {topNavLinks.map((link, index) => (
-                <span key={link.label} className="flex items-center">
-                  {index > 0 && <span className="mx-1 opacity-50">|</span>}
-                  <Link href={link.href} className="px-2 hover:underline">
-                    {link.label}
-                  </Link>
-                </span>
-              ))}
-            </div>
-
-            {/* RIGHT */}
-            <div className="hidden md:flex items-center gap-2">
-              {topNavRightLinks.map((link, index) => (
-                <span key={link.label} className="flex items-center">
-                  {index > 0 && <span className="mx-1 opacity-50">|</span>}
-                  <Link href={link.href} className="px-2 hover:underline">
-                    {link.label}
-                  </Link>
-                </span>
-              ))}
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      {/* ===== LOGO + SEARCH ===== */}
-      <div className="bg-white border-b">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between py-4">
-
-            <Link href="/">
-              <Image
-                src="/iaam-logo.png"
-                alt="IAAM"
-                width={180}
-                height={60}
-                className="h-12 w-auto"
-                priority
-              />
+          {/* LEFT */}
+          <div className="flex items-center gap-1">
+            <Link href="/" className="px-2">
+              <Home className="h-3 w-3 text-black" />
             </Link>
 
-            <div className="flex items-center gap-2 text-black">
-
-              {/* MOBILE MENU BUTTON */}
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2"
-              >
-                {mobileMenuOpen ? <X /> : <Menu />}
-              </button>
-
-              {/* SEARCH AREA */}
-              <div className="hidden md:flex items-center gap-4">
-                <Link
-                  href="#"
-                  className="border border-black px-4 py-2 text-sm text-black rounded hover:bg-gray-100"
-                >
-                  Web Talks
+            {topLeft.map((l, i) => (
+              <span key={l.label} className="flex items-center">
+                {i > 0 && <span className="mx-1 opacity-50">|</span>}
+                <Link href={l.href} className="px-2 hover:underline">
+                  {l.label}
                 </Link>
+              </span>
+            ))}
+          </div>
 
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search"
-                    className="w-56 px-4 py-2 pr-10 border rounded text-sm text-gray-400"
-                  />
-                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                </div>
-              </div>
-
-            </div>
+          {/* RIGHT */}
+          <div className="flex items-center gap-2">
+            {topRight.map((l, i) => (
+              <span key={l.label} className="flex items-center">
+                {i > 0 && <span className="mx-1 opacity-50">|</span>}
+                <Link href={l.href} className="px-2 hover:underline">
+                  {l.label}
+                </Link>
+              </span>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* ===== MAIN NAV ===== */}
-      <nav className="bg-[hsl(197,63%,22%)] hidden md:block">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center gap-4 text-white text-sm font-bold">
+      {/* ================= LOGO + SEARCH ================= */}
+      <div className="border-b bg-white">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
 
-            {mainNavLinks.map((link) =>
-              link.label === "Membership" ? (
+          {/* LOGO */}
+          <Link href="/">
+            <Image
+              src="/iaam-logo.png"
+              alt="IAAM"
+              width={180}
+              height={60}
+              className="h-12 w-auto"
+              priority
+            />
+          </Link>
 
-                /* ===== REAL DROPDOWN ONLY HERE ===== */
-                <MembershipDropdown key="membership" />
+          {/* RIGHT */}
+          <div className="flex items-center gap-3">
 
-              ) : (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="flex items-center gap-1 py-3 px-2 hover:bg-white/10"
-                >
-                  {link.label}
-                  {link.hasDropdown && <ChevronDown className="h-3 w-3" />}
-                </Link>
-              )
-            )}
+            {/* WEB TALKS */}
+            <Link
+              href="#"
+              className="hidden md:inline-flex border border-black px-4 py-2 text-sm rounded hover:bg-gray-100 text-black"
+            >
+              Web Talks
+            </Link>
 
+            {/* SEARCH */}
+            <div className="hidden md:block relative">
+              <input
+                type="text"
+                placeholder="Search"
+                className="w-72 px-4 py-2 pr-10 border rounded text-sm text-gray-400"
+              />
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+            </div>
+
+            {/* MOBILE BUTTON */}
+            <button
+              className="md:hidden p-2 text-black"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X /> : <Menu />}
+            </button>
           </div>
+        </div>
+      </div>
+
+      {/* ================= MAIN NAV ================= */}
+      <nav className="hidden md:block bg-[hsl(197,63%,22%)] text-white text-sm font-bold">
+        <div className="container mx-auto px-4 flex justify-center gap-4">
+          {mainNav.map((section) => (
+            <MainDropdown key={section.Identifier} section={section} />
+          ))}
         </div>
       </nav>
 
-      {/* ===== MOBILE MENU ===== */}
+      {/* ================= MOBILE MENU (FIXED) ================= */}
       {mobileMenuOpen && (
-        <div className="md:hidden absolute left-0 right-0 top-full bg-white shadow-lg z-[999]">
-
+        <div className="md:hidden absolute left-0 right-0 top-full text-black bg-white shadow-lg z-[999]">
           <div className="container mx-auto px-4 py-4 space-y-4">
 
+            {/* SEARCH */}
             <input
               type="text"
               placeholder="Search"
               className="w-full px-4 py-2 border rounded text-sm"
             />
 
+            {/* MAIN NAV */}
             <div className="space-y-2">
-              {mainNavLinks.map((link) => (
+              {mainNav.map((s) => (
                 <Link
-                  key={link.label}
-                  href={link.href}
-                  className="block px-3 py-2 font-medium hover:bg-gray-100"
+                  key={s.Identifier}
+                  href={s.slug ? `/${s.slug}` : '#'}
+                  className="block px-3 py-2 font-semibold hover:bg-gray-100"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  {link.label}
+                  {s.Title}
                 </Link>
               ))}
             </div>
 
+            {/* TOP LINKS */}
             <div className="border-t pt-3 space-y-2 text-sm">
-              {[...topNavLinks, ...topNavRightLinks].map((link) => (
+              {[...topLeft, ...topRight].map((l) => (
                 <Link
-                  key={link.label}
-                  href={link.href}
+                  key={l.label}
+                  href={l.href}
                   className="block px-3 py-1"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  {link.label}
+                  {l.label}
                 </Link>
               ))}
             </div>
@@ -189,7 +159,6 @@ export default function Header() {
           </div>
         </div>
       )}
-
     </header>
   )
 }

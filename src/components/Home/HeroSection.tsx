@@ -25,8 +25,6 @@ async function getHeroData(): Promise<HeroBannerData | null> {
     }
 
     const data = await response.json();
-    console.log("Hero API Response:", JSON.stringify(data, null, 2));
-    console.log("HeroBanner data:", data.data?.HeroBanner);
     return data.data?.HeroBanner;
   } catch (error) {
     console.error("Error in HeroSection:", error);
