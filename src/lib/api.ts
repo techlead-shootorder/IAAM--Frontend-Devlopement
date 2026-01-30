@@ -57,6 +57,21 @@ export async function getTopMenu() {
 }
 
 
+export async function getHomeEventSection() {
+  const res = await fetch(
+    `${API}/api/home?populate[EventSection][populate][Eventinformation][populate]=Image`,
+    { cache: 'no-store' }
+  )
+
+  if (!res.ok) {
+    console.error('❌ Home EventSection API failed')
+    return null
+  }
+
+  const json = await res.json()
+  return json.data?.EventSection || null
+}
+
 
 
 
