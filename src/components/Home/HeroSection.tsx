@@ -58,15 +58,15 @@ export default async function HeroSection() {
         <div className="absolute inset-0 bg-black/40" />
       </div>
       <div className="relative container mx-auto px-4 h-full flex flex-col justify-center max-w-6xl">
-        <h1 className="font-sans text-3xl md:text-4xl lg:text-5xl text-white mb-4 max-w-xl leading-tight">
+        <h1 className="font-sans text-3xl md:text-4xl lg:text-5xl text-white mb-4 max-w-xl leading-tight hero-heading">
           {heroData.HeroBannerTitle || "Welcome to IAAM"}
         </h1>
-        <p className="text-white/90 text-base md:text-lg mb-8 max-w-xl">
+        <p className="text-white/90 text-base md:text-lg mb-8 max-w-xl hero-subheading">
           {heroData.HeroBannerDescription || "International Association for Advanced Materials"}
         </p>
         <Link
           href="#"
-          className="bg-[hsl(197,63%,22%)] font-bold hover:bg-white hover:text-[hsl(197,63%,22%)] text-white px-6 py-3 rounded-sm w-fit transition-colors"
+          className="bg-[hsl(197,63%,22%)] font-bold hover:bg-white hover:text-[hsl(197,63%,22%)] text-white px-6 py-3 rounded-sm w-fit transition-colors hero-button"
         >
           {heroData.HeroBannerButtonLabel || "Learn More"}
         </Link>
