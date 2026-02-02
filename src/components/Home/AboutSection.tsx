@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import Link from "next/link";
 import SectionContainer from "../common/SectionContainer";
 import { getProxiedImageUrl } from "@/lib/imageProxy";
@@ -90,7 +90,7 @@ export default async function AboutSection() {
         </div>
 
         <div className="order-first md:order-last relative h-[550px] w-full">
-          <Image
+          <LazyImage
             src={imageUrl}
             alt={about.Image?.alternativeText || "About Image"}
             fill

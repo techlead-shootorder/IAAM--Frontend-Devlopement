@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import { AssociationHeroData } from "@/types/association/heroSection";
 import { getProxiedImageUrl } from "@/lib/imageProxy";
 
@@ -26,7 +26,7 @@ async function HeroSection() {
   return (
     <section className="relative h-[400px] md:h-[500px]">
       <div className="absolute inset-0">
-        <Image
+        <LazyImage
           src={imageUrl}
           alt={hero.title}
           fill

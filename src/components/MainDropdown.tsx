@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronDown, ChevronRight, ExternalLink } from 'lucide-react'
+import LazyImage from '@/components/common/LazyImage'
 
 const API =
   process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') ||
@@ -46,9 +47,11 @@ export default function MainDropdown({ section }: { section: any }) {
                 
                 {/* IMAGE */}
                 {imageUrl && (
-                  <img
+                  <LazyImage
                     src={imageUrl}
                     alt={LeftCard.Title}
+                    width={300}
+                    height={200}
                     className="w-full mb-4 rounded"
                   />
                 )}
@@ -113,7 +116,7 @@ export default function MainDropdown({ section }: { section: any }) {
                           <a
                             key={s.id}
                             href={s.LinkURL || '#'}
-                            className="block text-sm text-gray-600 hover:text-gray-900"
+                            className="block text-xs text-gray-600 hover:text-gray-900"
                           >
                             {s.LinkTitle}
                             {s.LinkURL?.startsWith('http') && (

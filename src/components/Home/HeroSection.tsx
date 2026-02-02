@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import Link from "next/link";
 import { HeroBannerData } from "@/types/home/heroSection";
 import { getProxiedImageUrl } from "@/lib/imageProxy";
@@ -46,7 +46,7 @@ export default async function HeroSection() {
   return (
     <section className="relative h-[400px] md:h-[500px]">
       <div className="absolute inset-0">
-        <Image
+        <LazyImage
           src={imageUrl}
           alt={heroData.HeroBanner?.alternativeText || "Hero Banner"}
           fill

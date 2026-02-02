@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import { AssociationAboutData } from "@/types/association/aboutSection";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -56,7 +56,7 @@ async function AboutSection() {
 
           {/* RIGHT — IMAGE */}
           <div>
-            <Image
+            <LazyImage
               src="/Association_2_img.jpg"
               alt="IAAM Conference Auditorium"
               width={600}

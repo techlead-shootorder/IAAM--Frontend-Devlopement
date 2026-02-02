@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
+import LazyImage from "@/components/common/LazyImage";
 import Link from 'next/link'
 import { Home, Menu, X, Search } from 'lucide-react'
 import { getMainMenu, getTopMenu } from '@/lib/api'
@@ -65,7 +65,7 @@ export default function Header() {
 
           {/* LOGO */}
           <Link href="/">
-            <Image
+            <LazyImage
               src="/iaam-logo.png"
               alt="IAAM"
               width={180}

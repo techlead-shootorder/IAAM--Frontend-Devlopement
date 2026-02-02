@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import Link from "next/link";
 
 const API = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -63,7 +63,7 @@ export default async function EventsPage() {
 
           {heroImage && (
             <div className="relative h-[320px] md:h-[380px] rounded-xl overflow-hidden shadow-xl">
-              <Image
+              <LazyImage
                 src={`${API}${heroImage.url.startsWith('/') ? '' : '/'}${heroImage.url}`}
                 alt={heroTitle}
                 fill
@@ -91,7 +91,7 @@ export default async function EventsPage() {
               <div className="grid md:grid-cols-2 gap-8 bg-white rounded-xl border shadow hover:shadow-xl transition overflow-hidden">
 
                 <div className="relative h-[260px] md:h-full">
-                  <Image
+                  <LazyImage
                     src={`${API}${featuredEvent.heroImage.url.startsWith('/') ? '' : '/'}${featuredEvent.heroImage.url}`}
                     alt={featuredEvent.title}
                     fill
@@ -134,7 +134,7 @@ export default async function EventsPage() {
                 className="group bg-white rounded-xl overflow-hidden border hover:shadow-xl transition"
               >
                 <div className="relative h-48">
-                  <Image
+                  <LazyImage
                     src={`${API}${event.heroImage.url.startsWith('/') ? '' : '/'}${event.heroImage.url}`}
                     alt={event.title}
                     fill

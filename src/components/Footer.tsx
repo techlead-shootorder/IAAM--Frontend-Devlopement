@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import Link from "next/link";
 import {
   FaFacebookF,
@@ -116,7 +116,7 @@ export default function Footer() {
                 <div>
                   <p className="font-bold mb-2 text-black">WeChat</p>
                   <div className="w-16 h-16 relative">
-                    <Image
+                    <LazyImage
                       src="/QR.png"
                       alt="WeChat QR Code"
                       width={64}

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import { VisionMissionData } from "@/types/association/visionMissionSection";
 import SectionContainer from "../common/SectionContainer";
 

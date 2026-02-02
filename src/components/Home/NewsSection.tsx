@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import Link from "next/link";
 import { Calendar, ChevronRight } from "lucide-react";
 import { NewsSectionData } from "@/types/home/newsSection";
@@ -77,7 +77,7 @@ async function NewsSection() {
           {/* Featured */}
           <div className="lg:col-span-4">
             <div className="bg-white rounded overflow-hidden shadow">
-              <Image
+              <LazyImage
                 src={imageUrl}
                 alt={news.featuredImage?.alternativeText || news.featuredTitle}
                 width={600}

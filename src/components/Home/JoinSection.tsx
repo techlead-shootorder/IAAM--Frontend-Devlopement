@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import Link from "next/link";
 import SectionContainer from "../common/SectionContainer";
 import { JoinSectionData } from "@/types/home/joinSection";
@@ -76,7 +76,7 @@ export default async function JoinSection() {
 
         {/* ========== CENTER IMAGE ========== */}
         <div className="lg:col-span-3 hidden lg:block relative">
-          <Image
+          <LazyImage
             src={imageUrl}
             alt="IAAM Community"
             fill

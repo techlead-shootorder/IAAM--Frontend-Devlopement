@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import { notFound } from "next/navigation";
 
 const API = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -69,7 +69,7 @@ export default async function EventDetail({ params }: { params: Promise<{ slug: 
       {/* ---------------- HERO ---------------- */}
       <div className="relative h-[420px] bg-[hsl(197,63%,22%)]">
         {event.heroImage && (
-          <Image
+          <LazyImage
             src={`${API}${event.heroImage.url}`}
             alt={event.title}
             fill
@@ -129,7 +129,7 @@ export default async function EventDetail({ params }: { params: Promise<{ slug: 
                     >
                       <div className="relative h-44 bg-gray-200">
                         {e.heroImage && (
-                          <Image
+                          <LazyImage
                             src={`${API}${e.heroImage.url}`}
                             alt={e.title}
                             fill

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import { ContactSectionData } from "@/types/association/contact";
 import SectionContainer from "../common/SectionContainer";
 import { getProxiedImageUrl } from "@/lib/imageProxy";
@@ -43,7 +43,7 @@ export default async function ContactSection() {
         </div>
 
         <div className="md:w-1/2">
-          <Image
+          <LazyImage
             src={getProxiedImageUrl(data.image.url)}
             alt={data.subTitle}
             width={data.image.width}

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import { GlobalCommunitySectionData } from "@/types/association/globalCommunity";
 import SectionContainer from "../common/SectionContainer";
 import { getProxiedImageUrl } from "@/lib/imageProxy";
@@ -21,7 +21,7 @@ export default async function GlobalCommunitySection() {
     <SectionContainer>
       <div className="flex flex-col md:flex-row overflow-hidden rounded-sm shadow-sm">
         <div className="md:w-2/5">
-          <Image
+          <LazyImage
             src={getProxiedImageUrl(data.image.url)}
             alt={data.title}
             width={data.image.width}

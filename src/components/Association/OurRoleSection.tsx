@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import { AssociationOurRole } from "@/types/association/ourRoleSection";
 import { getText } from "@/lib/strapiText";
 import SectionContainer from "../common/SectionContainer";
@@ -27,7 +27,7 @@ export default async function OurRoleSection() {
       <div className="flex flex-col md:flex-row overflow-hidden rounded-sm shadow-sm">
 
         <div className="md:w-2/5">
-          <Image
+          <LazyImage
             src={getProxiedImageUrl(data.image.url)}
             alt={data.title}
             width={data.image.width}

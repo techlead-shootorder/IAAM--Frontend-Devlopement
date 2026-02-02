@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import { ResearchEducationSectionData } from "@/types/association/researchEducation";
 import SectionContainer from "../common/SectionContainer";
 import { getProxiedImageUrl } from "@/lib/imageProxy";
@@ -44,7 +44,7 @@ export default async function ResearchEducationSection() {
 
         {/* Image */}
         <div className="md:w-2/5">
-          <Image
+          <LazyImage
             src={getProxiedImageUrl(data.image.url)}
             alt={data.title}
             width={data.image.width}

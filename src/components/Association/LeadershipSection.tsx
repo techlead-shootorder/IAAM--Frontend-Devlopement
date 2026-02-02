@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import { LeadershipSectionData } from "@/types/association/leadershipSection";
 import SectionContainer from "../common/SectionContainer";
 import { getProxiedImageUrl } from "@/lib/imageProxy";
@@ -43,7 +43,7 @@ export default async function LeadershipSection() {
         </div>
 
         <div className="md:w-2/5">
-          <Image
+          <LazyImage
             src={getProxiedImageUrl(image.url)}
             alt={data.title}
             width={image.width}

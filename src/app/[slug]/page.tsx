@@ -34,7 +34,7 @@ export default async function Page({
           <HomeAbout />
           <JoinSection />
           <EventsSection />
-          <NewsSection />
+          {/* <NewsSection /> */}
         </main>
         <Footer />
       </div>

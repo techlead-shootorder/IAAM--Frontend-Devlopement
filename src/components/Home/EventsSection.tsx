@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import Link from "next/link";
 import SectionContainer from "../common/SectionContainer";
 
@@ -75,7 +75,7 @@ export default async function EventsSection() {
         <div className="flex flex-col justify-between h-full">
           <div className="space-y-4">
             {imageUrl && (
-              <Image
+              <LazyImage
                 src={imageUrl}
                 alt={info.Title}
                 width={800}

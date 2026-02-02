@@ -15,7 +15,7 @@ export default function RootPage() {
         <JoinSection />
         <EventsSection />
         <HomeAbout />
-        <NewsSection />
+        {/* <NewsSection /> */}
       </main>
       <Footer />
     </div>

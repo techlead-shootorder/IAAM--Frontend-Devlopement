@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import { StrategicPrioritiesSectionData } from "@/types/association/strategicPriorities";
 import SectionContainer from "../common/SectionContainer";
 import { getProxiedImageUrl } from "@/lib/imageProxy";
@@ -23,7 +23,7 @@ export default async function StrategicPrioritiesSection() {
 
         {/* Image */}
         <div>
-          <Image
+          <LazyImage
             src={getProxiedImageUrl(data.image.url)}
             alt={data.title}
             width={data.image.width}

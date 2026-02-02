@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import { AssociationGlobalImpact } from "@/types/association/globalImpactSection";
 import SectionContainer from "../common/SectionContainer";
 import { getProxiedImageUrl } from "@/lib/imageProxy";
@@ -28,7 +28,7 @@ export default async function GlobalImpactSection() {
 
       <div className="flex flex-col md:flex-row overflow-hidden rounded-sm shadow-sm">
         <div className="md:w-2/5">
-          <Image
+          <LazyImage
             src={getProxiedImageUrl(data.image.url)}
             alt={data.impactTitle}
             width={data.image.width}
