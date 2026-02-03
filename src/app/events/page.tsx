@@ -16,7 +16,7 @@ interface Event {
 }
 
 async function getEventsPage() {
-  const baseUrl = API?.replace(/\/$/, '') || 'http://13.62.142.63';
+  const baseUrl = API?.replace(/\/$/, '') || 'http://admin.iaamonline.org';
   const res = await fetch(
     `${baseUrl}/api/event-page?populate[featuredEvent][populate]=heroImage&populate[upcomingEvents][populate]=heroImage`,
     { cache: "no-store" }

@@ -1,4 +1,4 @@
-const API = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, "") || "http://13.62.142.63";
+const API = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, "") || "http://admin.iaamonline.org";
 
 export async function getTopContentBySlug(slug: string) {
   const res = await fetch(`${API}/api/top-contents?filters[slug][$eq]=${slug}` +`&populate[HeroBanner][populate]=HeroBanner` +`&populate[Section][populate]=*`,
@@ -110,7 +110,7 @@ export async function getHomeEventSection() {
 
 export async function getAboutData() {
   try {
-    const baseUrl = API?.replace(/\/$/, '') || 'http://13.62.142.63';
+    const baseUrl = API?.replace(/\/$/, '') || 'http://admin.iaamonline.org';
     const strapiUrl = new URL(`${baseUrl}/api/home`);
     strapiUrl.searchParams.append("populate[ThirdFold][populate]", "*");
 

@@ -1,6 +1,6 @@
 const API =
   process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, "") ||
-  "http://13.62.142.63";
+  "http://admin.iaamonline.org";
 
 type Props = {
   data: any;

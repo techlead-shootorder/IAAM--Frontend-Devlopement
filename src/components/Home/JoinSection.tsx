@@ -8,7 +8,7 @@ const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 async function getJoinSectionData(): Promise<JoinSectionData | null> {
   try {
-    const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.62.142.63';
+    const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://admin.iaamonline.org';
     const strapiUrl = new URL(`${baseUrl}/api/home`)
 
     strapiUrl.searchParams.append("populate[SecondFold][populate][FirstCard][populate]", "*")

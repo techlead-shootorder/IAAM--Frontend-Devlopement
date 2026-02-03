@@ -1,1 +1,1 @@
-export const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.62.142.63'
+export const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://admin.iaamonline.org'

@@ -4,7 +4,7 @@ import SectionContainer from "../common/SectionContainer";
 
 const API =
   process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, "") ||
-  "http://13.62.142.63";
+  "http://admin.iaamonline.org";
 
 /* -------- Rich text renderer -------- */
 function renderRichText(blocks: any[]) {
@@ -244,7 +244,7 @@ export default async function EventsSection() {
 
 // export default async function EventsSection() {
 //   try {
-//     const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://13.62.142.63';
+//     const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://admin.iaamonline.org';
 //     const response = await fetch(
 //       `${baseUrl}/api/events?populate=*`,
 //       {
