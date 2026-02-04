@@ -14,11 +14,13 @@ export default function Header() {
   const [topRight, setTopRight] = useState<any[]>([])
 
   useEffect(() => {
-    getMainMenu().then(setMainNav)
+    getMainMenu().then((res) => {
+      setMainNav(res || [])
+    })
 
     getTopMenu().then((res) => {
-      setTopLeft(res.left)
-      setTopRight(res.right)
+      setTopLeft(res.left || [])
+      setTopRight(res.right || [])
     })
   }, [])
 
@@ -36,7 +38,7 @@ export default function Header() {
             </Link>
 
             {topLeft.map((l, i) => (
-              <span key={l.label} className="flex items-center">
+              <span key={`top-left-${l.label}-${i}`} className="flex items-center">
                 {i > 0 && <span className="mx-1 opacity-50">|</span>}
                 <Link href={l.href} className="px-2 hover:underline">
                   {l.label}
@@ -48,7 +50,7 @@ export default function Header() {
           {/* RIGHT */}
           <div className="flex items-center gap-2">
             {topRight.map((l, i) => (
-              <span key={l.label} className="flex items-center">
+              <span key={`top-right-${l.label}-${i}`} className="flex items-center">
                 {i > 0 && <span className="mx-1 opacity-50">|</span>}
                 <Link href={l.href} className="px-2 hover:underline">
                   {l.label}
@@ -110,13 +112,16 @@ export default function Header() {
       {/* ================= MAIN NAV ================= */}
       <nav className="hidden md:block bg-[hsl(197,63%,22%)] text-white text-sm font-bold">
         <div className="container mx-auto px-4 flex justify-center gap-4 h-[44px] items-center">
-          {mainNav.map((section) => (
-            <MainDropdown key={section.Identifier} section={section} />
+          {mainNav.map((section, index) => (
+            <MainDropdown
+              key={section.Identifier || `nav-${index}`}
+              section={section}
+            />
           ))}
         </div>
       </nav>
 
-      {/* ================= MOBILE MENU (FIXED) ================= */}
+      {/* ================= MOBILE MENU ================= */}
       {mobileMenuOpen && (
         <div className="md:hidden absolute left-0 right-0 top-full text-black bg-white shadow-lg z-[999]">
           <div className="container mx-auto px-4 py-4 space-y-4">
@@ -130,9 +135,9 @@ export default function Header() {
 
             {/* MAIN NAV */}
             <div className="space-y-2">
-              {mainNav.map((s) => (
+              {mainNav.map((s, index) => (
                 <Link
-                  key={s.Identifier}
+                  key={s.Identifier || `mobile-nav-${index}`}
                   href={s.slug ? `/${s.slug}` : '#'}
                   className="block px-3 py-2 font-semibold hover:bg-gray-100"
                   onClick={() => setMobileMenuOpen(false)}
@@ -144,9 +149,9 @@ export default function Header() {
 
             {/* TOP LINKS */}
             <div className="border-t pt-3 space-y-2 text-sm">
-              {[...topLeft, ...topRight].map((l) => (
+              {[...topLeft, ...topRight].map((l, i) => (
                 <Link
-                  key={l.label}
+                  key={`mobile-${l.label}-${i}`}
                   href={l.href}
                   className="block px-3 py-1"
                   onClick={() => setMobileMenuOpen(false)}

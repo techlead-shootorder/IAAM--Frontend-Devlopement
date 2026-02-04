@@ -44,7 +44,7 @@ export default async function HeroSection() {
   ) || "/hero-conference.png";
 
   return (
-    <section className="relative h-[400px] md:h-[500px]">
+    <section className="relative h-[400px] md:h-[460px]">
       <div className="absolute inset-0">
         <LazyImage
           src={imageUrl}

@@ -7,8 +7,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "http",
-        hostname: "localhost",
-        port: "1337",
+        hostname: "admin.iaamonline.org",
+        port: "",
       },
     ],
   },

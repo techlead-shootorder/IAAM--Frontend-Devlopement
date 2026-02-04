@@ -6,7 +6,7 @@ import HomeHero from "@/components/Home/HeroSection";
 import JoinSection from "@/components/Home/JoinSection";
 import EventsSection from "@/components/Home/EventsSection";
 import HomeAbout from "@/components/Home/AboutSection";
-import NewsSection from "@/components/Home/BlogSection";
+import BlogSection from "@/components/Home/BlogSection";
 
 import HeroSection from "@/components/HeroComp/HeroSection";
 import ContentSection from "@/components/HeroComp/ContentSection";
@@ -34,7 +34,7 @@ export default async function Page({
           <HomeAbout />
           <JoinSection />
           <EventsSection />
-          <NewsSection />
+          <BlogSection />
         </main>
         <Footer />
       </div>

@@ -1,6 +1,4 @@
-const API =
-  process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, "") ||
-  "http://admin.iaamonline.org";
+const API = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, "") || "http://admin.iaamonline.org";
 
 type Props = {
   data: any;

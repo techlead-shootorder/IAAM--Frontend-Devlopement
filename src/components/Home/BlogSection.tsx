@@ -42,7 +42,7 @@ export default async function BlogSection() {
   if (!blog) {
     return (
       <section className="py-24 text-center text-red-500">
-        Failed to load news section
+        Failed to load blog section
       </section>
     );
   }

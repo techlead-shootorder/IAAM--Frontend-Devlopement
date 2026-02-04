@@ -4,7 +4,7 @@ import HomeHero from '@/components/Home/HeroSection';
 import JoinSection from '@/components/Home/JoinSection';
 import EventsSection from '@/components/Home/EventsSection';
 import HomeAbout from '@/components/Home/AboutSection';
-import NewsSection from '@/components/Home/BlogSection';
+import BlogSection from '@/components/Home/BlogSection';
 
 export default function RootPage() {
   return (
@@ -15,7 +15,7 @@ export default function RootPage() {
         <JoinSection />
         <EventsSection />
         <HomeAbout />
-        <NewsSection />
+        <BlogSection />
       </main>
       <Footer />
     </div>
