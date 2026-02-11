@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     unoptimized: true,   
     remotePatterns: [
       {
-        protocol: "http",
+        protocol: "https",
         hostname: "admin.iaamonline.org",
         port: "",
       },

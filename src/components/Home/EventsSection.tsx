@@ -1,6 +1,7 @@
 import LazyImage from "@/components/common/LazyImage";
 import Link from "next/link";
 import SectionContainer from "../common/SectionContainer";
+import { getProxiedImageUrl } from "@/lib/imageProxy";
 
 const API =
   process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, "") ||
@@ -33,7 +34,12 @@ export default async function EventsSection() {
   const info = json?.data?.EventSection?.Eventinformation;
   if (!info) return null;
 
-  const imageUrl = info.Image?.url ? `${API}${info.Image.url}` : "";
+  const imageUrl = info.Image?.url ? getProxiedImageUrl(info.Image.url) : "";
+
+  // Debug: Log the values to see what's happening
+  console.log("EventsSection info.Image.url:", info.Image?.url);
+  console.log("EventsSection imageUrl:", imageUrl);
+  console.log("EventsSection API:", API);
 
   /* -------- RIGHT SIDE STATIC DATA -------- */
   const events = [
@@ -75,13 +81,10 @@ export default async function EventsSection() {
         <div className="flex flex-col justify-between h-full">
           <div className="space-y-4">
             {imageUrl && (
-              <LazyImage
+              <img
                 src={imageUrl}
                 alt={info.Title}
-                width={800}
-                height={400}
                 className="w-full h-48 md:h-56 lg:h-64 object-cover rounded-sm shadow-md"
-                priority
               />
             )}
 

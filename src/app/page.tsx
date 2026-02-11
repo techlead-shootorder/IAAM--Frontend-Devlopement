@@ -23,10 +23,10 @@ export default function RootPage() {
         
         {/* Existing Home Sections */}
         {/* <HomeHero /> */}
-        {/* <JoinSection />
+        <JoinSection />
         <EventsSection />
         <HomeAbout />
-        <BlogSection /> */}
+        <BlogSection />
       </main>
       
       {/* New Footer with comprehensive links */}

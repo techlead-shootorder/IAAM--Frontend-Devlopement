@@ -38,7 +38,7 @@ export default function RootLayout({
         </div>
         
         {/* Content with padding for fixed header */}
-        <main className="pt-[140px] lg:pt-[180px]">
+        <main className="pt-[140px] lg:pt-[170px]">
           {children}
         </main>
       </body>

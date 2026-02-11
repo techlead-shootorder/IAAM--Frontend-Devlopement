@@ -29,7 +29,12 @@ export default async function AboutSection() {
       ? getProxiedImageUrl(about.Image.formats.large.url)
       : about?.Image?.url
       ? getProxiedImageUrl(about.Image.url)
-      : "/about-placeholder.jpg";
+      : "/global_impact.jpg"; // Use existing image as fallback
+
+  // Debug: Log the values to see what's happening
+  console.log("AboutSection about.Image?.formats?.large?.url:", about?.Image?.formats?.large?.url);
+  console.log("AboutSection about.Image?.url:", about?.Image?.url);
+  console.log("AboutSection imageUrl:", imageUrl);
 
   return (
     <SectionContainer>
@@ -69,12 +74,10 @@ export default async function AboutSection() {
         </div>
 
         <div className="order-first md:order-last relative h-[550px] w-full">
-          <LazyImage
+          <img
             src={imageUrl}
             alt={about.Image?.alternativeText || "About Image"}
-            fill
-            priority
-            className="object-cover rounded shadow-lg"
+            className="w-full h-full object-cover rounded shadow-lg"
           />
         </div>
 

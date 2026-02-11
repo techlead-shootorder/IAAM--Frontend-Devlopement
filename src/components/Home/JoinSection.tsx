@@ -43,6 +43,10 @@ export default async function JoinSection() {
       ? getProxiedImageUrl(SecondCard.Image.url)
       : "/speaker-discussion.png";
 
+  // Debug: Log the imageUrl to see what's happening
+  console.log("JoinSection imageUrl:", imageUrl);
+  console.log("JoinSection SecondCard:", SecondCard);
+
   return (
     <SectionContainer>
       {/* ===== TITLE ===== */}
@@ -76,12 +80,10 @@ export default async function JoinSection() {
 
         {/* ========== CENTER IMAGE ========== */}
         <div className="lg:col-span-3 hidden lg:block relative">
-          <LazyImage
-            src={imageUrl}
+          <img
+            src={imageUrl || "/speaker-discussion.png"}
             alt="IAAM Community"
-            fill
-            className="object-cover rounded-sm"
-            priority
+            className="w-full h-full object-cover rounded-sm"
           />
         </div>
 

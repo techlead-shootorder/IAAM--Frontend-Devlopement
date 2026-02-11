@@ -63,7 +63,7 @@ export default function Header({ onMobileMenuToggle, mobileMenuOpen = false }: H
       <div className="max-w-[1440px] mx-auto px-[30px] flex items-center justify-between">
         {/* Logo & Title */}
         <div className="flex items-center gap-4 flex-1 min-w-0">
-          <div className="w-[150px] h-[150px] rounded-lg flex items-center justify-center flex-shrink-0">
+          <div className="w-[140px] h-[140px] rounded-lg flex items-center justify-center flex-shrink-0">
             <Image
               src={headerData.logo?.url || "1704818354IAAM-Logo-SVG 1.svg"}
               alt={headerData.logo?.alternativeText || "IAAM Logo"}
