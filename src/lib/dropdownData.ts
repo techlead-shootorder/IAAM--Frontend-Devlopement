@@ -197,7 +197,7 @@ export const dropdownData: DropdownDataItem[] = [
   // 2: Innovation & Sustainability
   {
     card: {
-      image: "Innovation & Sustainability 2_ 457x380px.jpg",
+      image: "Innovation 1_ 457x380px.jpg",
       title: "Inspiring Global Innovation Through Advanced Materials",
       description: "Connecting research, industry, and policy to transform ideas into sustainable, real-world impact.",
       cta: "Join R&D World Links​",
