@@ -92,7 +92,7 @@ export default async function HeroSection() {
         {heroData?.HeroBannerButtonLabel && (
           <Link
             href="#"
-            className="bg-[hsl(197,63%,22%)] font-bold hover:bg-white hover:text-[hsl(197,63%,22%)] text-white px-6 py-3 rounded-sm w-fit transition-colors"
+            className="bg-iaam-primary font-bold hover:bg-white hover:text-iaam-primary text-white px-6 py-3 rounded-sm w-fit transition-colors"
           >
             {heroData.HeroBannerButtonLabel}
           </Link>

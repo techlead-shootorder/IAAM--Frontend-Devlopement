@@ -76,10 +76,6 @@ export default async function EventsSection() {
 }
 
 function renderEventsContent(info: any, imageUrl: string) {
-  // Debug: Log the values to see what's happening
-  console.log("EventsSection info.Image.url:", info?.Image?.url);
-  console.log("EventsSection imageUrl:", imageUrl);
-  console.log("EventsSection API:", API);
 
   /* -------- RIGHT SIDE STATIC DATA -------- */
   const events = [

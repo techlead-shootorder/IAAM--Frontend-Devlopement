@@ -31,11 +31,6 @@ export default async function AboutSection() {
       ? getProxiedImageUrl(about.Image.url)
       : "/global_impact.jpg"; // Use existing image as fallback
 
-  // Debug: Log the values to see what's happening
-  console.log("AboutSection about.Image?.formats?.large?.url:", about?.Image?.formats?.large?.url);
-  console.log("AboutSection about.Image?.url:", about?.Image?.url);
-  console.log("AboutSection imageUrl:", imageUrl);
-
   return (
     <SectionContainer>
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">

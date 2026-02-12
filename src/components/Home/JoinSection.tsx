@@ -61,10 +61,6 @@ export default async function JoinSection() {
       ? getProxiedImageUrl(SecondCard.Image.url)
       : "/speaker-discussion.png";
 
-  // Debug: Log the imageUrl to see what's happening
-  console.log("JoinSection imageUrl:", imageUrl);
-  console.log("JoinSection SecondCard:", SecondCard);
-
   return (
     <SectionContainer>
       {/* ===== TITLE ===== */}
