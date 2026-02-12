@@ -21,39 +21,14 @@ interface HeaderProps {
 
 export default function Header({ onMobileMenuToggle, mobileMenuOpen = false }: HeaderProps) {
   const [localMobileMenuOpen, setLocalMobileMenuOpen] = useState(false);
-  const [headerData, setHeaderData] = useState<HeaderData>({
+  
+  // Use default header data instead of API call to avoid 404 errors
+  const headerData = {
     // title: "International Association of Advanced Materials",
     tagline: "Integrating materials knowledge to achieve a sustainable planet.",
     webTalksLink: "#",
     logo: { url: "1704818354IAAM-Logo-SVG 1.svg" }
-  });
-
-  useEffect(() => {
-    const fetchHeaderData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/header?populate=logo`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          if (data.data) {
-            setHeaderData({
-              // title: data.data.title || headerData.title,
-              tagline: data.data.tagline || headerData.tagline,
-              webTalksLink: data.data.webTalksLink || "#",
-              logo: data.data.logo?.url 
-                ? { url: data.data.logo.url, alternativeText: data.data.logo.alternativeText }
-                : headerData.logo
-            });
-          }
-        }
-      } catch (error) {
-        console.log("Using default header data", error);
-      }
-    };
-
-    fetchHeaderData();
-  }, []);
+  };
   
   const menuOpen = mobileMenuOpen !== undefined ? mobileMenuOpen : localMobileMenuOpen;
   const toggleMenu = onMobileMenuToggle ? onMobileMenuToggle : () => setLocalMobileMenuOpen(!localMobileMenuOpen);
@@ -66,7 +41,7 @@ export default function Header({ onMobileMenuToggle, mobileMenuOpen = false }: H
           <div className="w-[140px] h-[140px] rounded-lg flex items-center justify-center flex-shrink-0">
             <Image
               src={headerData.logo?.url || "1704818354IAAM-Logo-SVG 1.svg"}
-              alt={headerData.logo?.alternativeText || "IAAM Logo"}
+              alt="IAAM Logo"
               width={120}
               height={120}
               className="w-[120px] h-[120px] object-contain"

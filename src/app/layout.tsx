@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import TopBar from "@/components/TopBar";
-import Header from "@/components/Header";
-import MainNav from "@/components/MainNav";
+import ClientHeaderWrapper from "@/components/ClientHeaderWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,14 +29,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* Fixed Header */}
-        <div className="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm">
-          <TopBar />
-          <Header />
-          <MainNav mobileMenuOpen={false} />
-        </div>
+        <ClientHeaderWrapper />
         
         {/* Content with padding for fixed header */}
-        <main className="pt-[140px] lg:pt-[170px]">
+        <main className="pt-[140px] lg:pt-[190px]">
           {children}
         </main>
       </body>

@@ -7,6 +7,11 @@ const API =
   process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, "") ||
   "http://admin.iaamonline.org";
 
+// Cache for EventsSection data
+let eventsSectionCache: any = null;
+let eventsCacheTime = 0;
+const EVENTS_CACHE_DURATION = 300000; // 5 minutes
+
 /* -------- Rich text renderer -------- */
 function renderRichText(blocks: any[]) {
   if (!Array.isArray(blocks)) return null;
@@ -23,21 +28,56 @@ function renderRichText(blocks: any[]) {
 
 /* ================= COMPONENT ================= */
 export default async function EventsSection() {
-  const res = await fetch(
-    `${API}/api/home?populate[EventSection][populate][Eventinformation][populate]=Image`,
-    { cache: "no-store" }
-  );
+  const now = Date.now();
+  
+  // Check if we have valid cached data
+  if (eventsSectionCache && (now - eventsCacheTime) < EVENTS_CACHE_DURATION) {
+    const info = eventsSectionCache;
+    const imageUrl = info.Image?.url ? getProxiedImageUrl(info.Image.url) : "";
+    
+    return renderEventsContent(info, imageUrl);
+  }
 
-  if (!res.ok) return null;
+  try {
+    const res = await fetch(
+      `${API}/api/home?populate[EventSection][populate][Eventinformation][populate]=Image`,
+      { 
+        cache: "force-cache",
+        next: { revalidate: 300 }
+      }
+    );
 
-  const json = await res.json();
-  const info = json?.data?.EventSection?.Eventinformation;
-  if (!info) return null;
+    if (!res.ok) {
+      if (eventsSectionCache) {
+        const imageUrl = eventsSectionCache.Image?.url ? getProxiedImageUrl(eventsSectionCache.Image.url) : "";
+        return renderEventsContent(eventsSectionCache, imageUrl);
+      }
+      return null;
+    }
 
-  const imageUrl = info.Image?.url ? getProxiedImageUrl(info.Image.url) : "";
+    const json = await res.json();
+    const info = json?.data?.EventSection?.Eventinformation;
+    if (!info) return null;
 
+    // Update cache
+    eventsSectionCache = info;
+    eventsCacheTime = now;
+
+    const imageUrl = info.Image?.url ? getProxiedImageUrl(info.Image.url) : "";
+    return renderEventsContent(info, imageUrl);
+  } catch (error) {
+    console.error("EventsSection error:", error);
+    if (eventsSectionCache) {
+      const imageUrl = eventsSectionCache.Image?.url ? getProxiedImageUrl(eventsSectionCache.Image.url) : "";
+      return renderEventsContent(eventsSectionCache, imageUrl);
+    }
+    return null;
+  }
+}
+
+function renderEventsContent(info: any, imageUrl: string) {
   // Debug: Log the values to see what's happening
-  console.log("EventsSection info.Image.url:", info.Image?.url);
+  console.log("EventsSection info.Image.url:", info?.Image?.url);
   console.log("EventsSection imageUrl:", imageUrl);
   console.log("EventsSection API:", API);
 

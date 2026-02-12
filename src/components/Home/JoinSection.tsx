@@ -6,8 +6,20 @@ import { getProxiedImageUrl } from "@/lib/imageProxy";
 
 const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
+// Cache for JoinSection data
+let joinSectionCache: JoinSectionData | null = null;
+let joinCacheTime = 0;
+const JOIN_CACHE_DURATION = 300000; // 5 minutes
+
 async function getJoinSectionData(): Promise<JoinSectionData | null> {
   try {
+    const now = Date.now();
+    
+    // Check if we have valid cached data
+    if (joinSectionCache && (now - joinCacheTime) < JOIN_CACHE_DURATION) {
+      return joinSectionCache;
+    }
+
     const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://admin.iaamonline.org';
     const strapiUrl = new URL(`${baseUrl}/api/home`)
 
@@ -16,17 +28,23 @@ async function getJoinSectionData(): Promise<JoinSectionData | null> {
     strapiUrl.searchParams.append("populate[SecondFold][populate][ThirdCards][populate]", "*")
 
     const res = await fetch(strapiUrl.toString(), {
-      next: { revalidate: 60 },
+      cache: "force-cache",
+      next: { revalidate: 300 },
     })
 
     if (!res.ok) throw new Error("JoinSection fetch failed")
 
     const json = await res.json()
-
-    return json?.data?.SecondFold as JoinSectionData
+    const data = json?.data?.SecondFold as JoinSectionData;
+    
+    // Update cache
+    joinSectionCache = data;
+    joinCacheTime = now;
+    
+    return data;
   } catch (error) {
     console.error("JoinSection error:", error)
-    return null
+    return joinSectionCache || null;
   }
 }
 

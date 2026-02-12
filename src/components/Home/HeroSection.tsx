@@ -1,73 +1,102 @@
-import LazyImage from "@/components/common/LazyImage";
+import Image from "next/image";
 import Link from "next/link";
-import { HeroBannerData } from "@/types/home/heroSection";
-import { getProxiedImageUrl } from "@/lib/imageProxy";
 
-const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const STRAPI_BASE_URL =
+  process.env.NEXT_PUBLIC_STRAPI_URL || "https://admin.iaamonline.org";
 
-async function getHeroData(): Promise<HeroBannerData | null> {
+// Cache the fetch request at module level to prevent repeated calls
+let heroDataCache: any = null;
+let cacheTime = 0;
+const CACHE_DURATION = 300000; // 5 minutes in milliseconds
+
+async function getHeroData() {
   try {
-    const baseUrl = NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, '') || 'http://admin.iaamonline.org';
-    const strapiUrl = new URL(`${baseUrl}/api/home`);
-    strapiUrl.searchParams.append('populate[HeroBanner][populate]', '*');
-    strapiUrl.searchParams.append('populate[SecondFold][populate][SecondCard][populate]', 'Image');
-    strapiUrl.searchParams.append('populate[SecondFold][populate][FirstCard][populate]', '*');
-    strapiUrl.searchParams.append('populate[SecondFold][populate][ThirdCards][populate]', '*');
-    
-    const response = await fetch(strapiUrl.toString(), {
-      next: { revalidate: 60 },
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("API Error:", response.status, errorText);
-      throw new Error(`Failed to fetch hero data: ${response.status}`);
+    // Check if we have valid cached data
+    const now = Date.now();
+    if (heroDataCache && (now - cacheTime) < CACHE_DURATION) {
+      return heroDataCache;
     }
 
-    const data = await response.json();
-    return data.data?.HeroBanner;
+    const response = await fetch(
+      `${STRAPI_BASE_URL}/api/home?populate[HeroBanner][populate]=*`,
+      {
+        cache: "force-cache",
+        next: { revalidate: 300 }
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Hero API Error:", response.status, response.statusText);
+      return heroDataCache || null;
+    }
+
+    const result = await response.json();
+    const heroData = result?.data?.HeroBanner || null;
+    
+    // Update cache
+    heroDataCache = heroData;
+    cacheTime = now;
+    
+    return heroData;
   } catch (error) {
-    console.error("Error in HeroSection:", error);
-    return null;
+    console.error("Error in getHeroData:", error);
+    // Return cached data if available, otherwise null
+    return heroDataCache || null;
   }
 }
 
 export default async function HeroSection() {
   const heroData = await getHeroData();
+  if (!heroData) return null;
 
-  if (!heroData) {
-    return null;
-  }
+  const imageObj = heroData?.HeroBanner;
 
-  const imageUrl = getProxiedImageUrl(
-    heroData.HeroBanner?.formats?.large?.url || heroData.HeroBanner?.url || null
-  ) || "/hero-conference.png";
+  const imagePath =
+    imageObj?.formats?.large?.url ||
+    imageObj?.formats?.medium?.url ||
+    imageObj?.url ||
+    null;
+
+  const imageUrl = imagePath
+    ? `${STRAPI_BASE_URL}${imagePath}`
+    : null;
 
   return (
-    <section className="relative h-[400px] md:h-[460px]">
-      <div className="absolute inset-0">
-        <LazyImage
+    <section className="relative h-[400px] md:h-[460px] overflow-hidden">
+      {/* Background */}
+      {imageUrl && (
+        <Image
           src={imageUrl}
-          alt={heroData.HeroBanner?.alternativeText || "Hero Banner"}
+          alt={
+            imageObj?.alternativeText ||
+            heroData?.HeroBannerTitle ||
+            "Hero Banner"
+          }
           fill
-          className="object-cover"
           priority
+          className="object-cover"
         />
-        <div className="absolute inset-0 bg-black/40" />
-      </div>
+      )}
+
+      <div className="absolute inset-0 bg-black/40" />
+
       <div className="relative container mx-auto px-4 h-full flex flex-col justify-center max-w-6xl">
-        <h1 className="font-sans text-3xl md:text-4xl lg:text-5xl text-white mb-4 max-w-xl leading-tight hero-heading">
-          {heroData.HeroBannerTitle || "Welcome to IAAM"}
+        <h1 className="text-3xl md:text-4xl lg:text-5xl text-white mb-4 max-w-xl leading-tight">
+          {heroData?.HeroBannerTitle}
         </h1>
-        <p className="text-white/90 text-base md:text-lg mb-8 max-w-xl hero-subheading">
-          {heroData.HeroBannerDescription || "International Association for Advanced Materials"}
+
+        <p className="text-white/90 text-base md:text-lg mb-8 max-w-xl">
+          {heroData?.HeroBannerDescription}
         </p>
-        <Link
-          href="#"
-          className="bg-[hsl(197,63%,22%)] font-bold hover:bg-white hover:text-[hsl(197,63%,22%)] text-white px-6 py-3 rounded-sm w-fit transition-colors hero-button"
-        >
-          {heroData.HeroBannerButtonLabel || "Learn More"}
-        </Link>
+
+        {heroData?.HeroBannerButtonLabel && (
+          <Link
+            href="#"
+            className="bg-[hsl(197,63%,22%)] font-bold hover:bg-white hover:text-[hsl(197,63%,22%)] text-white px-6 py-3 rounded-sm w-fit transition-colors"
+          >
+            {heroData.HeroBannerButtonLabel}
+          </Link>
+        )}
       </div>
     </section>
   );
