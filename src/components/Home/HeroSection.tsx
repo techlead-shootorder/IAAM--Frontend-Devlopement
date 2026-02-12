@@ -81,7 +81,7 @@ export default async function HeroSection() {
       <div className="absolute inset-0 bg-black/40" />
 
       <div className="relative container mx-auto px-4 h-full flex flex-col justify-center max-w-6xl">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl text-white mb-4 max-w-xl leading-tight">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl text-white mb-4 max-w-2xl leading-tight">
           {heroData?.HeroBannerTitle}
         </h1>
 
