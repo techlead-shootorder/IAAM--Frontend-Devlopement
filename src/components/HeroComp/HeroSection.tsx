@@ -28,13 +28,10 @@ export default function HeroSection({ data }: Props) {
         />
       )}
 
-      {/* ===== OVERLAY ===== */}
-      <div className="absolute inset-0 bg-black/55 z-10" />
-
       {/* ===== CONTENT ===== */}
       <div className="relative z-30 max-w-7xl mx-auto px-6 h-full flex flex-col justify-center text-white">
         {/* Page Title */}
-        <span className="text-sm uppercase tracking-wider text-[hsl(197,70%,38%)] mb-3">
+        <span className="text-sm uppercase tracking-wider text-iaam-primary mb-3">
           {data?.PageTitle}
         </span>
 
@@ -56,7 +53,7 @@ export default function HeroSection({ data }: Props) {
             href={ctaLink}
             className="
               inline-flex items-center justify-center
-              bg-[hsl(197,63%,22%)] hover:bg-[hsl(197,61%,30%)]
+              bg-iaam-primary hover:bg-iaam-primary/60
               text-white px-8 py-3
               rounded-md font-semibold
               shadow-lg transition

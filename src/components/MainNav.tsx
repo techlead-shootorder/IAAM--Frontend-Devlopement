@@ -150,13 +150,13 @@ const DropdownContent = ({ data }: { data: DropdownDataItem }) => {
           />
         </div>
 
-        <div className="p-[10px] pt-[24px] flex flex-col gap-6">
+        <div className="p-[8px] pt-[24px] flex flex-col gap-6">
           <div>
-            <h3 className="font-bold text-[24px] text-iaam-text-dark leading-tight tracking-[0.36px]">
+            <h3 className="font-bold text-[20px] text-iaam-text-dark leading-tight tracking-[0.3px]">
               {data.card.title}
             </h3>
 
-            <p className="text-[18px] text-iaam-text-body leading-[25px] mt-2">
+            <p className="text-[12px] text-iaam-text-body leading-[17px] mt-2">
               {data.card.description}
             </p>
           </div>
@@ -182,7 +182,7 @@ const DropdownContent = ({ data }: { data: DropdownDataItem }) => {
         {(data.outlineCta || data.rightLinks) && (
           <div className="flex justify-between items-start w-full">
             {data.outlineCta && (
-              <button className="py-[10px] px-[8px] border border-iaam-primary text-iaam-primary font-medium text-[18px] rounded-[3px] hover:bg-iaam-primary hover:text-white transition">
+              <button className="py-[16px] px-[8px] border border-iaam-primary text-iaam-primary font-medium text-[16px] rounded-[3px] hover:bg-iaam-primary hover:text-white transition">
                 {data.outlineCta}
               </button>
             )}
@@ -200,6 +200,14 @@ const DropdownContent = ({ data }: { data: DropdownDataItem }) => {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {data.title === "Meeting & Events" && (
+          <div className="w-full py-[9px] px-[8px] bg-iaam-primary">
+            <span className="font-roboto font-semibold text-[18px] text-white tracking-[0.27px]">
+              Guideline for Abstract Submission & Conference Registration​
+            </span>
           </div>
         )}
 
