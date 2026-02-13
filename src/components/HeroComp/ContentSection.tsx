@@ -42,8 +42,8 @@ export default function ContentSection({ sections = [] }: any) {
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
 
           {/* Sidebar */}
-          <aside className="w-full lg:w-[300px] lg:sticky lg:top-28 self-start">
-            <div className="flex items-center gap-2 mb-6 text-[15px] font-medium text-gray-900">
+          <aside className="w-full lg:w-[300px] lg:sticky lg:top-60 self-start">
+            <div className="flex items-center gap-2 mb-4 pt-lg-5 text-[15px] font-medium text-gray-900">
               <List size={18} />
               Page contents
             </div>
@@ -89,7 +89,7 @@ export default function ContentSection({ sections = [] }: any) {
               const id = s.Heading.replace(/\s+/g, "-");
 
               return (
-                <section id={id} key={i} className="scroll-mt-40">
+                <section id={id} key={i} className="scroll-mt-60">
                   <h2 className="text-[40px] leading-[48px] font-light mb-4">
                     {s.Heading}
                   </h2>
