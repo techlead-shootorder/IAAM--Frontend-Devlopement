@@ -9,7 +9,7 @@ import BlogSection from "@/components/Home/BlogSection";
 
 import HeroSection from "@/components/HeroComp/HeroSection";
 import ContentSection from "@/components/HeroComp/ContentSection";
-import Breadcrumb from "@/components/Breadcrumb";
+import Breadcrumb from "@/components/common/Breadcrumb";
 import FooterNew from "@/components/FooterNew";
 
 import { getTopContentBySlug } from "@/lib/api";

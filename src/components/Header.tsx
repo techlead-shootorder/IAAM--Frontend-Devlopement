@@ -1,12 +1,17 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Search, Menu, X, ChevronRight, ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const navItems = [
     { title: "Membership", slug: "membership" },
@@ -27,6 +32,52 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
     { label: "Careers", href: "/careers" },
     { label: "Contact Us", href: "/contact-us" },
   ];
+
+  const allSuggestions = [
+    ...navItems.map(item => ({ label: item.title, href: `/${item.slug}` })),
+    ...quickLinks.map(link => ({ label: link.label, href: link.href })),
+  ];
+
+  const filteredSuggestions = allSuggestions.filter(suggestion =>
+    suggestion.label.toLowerCase().includes(searchQuery.toLowerCase())
+  ).slice(0, 5); // Limit to 5 suggestions
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    setShowSuggestions(value.length > 0);
+  };
+
+  const handleSuggestionClick = (href: string) => {
+    setSearchQuery('');
+    setShowSuggestions(false);
+    router.push(href);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // For now, navigate to first suggestion or search page
+      if (filteredSuggestions.length > 0) {
+        router.push(filteredSuggestions[0].href);
+      } else {
+        router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+      }
+      setSearchQuery('');
+      setShowSuggestions(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const closeDrawer = () => {
     setMobileOpen(false);
@@ -76,7 +127,7 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
                 <p
                   className={
                     `text-gray-600 transition-all duration-200 ` +
-                    (isShrunk ? 'hidden lg:block lg:text-[11px] mt-0' : 'text-[10px] lg:text-[16px] mt-1')
+                    (isShrunk ? 'hidden lg:block lg:text-[11px] mt-0' : 'text-[9px] lg:text-[16px] mt-1')
                   }
                 >
                   Integrating materials knowledge to achieve a sustainable planet.
@@ -96,20 +147,42 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
                 Web Talks
               </Link>
 
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className={
-                    `border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e40af] focus:border-[#1e40af] ` +
-                    (isShrunk ? 'w-[170px] xl:w-[190px] px-3 py-1.5 pr-9' : 'w-[200px] xl:w-[220px] px-3 py-2 pr-10')
-                  }
-                />
-                <Search
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={isShrunk ? 14 : 16}
-                />
+              <div className="relative" ref={searchRef}>
+                <form onSubmit={handleSearchSubmit}>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    placeholder="Search..."
+                    className={
+                      `border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e40af] focus:border-[#1e40af] ` +
+                      (isShrunk ? 'w-[170px] xl:w-[190px] px-3 py-1.5 pr-9' : 'w-[200px] xl:w-[220px] px-3 py-2 pr-10')
+                    }
+                  />
+                  <button type="submit">
+                    <Search
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"
+                      size={isShrunk ? 14 : 16}
+                    />
+                  </button>
+                </form>
+
+                {/* Autocomplete Dropdown */}
+                {showSuggestions && filteredSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto mt-1">
+                    {filteredSuggestions.map((suggestion, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSuggestionClick(suggestion.href)}
+                        className="w-full text-left px-4 py-2 text-gray-900 hover:bg-gray-100 hover:text-[#1e40af] focus:bg-gray-100 focus:text-[#1e40af] focus:outline-none transition-colors text-sm"
+                      >
+                        {suggestion.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
+
             </div>
 
             {/* ================= MOBILE MENU BUTTON ================= */}

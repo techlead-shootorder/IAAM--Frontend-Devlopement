@@ -5,8 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronRight, ChevronLeft, User, Calendar, Eye } from 'lucide-react';
 import Footer from '@/components/FooterNew';
-import SecureCloudflareVideo from '@/components/WebTalk/SecureCloudflareVideo';
+import Breadcrumb from '@/components/common/Breadcrumb';
 
+/* ────────────────────────────────────────────────────────────────
+   Video Card Component - Now with Link navigation
+──────────────────────────────────────────────────────────────── */
 const CATEGORIES = [
   'All',
   'Research Highlights',
@@ -17,9 +20,6 @@ const CATEGORIES = [
   'Conferences',
 ];
 
-/* ────────────────────────────────────────────────────────────────
-   Video Card
-──────────────────────────────────────────────────────────────── */
 interface VideoCardProps {
   thumbnail: string;
   duration?: string;
@@ -28,79 +28,83 @@ interface VideoCardProps {
   date: string;
   views: string;
   category: string;
-  videoId?: string;
-  onPlay?: (videoId: string) => void;
+  slug: string; // ← IMPORTANT: unique identifier for navigation
 }
 
-function VideoCard({ thumbnail, duration = '05:32', title, author, date, views, category, videoId, onPlay }: VideoCardProps) {
-  const handleClick = () => {
-    if (videoId && onPlay) {
-      onPlay(videoId);
-    }
-  };
-
+function VideoCard({ 
+  thumbnail, 
+  duration = '05:32', 
+  title, 
+  author, 
+  date, 
+  views, 
+  category,
+  slug 
+}: VideoCardProps) {
   return (
-    <div onClick={handleClick} className="bg-white rounded-[10px] shadow-[2.7px_5.4px_25.6px_rgba(0,0,0,0.10)] overflow-hidden ring-[8px] ring-white flex flex-col group cursor-pointer hover:shadow-[2.7px_5.4px_40px_rgba(0,0,0,0.16)] transition-shadow duration-300">
+    <Link href={`/web-talks/${slug}`}>
+      <div className="bg-white rounded-[10px] shadow-[2.7px_5.4px_25.6px_rgba(0,0,0,0.10)] overflow-hidden ring-[8px] ring-white flex flex-col group cursor-pointer hover:shadow-[2.7px_5.4px_40px_rgba(0,0,0,0.16)] transition-shadow duration-300">
 
-      {/* Thumbnail */}
-      <div className="relative w-full aspect-[449/269] bg-[#F3F3F3] overflow-hidden flex-shrink-0">
-        <Image
-          src={thumbnail}
-          alt={title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-          unoptimized
-        />
-        {/* Play button */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-[56px] h-[56px] rounded-full bg-white/90 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-200">
-            <div
-              className="w-0 h-0 ml-[4px]"
-              style={{
-                borderTop: '10px solid transparent',
-                borderBottom: '10px solid transparent',
-                borderLeft: '17px solid #1C3E9C',
-              }}
-            />
+        {/* Thumbnail */}
+        <div className="relative w-full aspect-[449/269] bg-[#F3F3F3] overflow-hidden flex-shrink-0">
+          <Image
+            src={thumbnail}
+            alt={title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            unoptimized
+          />
+          {/* Play button */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-[56px] h-[56px] rounded-full bg-white/90 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-200">
+              <div
+                className="w-0 h-0 ml-[4px]"
+                style={{
+                  borderTop: '10px solid transparent',
+                  borderBottom: '10px solid transparent',
+                  borderLeft: '17px solid #1C3E9C',
+                }}
+              />
+            </div>
+          </div>
+          {/* Duration badge */}
+          <div className="absolute bottom-[10px] right-[11px] bg-[#202020]/90 rounded-[3px] px-[11px] py-[6px]">
+            <span className="text-white text-[14px] tracking-[0.27px]">{duration}</span>
           </div>
         </div>
-        {/* Duration badge */}
-        <div className="absolute bottom-[10px] right-[11px] bg-[#202020]/90 rounded-[3px] px-[11px] py-[6px]">
-          <span className="text-white text-[14px] tracking-[0.27px]">{duration}</span>
+
+        {/* Card body */}
+        <div className="px-[18px] pt-[10px] pb-[18px] flex flex-col gap-4 flex-1">
+          <h3 className="text-[#1E1E1E] text-[18px] lg:text-[20px] font-bold leading-snug tracking-[0.30px] line-clamp-2 min-h-[50px]">
+            {title}
+          </h3>
+          <div className="flex flex-col gap-[18px] mt-auto">
+            {/* Row 1: Author + Date */}
+            <div className="flex items-center justify-between">
+              <span className="flex items-center gap-[6px] text-[#333333] text-[14px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90">
+                <User size={18} strokeWidth={2} className="flex-shrink-0 text-[#1E1E1E]" />
+                {author}
+              </span>
+              <span className="flex items-center gap-[6px] text-[#333333] text-[14px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90">
+                <Calendar size={18} strokeWidth={2.25} className="flex-shrink-0" />
+                {date}
+              </span>
+            </div>
+            {/* Row 2: Views + Category */}
+            <div className="flex items-center justify-between">
+              <span className="flex items-center gap-[6px] text-[#333333] text-[14px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90">
+                <Eye size={18} strokeWidth={2.25} className="flex-shrink-0" />
+                {views}
+              </span>
+              <span className="px-[10px] py-[7px] bg-[rgba(28,62,156,0.05)] rounded-[27px] text-[#1C3E9C] text-[13px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90 whitespace-nowrap">
+                {category}
+              </span>
+            </div>
+          </div>
         </div>
+
       </div>
-
-      {/* Card body */}
-      <div className="px-[18px] pt-[10px] pb-[18px] flex flex-col gap-4 flex-1">
-        <h3 className="text-[#1E1E1E] text-[18px] lg:text-[20px] font-bold leading-snug tracking-[0.30px] line-clamp-2 min-h-[50px]">
-          {title}
-        </h3>
-        <div className="flex flex-col gap-[18px] mt-auto">
-          {/* Row 1: Author + Date */}
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-[6px] text-[#333333] text-[14px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90">
-              <User size={18} strokeWidth={2} className="flex-shrink-0 text-[#1E1E1E]" />
-              {author}
-            </span>
-            <span className="flex items-center gap-[6px] text-[#333333] text-[14px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90">
-              <Calendar size={18} strokeWidth={2.25} className="flex-shrink-0" />
-              {date}
-            </span>
-          </div>
-          {/* Row 2: Views + Category */}
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-[6px] text-[#333333] text-[14px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90">
-              <Eye size={18} strokeWidth={2.25} className="flex-shrink-0" />
-              {views}
-            </span>
-            <span className="px-[10px] py-[7px] bg-[rgba(28,62,156,0.05)] rounded-[27px] text-[#1C3E9C] text-[13px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90 whitespace-nowrap">
-              {category}
-            </span>
-          </div>
-        </div>
-      </div>
-
-    </div>
+    </Link>
   );
 }
 
@@ -159,7 +163,7 @@ function Pagination({ current, onChange }: { current: number; onChange: (p: numb
 }
 
 /* ────────────────────────────────────────────────────────────────
-   VIDEO DATA
+   VIDEO DATA - Each video now has a slug field
 ──────────────────────────────────────────────────────────────── */
 const FEATURED_VIDEOS: VideoCardProps[] = [
   {
@@ -170,7 +174,7 @@ const FEATURED_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'shaping-future-advanced-materials-1', // ← SLUG for navigation
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=500&q=80',
@@ -180,7 +184,7 @@ const FEATURED_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'shaping-future-advanced-materials-2',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=500&q=80',
@@ -190,7 +194,7 @@ const FEATURED_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'shaping-future-advanced-materials-3',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=500&q=80',
@@ -200,7 +204,7 @@ const FEATURED_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'shaping-future-advanced-materials-4',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=500&q=80',
@@ -210,7 +214,7 @@ const FEATURED_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'shaping-future-advanced-materials-5',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&q=80',
@@ -220,7 +224,7 @@ const FEATURED_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'shaping-future-advanced-materials-6',
   },
 ];
 
@@ -233,7 +237,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'category-video-1',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=500&q=80',
@@ -243,7 +247,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'category-video-2',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=500&q=80',
@@ -253,7 +257,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'category-video-3',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80',
@@ -263,7 +267,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'category-video-4',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80',
@@ -273,7 +277,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'category-video-5',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=500&q=80',
@@ -283,7 +287,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'category-video-6',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80',
@@ -293,7 +297,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'category-video-7',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1543269664-76bc3997d9ea?w=500&q=80',
@@ -303,7 +307,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'category-video-8',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&q=80',
@@ -313,53 +317,9 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
+    slug: 'category-video-9',
   },
 ];
-
-/* ────────────────────────────────────────────────────────────────
-   Video Modal
-──────────────────────────────────────────────────────────────── */
-interface VideoModalProps {
-  isOpen: boolean;
-  videoId: string | null;
-  title?: string;
-  onClose: () => void;
-}
-
-function VideoModal({ isOpen, videoId, title, onClose }: VideoModalProps) {
-  if (!isOpen || !videoId) return null;
-
-  return (
-    <div
-      className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-4xl bg-white rounded-lg overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close button */}
-        <div className="flex justify-between items-center p-4 border-b">
-          <h3 className="text-lg font-semibold text-[#1E1E1E] truncate">
-            {title || 'Video'}
-          </h3>
-          <button
-            onClick={onClose}
-            className="text-[#757575] hover:text-[#1E1E1E] text-2xl leading-none"
-          >
-            ×
-          </button>
-        </div>
-
-        {/* Video player */}
-        <div className="p-4 bg-[#F3F3F3]">
-          <SecureCloudflareVideo videoId={videoId} />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 /* ────────────────────────────────────────────────────────────────
    MAIN PAGE EXPORT
@@ -367,37 +327,20 @@ function VideoModal({ isOpen, videoId, title, onClose }: VideoModalProps) {
 export default function WebTalksPage() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedVideo, setSelectedVideo] = useState<{ id: string; title: string } | null>(null);
-
-  const handlePlayVideo = (videoId: string, videoTitle?: string) => {
-    setSelectedVideo({
-      id: videoId,
-      title: videoTitle || 'Video',
-    });
-  };
-
-  const handleCloseModal = () => {
-    setSelectedVideo(null);
-  };
 
   return (
     <>
-      <VideoModal
-        isOpen={!!selectedVideo}
-        videoId={selectedVideo?.id || null}
-        title={selectedVideo?.title}
-        onClose={handleCloseModal}
-      />
       <main className="flex-1 bg-white">
-        <div className="max-w-[1440px] mx-auto px-4 lg:px-[30px] py-10 flex flex-col gap-[90px]">
+        <div className="max-w-[1440px] mx-auto px-4 lg:px-[30px] py-10 flex flex-col">
 
           {/* ── Breadcrumb ── */}
-          <div className="flex items-center gap-[4px] md:-mb-[70px] md:mt-[60px] -mb-[70px] mt-[130px]">
-            <Link href="/" className="text-[#1E1E1E]/70 text-[16px] sm:text-[18px] font-semibold hover:text-[#1C3E9C] transition">
-              Home
-            </Link>
-            <ChevronRight size={14} className="text-[#1E1E1E]/70" strokeWidth={2} />
-            <span className="text-[#1E1E1E]/70 text-[16px] sm:text-[18px] font-semibold">Webtalks</span>
+          <div className="pt-20 lg:pt-2 translate-x-[-20px]">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/' },
+              { label: 'Webtalks' },
+            ]}
+          />
           </div>
 
           {/* ══════════════════════════════
@@ -422,22 +365,14 @@ export default function WebTalksPage() {
             {/* Grid row 1 */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {FEATURED_VIDEOS.slice(0, 3).map((v, i) => (
-                <VideoCard
-                  key={i}
-                  {...v}
-                  onPlay={(videoId) => handlePlayVideo(videoId, v.title)}
-                />
+                <VideoCard key={i} {...v} />
               ))}
             </div>
 
             {/* Grid row 2 */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {FEATURED_VIDEOS.slice(3, 6).map((v, i) => (
-                <VideoCard
-                  key={i}
-                  {...v}
-                  onPlay={(videoId) => handlePlayVideo(videoId, v.title)}
-                />
+                <VideoCard key={i} {...v} />
               ))}
             </div>
 
@@ -477,33 +412,21 @@ export default function WebTalksPage() {
             {/* Grid row 1 */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {CATEGORY_VIDEOS.slice(0, 3).map((v, i) => (
-                <VideoCard
-                  key={i}
-                  {...v}
-                  onPlay={(videoId) => handlePlayVideo(videoId, v.title)}
-                />
+                <VideoCard key={i} {...v} />
               ))}
             </div>
 
             {/* Grid row 2 */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {CATEGORY_VIDEOS.slice(3, 6).map((v, i) => (
-                <VideoCard
-                  key={i}
-                  {...v}
-                  onPlay={(videoId) => handlePlayVideo(videoId, v.title)}
-                />
+                <VideoCard key={i} {...v} />
               ))}
             </div>
 
             {/* Grid row 3 */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {CATEGORY_VIDEOS.slice(6, 9).map((v, i) => (
-                <VideoCard
-                  key={i}
-                  {...v}
-                  onPlay={(videoId) => handlePlayVideo(videoId, v.title)}
-                />
+                <VideoCard key={i} {...v} />
               ))}
             </div>
 
@@ -512,9 +435,8 @@ export default function WebTalksPage() {
         </div>
       </main>
 
-      {/* 5. Existing Footer — no changes */}
+      {/* Footer */}
       <Footer />
-      {/* Uncomment above if you have a Footer component, or keep your existing footer layout */}
     </>
   );
 }

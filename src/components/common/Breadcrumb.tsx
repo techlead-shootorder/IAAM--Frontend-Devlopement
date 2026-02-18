@@ -12,7 +12,7 @@ export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
         {items.map((item, i) => (
           <span key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             {item.href ? (
-              <Link href={item.href} style={{ textDecoration: "underline" }}>
+              <Link href={item.href}>
                 {item.label}
               </Link>
             ) : (

@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { dropdownData, DropdownDataItem } from "@/lib/dropdownData";
 
 interface MainNavProps {
@@ -13,6 +13,7 @@ interface MainNavProps {
 export default function MainNav({ mobileMenuOpen }: MainNavProps) {
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
 
   const navItems = [
     { title: "Membership", slug: "membership" },
@@ -26,11 +27,10 @@ export default function MainNav({ mobileMenuOpen }: MainNavProps) {
   const handleMouseEnter = (index: number) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => {
+    }
+    timeoutRef.current = setTimeout(() => {
       setActiveDropdown(index);
     }, 500);
-    }
-    // setActiveDropdown(index);
   };
 
   const handleMouseLeave = () => {
@@ -40,6 +40,11 @@ export default function MainNav({ mobileMenuOpen }: MainNavProps) {
     timeoutRef.current = setTimeout(() => {
       setActiveDropdown(null);
     }, 200);
+  };
+
+  const navigateTo = (url: string) => {
+    setActiveDropdown(null);
+    router.push(url);
   };
 
   return (
@@ -81,6 +86,7 @@ export default function MainNav({ mobileMenuOpen }: MainNavProps) {
                       <DropdownContent
                         data={dropdownData[index]}
                         parentSlug={item.slug}
+                        navigateTo={navigateTo}
                       />
                     </div>
                   </div>
@@ -101,6 +107,7 @@ export default function MainNav({ mobileMenuOpen }: MainNavProps) {
                 title={item.title}
                 data={dropdownData[index]}
                 parentSlug={item.slug}
+                navigateTo={navigateTo}
               />
             ))}
           </div>
@@ -115,9 +122,11 @@ export default function MainNav({ mobileMenuOpen }: MainNavProps) {
 const DropdownContent = ({
   data,
   parentSlug,
+  navigateTo,
 }: {
   data: DropdownDataItem;
   parentSlug: string;
+  navigateTo: (url: string) => void;
 }) => {
   return (
     <div className="flex gap-[30px] pb-4 items-stretch">
@@ -146,12 +155,12 @@ const DropdownContent = ({
             </p>
           </div>
 
-          <Link
-            href={`/${parentSlug}${data.card.ctaUrl}`}
+          <button
+            onClick={() => navigateTo(`/${parentSlug}${data.card.ctaUrl}`)}
             className="w-full py-[10px] px-[8px] bg-iaam-primary text-white font-medium text-[18px] rounded-[3px] shadow-md hover:brightness-110 transition text-center"
           >
             {data.card.cta}
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -169,25 +178,25 @@ const DropdownContent = ({
         {(data.outlineCta || data.rightLinks) && (
           <div className="flex justify-between items-start w-full">
             {data.outlineCta && data.outlineCtaUrl && (
-              <Link
-                href={`/${parentSlug}${data.outlineCtaUrl}`}
+              <button
+                onClick={() => navigateTo(`/${parentSlug}${data.outlineCtaUrl}`)}
                 className="py-[16px] px-[8px] border border-iaam-primary text-iaam-primary font-medium text-[16px] rounded-[3px] hover:bg-iaam-primary hover:text-white transition"
               >
                 {data.outlineCta}
-              </Link>
+              </button>
             )}
 
             {data.rightLinks && (
               <div className="flex flex-col gap-4 text-right">
                 {data.rightLinks.map((rl, idx) =>
                   rl.headerUrl ? (
-                    <Link
+                    <button
                       key={idx}
-                      href={`/${parentSlug}${rl.headerUrl}`}
+                      onClick={() => navigateTo(`/${parentSlug}${rl.headerUrl}`)}
                       className="font-bold text-[18px] text-iaam-primary hover:underline"
                     >
                       {rl.header}
-                    </Link>
+                    </button>
                   ) : (
                     <span
                       key={idx}
@@ -202,7 +211,6 @@ const DropdownContent = ({
           </div>
         )}
 
-        {/* SPECIAL MEETING & EVENTS BANNER */}
         {data.title === "Meeting & Events" && (
           <div className="w-full py-[9px] px-[8px] bg-iaam-primary">
             <span className="font-roboto font-semibold text-[18px] text-white tracking-[0.27px]">
@@ -217,12 +225,12 @@ const DropdownContent = ({
               {column.map((section, secIdx) => (
                 <div key={secIdx} className="flex flex-col gap-3">
                   {section.headerUrl ? (
-                    <Link
-                      href={`/${parentSlug}${section.headerUrl}`}
-                      className="font-bold text-[18px] text-iaam-section-header hover:text-iaam-primary transition-colors"
+                    <button
+                      onClick={() => navigateTo(`/${parentSlug}${section.headerUrl}`)}
+                      className="font-bold text-[18px] text-iaam-section-header hover:text-iaam-primary transition-colors text-left"
                     >
                       {section.header}
-                    </Link>
+                    </button>
                   ) : (
                     <h4 className="font-bold text-[18px] text-iaam-section-header">
                       {section.header}
@@ -232,13 +240,13 @@ const DropdownContent = ({
                   {section.links && (
                     <div className="flex flex-col gap-4">
                       {section.links.map((link, linkIdx) => (
-                        <Link
+                        <button
                           key={linkIdx}
-                          href={`/${parentSlug}${link.url}`}
-                          className="text-[16px] text-[#1e40af]/70 hover:underline hover:text-iaam-primary transition-colors"
+                          onClick={() => navigateTo(`/${parentSlug}${link.url}`)}
+                          className="text-left text-[16px] text-[#1e40af]/70 hover:underline hover:text-iaam-primary transition-colors"
                         >
                           {link.text}
-                        </Link>
+                        </button>
                       ))}
                     </div>
                   )}
@@ -258,10 +266,12 @@ const MobileNavItem = ({
   title,
   data,
   parentSlug,
+  navigateTo,
 }: {
   title: string;
   data: DropdownDataItem;
   parentSlug: string;
+  navigateTo: (url: string) => void;
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -285,33 +295,33 @@ const MobileNavItem = ({
             {data.description}
           </p>
 
-          <Link
-            href={`/${parentSlug}${data.card.ctaUrl}`}
+          <button
+            onClick={() => navigateTo(`/${parentSlug}${data.card.ctaUrl}`)}
             className="block w-full py-[10px] px-[8px] bg-iaam-primary text-white font-medium text-[16px] rounded-[3px] shadow-md hover:brightness-110 transition text-center"
           >
             {data.card.cta}
-          </Link>
+          </button>
 
           {data.outlineCta && data.outlineCtaUrl && (
-            <Link
-              href={`/${parentSlug}${data.outlineCtaUrl}`}
+            <button
+              onClick={() => navigateTo(`/${parentSlug}${data.outlineCtaUrl}`)}
               className="block w-full py-[10px] px-[8px] border border-iaam-primary text-iaam-primary font-medium text-[14px] rounded-[3px] hover:bg-iaam-primary hover:text-white transition text-center"
             >
               {data.outlineCta}
-            </Link>
+            </button>
           )}
 
           {data.rightLinks && (
             <div className="space-y-2">
               {data.rightLinks.map((rl, idx) =>
                 rl.headerUrl ? (
-                  <Link
+                  <button
                     key={idx}
-                    href={`/${parentSlug}${rl.headerUrl}`}
-                    className="block font-bold text-[14px] text-iaam-primary hover:underline"
+                    onClick={() => navigateTo(`/${parentSlug}${rl.headerUrl}`)}
+                    className="block font-bold text-[14px] text-iaam-primary hover:underline text-left"
                   >
                     {rl.header}
-                  </Link>
+                  </button>
                 ) : (
                   <span
                     key={idx}
@@ -329,12 +339,12 @@ const MobileNavItem = ({
               {column.map((section, secIdx) => (
                 <div key={secIdx}>
                   {section.headerUrl ? (
-                    <Link
-                      href={`/${parentSlug}${section.headerUrl}`}
-                      className="font-bold text-[14px] text-iaam-section-header hover:text-iaam-primary transition-colors"
+                    <button
+                      onClick={() => navigateTo(`/${parentSlug}${section.headerUrl}`)}
+                      className="font-bold text-[14px] text-iaam-section-header hover:text-iaam-primary transition-colors text-left"
                     >
                       {section.header}
-                    </Link>
+                    </button>
                   ) : (
                     <h5 className="font-bold text-[14px] text-iaam-section-header">
                       {section.header}
@@ -344,13 +354,13 @@ const MobileNavItem = ({
                   {section.links && (
                     <div className="ml-2 mt-1 space-y-1">
                       {section.links.map((link, i) => (
-                        <Link
+                        <button
                           key={i}
-                          href={`/${parentSlug}${link.url}`}
-                          className="block text-[13px] text-iaam-link-light hover:underline"
+                          onClick={() => navigateTo(`/${parentSlug}${link.url}`)}
+                          className="block text-left text-[13px] text-iaam-link-light hover:underline"
                         >
                           {link.text}
-                        </Link>
+                        </button>
                       ))}
                     </div>
                   )}

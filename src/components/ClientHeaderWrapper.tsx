@@ -9,19 +9,36 @@ import SearchFilterBar from "@/components/WebTalk/SearchFilterBar";
 import WebTalksTopBar from "@/components/WebTalk/WebTalksTopBar";
 
 export default function ClientHeaderWrapper() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
   const [isShrunk, setIsShrunk] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
   const lastScrollYRef = useRef(0);
 
   // Conditional state for web-talks page
-  const isWebTalksPage = pathname === '/web-talks';
+  const isWebTalksPage = pathname === '/web-talks' || pathname?.startsWith('/web-talks/');
   const [search, setSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState('All');
   const [filterSort, setFilterSort] = useState('Newest');
 
   useEffect(() => {
+    const mql = window.matchMedia('(min-width: 1024px)');
+
+    const handleMediaChange = (e: MediaQueryListEvent | MediaQueryList) => {
+      const matches = 'matches' in e ? e.matches : false;
+      setIsDesktop(matches);
+      if (!matches) setIsShrunk(false);
+    };
+
+    handleMediaChange(mql);
+    mql.addEventListener('change', handleMediaChange);
+    return () => mql.removeEventListener('change', handleMediaChange);
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktop) return;
+
     const handleScroll = () => {
       const currentY = window.scrollY;
       const lastY = lastScrollYRef.current;
@@ -42,9 +59,11 @@ export default function ClientHeaderWrapper() {
     lastScrollYRef.current = window.scrollY;
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isDesktop]);
 
-  const headerSpacerHeightClass = isShrunk
+  const effectiveShrunk = isDesktop && isShrunk;
+
+  const headerSpacerHeightClass = effectiveShrunk
     ? 'h-[110px] lg:h-[155px]'
     : 'h-[180px] lg:h-[235px]';
 
@@ -55,12 +74,13 @@ export default function ClientHeaderWrapper() {
           className="absolute inset-x-0 top-0 bg-white shadow-sm"
           style={
             {
-              '--mainnav-dropdown-top': isShrunk ? '155px' : '235px',
+              '--mainnav-dropdown-top': effectiveShrunk ? '155px' : '235px',
             } as CSSProperties
           }
         >
-          {isWebTalksPage ? <WebTalksTopBar /> : <TopBar />}
-          <Header isShrunk={isShrunk} />
+          {/* {isWebTalksPage ? <WebTalksTopBar /> : <TopBar />} */}
+          <TopBar />
+          <Header isShrunk={effectiveShrunk} />
           <MainNav mobileMenuOpen={mobileMenuOpen} />
           {isWebTalksPage && (
             <SearchFilterBar
@@ -70,7 +90,7 @@ export default function ClientHeaderWrapper() {
               setFilterCategory={setFilterCategory}
               filterSort={filterSort}
               setFilterSort={setFilterSort}
-              isShrunk={isShrunk}
+              isShrunk={effectiveShrunk}
             />
           )}
         </div>
