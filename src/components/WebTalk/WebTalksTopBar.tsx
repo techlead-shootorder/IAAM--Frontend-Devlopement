@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { getTopMenu } from '@/lib/api';
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
+import LazyImage from '@/components/common/LazyImage';
 
 interface MenuItem {
   label: string;
@@ -36,11 +36,12 @@ export default function WebTalksTopBar() {
 
           <div className="flex items-center flex-wrap">
             <Link href="/" className="mr-3">
-              <Image
+              <LazyImage
                 src="/Frame 2.svg"
                 alt="Home"
                 width={18}
                 height={18}
+                priority
               />
             </Link>
 

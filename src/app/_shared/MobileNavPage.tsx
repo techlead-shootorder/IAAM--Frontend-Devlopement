@@ -3,6 +3,7 @@
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { dropdownData } from "@/lib/dropdownData";
+import Breadcrumb from "@/components/common/Breadcrumb";
 
 interface Props {
   pageIndex: number;
@@ -14,8 +15,17 @@ export default function MobileNavPage({ pageIndex, title, slug }: Props) {
   const router = useRouter();
   const data = dropdownData[pageIndex];
 
+  // Generate breadcrumb items
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
+    { label: title }
+  ];
+
   return (
     <div className="lg:hidden min-h-screen bg-[#f1f1f1]">
+
+      {/* Breadcrumb */}
+      <Breadcrumb items={breadcrumbItems} />
 
       {/* ===== Top Header (Image Matching) ===== */}
       <div className="flex items-center gap-3 px-4 py-4 text-black bg-[#e9e9e9] border-b border-gray-300">

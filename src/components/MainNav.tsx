@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { ChevronDown } from "lucide-react";
-import Image from "next/image";
+import LazyImage from "@/components/common/LazyImage";
 import { useRouter } from "next/navigation";
 import { dropdownData, DropdownDataItem } from "@/lib/dropdownData";
 
@@ -133,7 +133,7 @@ const DropdownContent = ({
       {/* LEFT CARD */}
       <div className="w-[30%] flex-shrink-0 bg-iaam-bg-gray rounded overflow-hidden">
         <div className="h-[300px] bg-white overflow-hidden relative">
-          <Image
+          <LazyImage
             src={
               data.card.image.startsWith("http")
                 ? data.card.image
@@ -187,13 +187,13 @@ const DropdownContent = ({
             )}
 
             {data.rightLinks && (
-              <div className="flex flex-col gap-4 text-right">
+              <div className="flex flex-col gap-4 text-right ml-auto">
                 {data.rightLinks.map((rl, idx) =>
                   rl.headerUrl ? (
                     <button
                       key={idx}
                       onClick={() => navigateTo(`/${parentSlug}${rl.headerUrl}`)}
-                      className="font-bold text-[18px] text-iaam-primary hover:underline"
+                      className="font-bold text-[18px] text-iaam-primary hover:underline text-right"
                     >
                       {rl.header}
                     </button>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import LazyImage from '@/components/common/LazyImage';
 import { getTopMenu } from '@/lib/api';
 
 interface MenuItem {
@@ -45,11 +45,12 @@ export default function TopBar() {
           {/* Left */}
           <div className="flex items-center flex-wrap">
             <Link href="/" className="mr-3">
-              <Image
+              <LazyImage
                 src="/Frame 2.svg"
                 alt="Home"
                 width={18}
                 height={18}
+                priority
               />
             </Link>
 

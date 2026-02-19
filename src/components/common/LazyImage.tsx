@@ -6,12 +6,14 @@ import { useState } from 'react'
 interface LazyImageProps extends Omit<ImageProps, 'onLoad' | 'onError'> {
   fallback?: string
   containerClassName?: string
+  priority?: boolean
 }
 
 export default function LazyImage({
   fallback = '/placeholder.png',
   containerClassName = '',
   className = '',
+  priority = false,
   ...props
 }: LazyImageProps) {
   const [isLoading, setIsLoading] = useState(true)
@@ -50,7 +52,8 @@ export default function LazyImage({
         className={`transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'} ${className}`}
         onLoad={handleLoad}
         onError={handleError}
-        loading={props.priority ? "eager" : "lazy"}
+        loading={priority ? "eager" : "lazy"}
+        priority={priority}
         unoptimized={props.src?.toString().includes('.gif') || false}
       />
     </div>

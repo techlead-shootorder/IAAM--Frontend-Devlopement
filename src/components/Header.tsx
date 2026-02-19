@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from "react";
-import { Search, Menu, X, ChevronRight, ArrowLeft } from "lucide-react";
-import Image from "next/image";
+import { Search, Menu, ChevronRight, ArrowLeft } from "lucide-react";
+import LazyImage from "@/components/common/LazyImage";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -101,7 +101,7 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
                   isShrunk ? 'w-[46px] sm:w-[56px] lg:w-[64px]' : 'w-[80px] sm:w-[110px] lg:w-[140px]'
                 }`}
               >
-                <Image
+                <LazyImage
                   src="/1704818354IAAM-Logo-SVG 1.svg"
                   alt="IAAM Logo"
                   width={120}

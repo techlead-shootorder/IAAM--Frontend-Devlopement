@@ -117,10 +117,13 @@ function renderEventsContent(info: any, imageUrl: string) {
         <div className="flex flex-col justify-between h-full">
           <div className="space-y-4">
             {imageUrl && (
-              <img
+              <LazyImage
                 src={imageUrl}
                 alt={info.Title}
+                width={800}
+                height={400}
                 className="w-full h-48 md:h-56 lg:h-64 object-cover rounded-sm shadow-md"
+                priority
               />
             )}
 
@@ -323,7 +326,7 @@ function renderEventsContent(info: any, imageUrl: string) {
 //           {featured && (
 //             <div className="space-y-6">
 //               {featured.heroImage?.url && (
-//                 <Image
+//                 <LazyImage // Replace Image with LazyImage
 //                   src={getProxiedImageUrl(featured.heroImage.url)}
 //                   alt={featured.title}
 //                   width={800}

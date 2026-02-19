@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 import MainNav from '@/components/MainNav';
-import HeroBanner from '@/components/HeroBanner';
 import Footer from '@/components/FooterNew';
 import BlogSection from '@/components/Home/BlogSection';
 import HomeAbout from '@/components/Home/AboutSection';
@@ -12,8 +11,6 @@ export default function RootPage() {
   return (
     <div className="min-h-screen flex flex-col bg-home-page">
       <main className="flex-1">
-        {/* Hero Banner from src copy */}
-        {/* <HeroBanner /> */}
         
         {/* Existing Home Sections with Suspense boundaries */}
         <Suspense fallback={<div className="h-[400px] bg-gray-100 animate-pulse" />}>

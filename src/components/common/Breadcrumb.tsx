@@ -7,18 +7,18 @@ interface BreadcrumbItem {
 
 export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
   return (
-    <div style={{ position: "relative", width: "100%", background: "white", marginTop: "30px" }}>
-      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 24px", display: "flex", gap: "8px", fontSize: "15px", color: "#003399" }}>
+    <div className="relative w-full bg-white py-4">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center gap-2 text-sm text-[#003399]">
         {items.map((item, i) => (
-          <span key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <span key={i} className="flex items-center gap-2">
             {item.href ? (
-              <Link href={item.href}>
+              <Link href={item.href} className="hover:text-[#1e40af] transition-colors">
                 {item.label}
               </Link>
             ) : (
-              <span style={{ color: "#111" }}>{item.label}</span>
+              <span className="text-[#111]">{item.label}</span>
             )}
-            {i < items.length - 1 && <span style={{ color: "#999" }}>›</span>}
+            {i < items.length - 1 && <span className="text-[#999]">›</span>}
           </span>
         ))}
       </div>

@@ -1,6 +1,6 @@
 import Link from "next/link"
 import SectionContainer from "../common/SectionContainer"
-import Image from "next/image"
+import LazyImage from "@/components/common/LazyImage"
 import { Calendar, ChevronRight } from "lucide-react"
 
 export default function NewsSection() {
@@ -38,7 +38,7 @@ export default function NewsSection() {
         {/* Left Side – SDG Card */}
         <div className="lg:col-span-4">
           <div className="bg-white rounded-sm overflow-hidden shadow-sm">
-            <Image
+            <LazyImage
               src="/sdsg-goals.jpg"
               alt="UN Sustainable Development Goals"
               width={500}
