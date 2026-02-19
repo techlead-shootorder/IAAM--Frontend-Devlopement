@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Video ID required" }, { status: 400 });
   }
 
-  const privateKey = process.env.CLOUDFLARE_STREAM_PRIVATE_KEY;
+  let privateKey = process.env.CLOUDFLARE_STREAM_PRIVATE_KEY;
   const keyId = process.env.CLOUDFLARE_STREAM_KEY_ID;
 
   if (!privateKey || !keyId) {
@@ -16,6 +16,12 @@ export async function POST(req: Request) {
       { error: "Cloudflare Stream configuration missing" },
       { status: 500 }
     );
+  }
+
+  try {
+    privateKey = Buffer.from(privateKey, 'base64').toString('utf-8');
+  } catch (e) {
+    privateKey = privateKey.replace(/\\n/g, '\n');
   }
 
   const token = jwt.sign(
