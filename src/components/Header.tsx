@@ -5,6 +5,7 @@ import { Search, Menu, ChevronRight, ArrowLeft } from "lucide-react";
 import LazyImage from "@/components/common/LazyImage";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { dropdownData } from "@/lib/dropdownData";
 
 export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -34,8 +35,16 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
   ];
 
   const allSuggestions = [
-    ...navItems.map(item => ({ label: item.title, href: `/${item.slug}` })),
-    ...quickLinks.map(link => ({ label: link.label, href: link.href })),
+    ...navItems.map(item => ({ label: item.title, href: `/${item.slug}`, category: 'Navigation' })),
+    ...quickLinks.map(link => ({ label: link.label, href: link.href, category: 'Quick Links' })),
+    // Add MainNav dropdown content
+    ...dropdownData.flatMap(item => [
+      { label: item.title, href: `#${item.title.toLowerCase().replace(/\s+/g, '-')}`, category: 'Main Menu' },
+      ...item.columns.flat().flatMap(section => [
+        ...(section.header ? [{ label: section.header, href: section.headerUrl || '#', category: item.title }] : []),
+        ...(section.links || []).map(link => ({ label: link.text, href: link.url, category: item.title }))
+      ])
+    ])
   ];
 
   const filteredSuggestions = allSuggestions.filter(suggestion =>
@@ -45,7 +54,7 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
-    setShowSuggestions(value.length > 0);
+    setShowSuggestions(value.length >= 3);
   };
 
   const handleSuggestionClick = (href: string) => {
@@ -174,9 +183,14 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
                       <button
                         key={index}
                         onClick={() => handleSuggestionClick(suggestion.href)}
-                        className="w-full text-left px-4 py-2 text-gray-900 hover:bg-gray-100 hover:text-[#1e40af] focus:bg-gray-100 focus:text-[#1e40af] focus:outline-none transition-colors text-sm"
+                        className="w-full text-left px-4 py-2 text-gray-900 hover:bg-gray-100 hover:text-[#1e40af] focus:bg-gray-100 focus:text-[#1e40af] focus:outline-none transition-colors text-sm border-b border-gray-100 last:border-b-0"
                       >
-                        {suggestion.label}
+                        <div className="flex flex-col items-start">
+                          <span className="font-medium">{suggestion.label}</span>
+                          {suggestion.category && (
+                            <span className="text-xs text-gray-500 mt-1">{suggestion.category}</span>
+                          )}
+                        </div>
                       </button>
                     ))}
                   </div>

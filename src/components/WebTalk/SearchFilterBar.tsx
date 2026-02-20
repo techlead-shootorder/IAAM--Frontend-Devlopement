@@ -11,21 +11,14 @@ const CATEGORIES = [
   'Conferences',
 ];
 
-const SEARCH_SUGGESTIONS = [
-  'Research Highlights',
-  'Keynote Lectures',
-  'Panel Discussions',
-  'Workshops',
-  'Member Spotlights',
-  'Conferences',
-  'Advanced Materials',
-  'Sustainability',
-  'Innovation',
-  'Technology',
-];
-
 export default function SearchFilterBar({
-  search, setSearch, filterCategory, setFilterCategory, filterSort, setFilterSort, isShrunk = false,
+  search, 
+  setSearch, 
+  filterCategory, 
+  setFilterCategory, 
+  filterSort, 
+  setFilterSort, 
+  isShrunk = false,
 }: {
   search: string;
   setSearch: (v: string) => void;
@@ -38,14 +31,49 @@ export default function SearchFilterBar({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const filteredSuggestions = SEARCH_SUGGESTIONS.filter(suggestion =>
-    suggestion.toLowerCase().includes(search.toLowerCase())
+  // Fallback search suggestions when no video data provided
+  const getFallbackSuggestions = () => {
+    return [
+      'Research Highlights',
+      'Keynote Lectures',
+      'Panel Discussions',
+      'Workshops',
+      'Member Spotlights',
+      'Conferences',
+      'Advanced Materials',
+      'Sustainability',
+      'Innovation',
+      'Technology',
+      'Nanotechnology',
+      'Composite Materials',
+      'Materials for Energy Applications',
+      'Biomaterials',
+      'Smart Materials',
+      'Materials Characterization',
+      'Industrial Applications',
+      'Materials Processing',
+      'Computational Materials Science',
+      'Surface Engineering',
+      'Environmental Applications',
+      'Advanced Ceramics',
+      'Polymer Science',
+      'Metallic Materials',
+      'Electronic Materials',
+      'Aerospace Applications',
+      'Sustainable Manufacturing',
+    ];
+  };
+
+  const searchSuggestions = getFallbackSuggestions();
+  
+  const filteredSuggestions = searchSuggestions.filter((suggestion): suggestion is string =>
+    suggestion !== undefined && suggestion.toLowerCase().includes(search.toLowerCase())
   ).slice(0, 5);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearch(value);
-    setShowSuggestions(value.length > 0);
+    setShowSuggestions(value.length >= 3);
   };
 
   const handleSuggestionClick = (suggestion: string) => {

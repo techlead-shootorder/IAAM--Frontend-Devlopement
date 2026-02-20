@@ -57,12 +57,12 @@ export default function SecureCloudflareVideo({
     );
 
   return (
-    <div className="w-full aspect-video rounded-lg overflow-hidden shadow-lg">
+    <div className="w-full aspect-video rounded-lg overflow-hidden shadow-lg relative min-h-[200px] touch-manipulation">
       <iframe
         src={`https://${subdomain}.cloudflarestream.com/${videoId}/iframe?token=${token}`}
-        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; clipboard-write; web-share;"
         allowFullScreen
-        className="w-full h-full border-0"
+        className="w-full h-full border-0 absolute inset-0"
         loading="lazy"
       />
     </div>

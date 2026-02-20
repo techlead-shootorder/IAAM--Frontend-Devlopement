@@ -28,7 +28,7 @@ interface VideoCardProps {
   date: string;
   views: string;
   category: string;
-  slug: string; // ← IMPORTANT: unique identifier for navigation
+  videoId: string; // ← Cloudflare Stream UID (e.g. "ba9870a482ae23109e437e6d56e53242")
 }
 
 function VideoCard({ 
@@ -39,10 +39,10 @@ function VideoCard({
   date, 
   views, 
   category,
-  slug 
+  videoId 
 }: VideoCardProps) {
   return (
-    <Link href={`/web-talks/${slug}`}>
+    <Link href={`/web-talks/${encodeURIComponent(category)}/${videoId}`}>
       <div className="bg-white rounded-[10px] shadow-[2.7px_5.4px_25.6px_rgba(0,0,0,0.10)] overflow-hidden ring-[8px] ring-white flex flex-col group cursor-pointer hover:shadow-[2.7px_5.4px_40px_rgba(0,0,0,0.16)] transition-shadow duration-300">
 
         {/* Thumbnail */}
@@ -174,7 +174,7 @@ const FEATURED_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'shaping-future-advanced-materials-1', // ← SLUG for navigation
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=500&q=80',
@@ -184,7 +184,7 @@ const FEATURED_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'shaping-future-advanced-materials-2',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=500&q=80',
@@ -194,7 +194,7 @@ const FEATURED_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'shaping-future-advanced-materials-3',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=500&q=80',
@@ -204,7 +204,7 @@ const FEATURED_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'shaping-future-advanced-materials-4',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=500&q=80',
@@ -214,7 +214,7 @@ const FEATURED_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'shaping-future-advanced-materials-5',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&q=80',
@@ -224,7 +224,7 @@ const FEATURED_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'shaping-future-advanced-materials-6',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
 ];
 
@@ -237,7 +237,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'category-video-1',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=500&q=80',
@@ -247,7 +247,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'category-video-2',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=500&q=80',
@@ -257,7 +257,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'category-video-3',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80',
@@ -267,7 +267,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'category-video-4',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80',
@@ -277,7 +277,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'category-video-5',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=500&q=80',
@@ -287,7 +287,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'category-video-6',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80',
@@ -297,7 +297,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'category-video-7',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1543269664-76bc3997d9ea?w=500&q=80',
@@ -307,7 +307,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'category-video-8',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
   {
     thumbnail: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&q=80',
@@ -317,7 +317,7 @@ const CATEGORY_VIDEOS: VideoCardProps[] = [
     date: 'Dec 14, 2023',
     views: '12.2K Views',
     category: 'Research Highlights',
-    slug: 'category-video-9',
+    videoId: 'ba9870a482ae23109e437e6d56e53242',
   },
 ];
 
@@ -334,7 +334,7 @@ export default function WebTalksPage() {
         <div className="max-w-[1440px] mx-auto px-4 lg:px-[30px] py-10 flex flex-col">
 
           {/* ── Breadcrumb ── */}
-          <div className="pt-20 lg:pt-2 translate-x-[-20px]">
+          <div className="pt-28 lg:pt-8 translate-x-[-20px]">
           <Breadcrumb
             items={[
               { label: 'Home', href: '/' },

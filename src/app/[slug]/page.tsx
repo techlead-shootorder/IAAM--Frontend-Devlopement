@@ -21,8 +21,8 @@ export default async function Page({
 }) {
   const { slug } = await params;
 
-  // Block events
-  if (slug === "events") notFound();
+  // Block events and web-talks
+  if (slug === "events" || slug === "web-talks") notFound();
 
   // Home
   if (slug === "home" || slug === "") {
