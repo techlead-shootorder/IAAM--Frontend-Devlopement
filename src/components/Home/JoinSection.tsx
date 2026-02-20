@@ -74,11 +74,11 @@ export default async function JoinSection() {
         <div className="lg:col-span-4">
           <div className="h-full bg-[#1e40af] text-white p-4 flex flex-col justify-between rounded-sm">
             <div>
-              <h3 className="text-3xl font-bold mb-4">
+              <h3 className="text-3xl font-bold mb-4 pl-4">
                 {FirstCard?.Cardtitle}
               </h3>
 
-              <p className="text-white/90">
+              <p className="text-white/90 pl-4">
                 {FirstCard?.CardDescription}
               </p>
             </div>
@@ -94,10 +94,11 @@ export default async function JoinSection() {
 
         {/* ========== CENTER IMAGE ========== */}
         <div className="lg:col-span-3 hidden lg:block relative">
-          <img
+          <LazyImage
             src={imageUrl || "/speaker-discussion.png"}
             alt="IAAM Community"
             className="w-full h-full object-cover rounded-sm"
+            fill
           />
         </div>
 

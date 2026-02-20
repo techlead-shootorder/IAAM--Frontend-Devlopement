@@ -1,18 +1,20 @@
 'use client';
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Search, Menu, ChevronRight, ArrowLeft } from "lucide-react";
 import LazyImage from "@/components/common/LazyImage";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { dropdownData } from "@/lib/dropdownData";
 
 export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [pageContent, setPageContent] = useState<string[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   const navItems = [
     { title: "Membership", slug: "membership" },
@@ -34,22 +36,109 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
     { label: "Contact Us", href: "/contact-us" },
   ];
 
-  const allSuggestions = [
-    ...navItems.map(item => ({ label: item.title, href: `/${item.slug}`, category: 'Navigation' })),
-    ...quickLinks.map(link => ({ label: link.label, href: link.href, category: 'Quick Links' })),
-    // Add MainNav dropdown content
-    ...dropdownData.flatMap(item => [
-      { label: item.title, href: `#${item.title.toLowerCase().replace(/\s+/g, '-')}`, category: 'Main Menu' },
-      ...item.columns.flat().flatMap(section => [
-        ...(section.header ? [{ label: section.header, href: section.headerUrl || '#', category: item.title }] : []),
-        ...(section.links || []).map(link => ({ label: link.text, href: link.url, category: item.title }))
-      ])
-    ])
-  ];
+  const extractPageContent = () => {
+    if (typeof window === 'undefined') return [];
+
+    const content: string[] = [];
+
+    // Extract headings
+    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    headings.forEach(heading => {
+      const text = heading.textContent?.trim();
+      if (text && text.length > 3) content.push(text);
+    });
+
+    // Extract paragraphs and other text content
+    const paragraphs = document.querySelectorAll('p, span, div, li');
+    paragraphs.forEach(element => {
+      const text = element.textContent?.trim();
+      if (text && text.length > 10 && text.length < 100) {
+        // Split into words and filter meaningful ones
+        const words = text.split(/\s+/).filter(word =>
+          word.length > 3 && !/^[0-9]+$/.test(word) && !/^[^a-zA-Z]*$/.test(word)
+        );
+        content.push(...words.slice(0, 3)); // Take first 3 meaningful words
+      }
+    });
+
+    // Remove duplicates and limit
+    return [...new Set(content)].slice(0, 20);
+  };
+
+  const getEnhancedSuggestions = () => {
+    const navigationSuggestions = [
+      ...navItems.map(item => ({ label: item.title, href: `/${item.slug}`, category: 'Navigation' })),
+      ...quickLinks.map(link => ({ label: link.label, href: link.href, category: 'Quick Links' })),
+      // Add all dropdown data using navItems slugs for dynamic URL generation
+      ...navItems.map((navItem, navIndex) => {
+        const dropdownItem = dropdownData[navIndex];
+        if (!dropdownItem) return [];
+        
+        return [
+          { label: dropdownItem.title, href: `/${navItem.slug}`, category: dropdownItem.title },
+          // Add card CTA link
+          ...(dropdownItem.card.cta ? [{
+            label: dropdownItem.card.cta,
+            href: navItem.slug === 'membership' && (dropdownItem.card.ctaUrl.includes('join') || dropdownItem.card.ctaUrl.includes('membership') || dropdownItem.card.ctaUrl.includes('fellow') || dropdownItem.card.ctaUrl.includes('lifetime') || dropdownItem.card.ctaUrl.includes('renew') || dropdownItem.card.ctaUrl.includes('faqs')) ? 
+              `/${navItem.slug}${dropdownItem.card.ctaUrl}` : dropdownItem.card.ctaUrl,
+            category: dropdownItem.title
+          }] : []),
+          // Add outline CTA link
+          ...(dropdownItem.outlineCta && dropdownItem.outlineCtaUrl ? [{
+            label: dropdownItem.outlineCta,
+            href: navItem.slug === 'membership' && (dropdownItem.outlineCtaUrl.includes('join') || dropdownItem.outlineCtaUrl.includes('membership') || dropdownItem.outlineCtaUrl.includes('fellow') || dropdownItem.outlineCtaUrl.includes('lifetime') || dropdownItem.outlineCtaUrl.includes('renew') || dropdownItem.outlineCtaUrl.includes('faqs')) ? 
+              `/${navItem.slug}${dropdownItem.outlineCtaUrl}` : dropdownItem.outlineCtaUrl,
+            category: dropdownItem.title
+          }] : []),
+          ...dropdownItem.columns.flat().flatMap(section => [
+            ...(section.header ? [{ 
+              label: section.header, 
+              href: section.headerUrl ? (section.headerUrl.startsWith('/') ? 
+                (navItem.slug === 'membership' && (section.headerUrl.includes('join') || section.headerUrl.includes('membership') || section.headerUrl.includes('fellow') || section.headerUrl.includes('lifetime') || section.headerUrl.includes('renew') || section.headerUrl.includes('faqs')) ? 
+                  `/${navItem.slug}${section.headerUrl}` : section.headerUrl) : 
+                section.headerUrl) : `/${navItem.slug}`, 
+              category: dropdownItem.title 
+            }] : []),
+            ...(section.links || []).map(link => ({
+              label: link.text, 
+              href: navItem.slug === 'membership' && (link.url.includes('join') || link.url.includes('membership') || link.url.includes('fellow') || link.url.includes('lifetime') || link.url.includes('renew') || link.url.includes('faqs')) ? 
+                `/${navItem.slug}${link.url}` : link.url, 
+              category: dropdownItem.title
+            }))
+          ]),
+          // Add rightLinks if they exist
+          ...(dropdownItem.rightLinks ? dropdownItem.rightLinks.flatMap(rightLink => [
+            ...(rightLink.header ? [{
+              label: rightLink.header,
+              href: rightLink.headerUrl ? (rightLink.headerUrl.startsWith('/') ? 
+                (navItem.slug === 'membership' && (rightLink.headerUrl.includes('join') || rightLink.headerUrl.includes('membership') || rightLink.headerUrl.includes('fellow') || rightLink.headerUrl.includes('lifetime') || rightLink.headerUrl.includes('renew') || rightLink.headerUrl.includes('faqs')) ? 
+                  `/${navItem.slug}${rightLink.headerUrl}` : rightLink.headerUrl) : 
+                rightLink.headerUrl) : `/${navItem.slug}`,
+              category: dropdownItem.title
+            }] : [])
+          ]) : [])
+        ];
+      }).flat()
+    ];
+
+    // Add page content suggestions
+    const pageContentSuggestions = pageContent
+      .filter(word => word.toLowerCase().includes(searchQuery.toLowerCase()))
+      .slice(0, 3)
+      .map(word => ({
+        label: word,
+        href: pathname, // Stay on current page
+        category: 'Page Content'
+      }));
+
+    return [...navigationSuggestions, ...pageContentSuggestions];
+  };
+
+  const allSuggestions = getEnhancedSuggestions();
 
   const filteredSuggestions = allSuggestions.filter(suggestion =>
     suggestion.label.toLowerCase().includes(searchQuery.toLowerCase())
-  ).slice(0, 5); // Limit to 5 suggestions
+  ).slice(0, 5);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -60,7 +149,9 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
   const handleSuggestionClick = (href: string) => {
     setSearchQuery('');
     setShowSuggestions(false);
-    router.push(href);
+    if (href && href !== '#') {
+      router.push(href);
+    }
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -87,6 +178,15 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Extract page content when pathname changes (DOM content changes on navigation)
+  const pageContentMemo = useMemo(() => {
+    return extractPageContent();
+  }, [pathname]); // pathname dependency needed because DOM content changes on page navigation
+
+  useEffect(() => {
+    setPageContent(pageContentMemo);
+  }, [pageContentMemo]);
 
   const closeDrawer = () => {
     setMobileOpen(false);

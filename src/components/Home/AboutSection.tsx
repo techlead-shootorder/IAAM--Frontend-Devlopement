@@ -4,10 +4,6 @@ import SectionContainer from "../common/SectionContainer";
 import { getProxiedImageUrl } from "@/lib/imageProxy";
 import { getAboutData } from "@/lib/api";
 
-const NEXT_PUBLIC_STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
-
-
-
 export default async function AboutSection() {
   const about = await getAboutData();
 
@@ -69,10 +65,11 @@ export default async function AboutSection() {
         </div>
 
         <div className="order-first md:order-last relative h-[516px] w-full">
-          <img
+          <LazyImage
             src={imageUrl}
             alt={about.Image?.alternativeText || "About Image"}
             className="w-full h-full object-cover rounded shadow-lg"
+            fill
           />
         </div>
 
