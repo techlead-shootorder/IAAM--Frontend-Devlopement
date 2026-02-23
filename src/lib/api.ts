@@ -53,11 +53,47 @@ export async function getMainMenu() {
 
 
 
+// export async function getTopMenu() {
+//   try {
+//     const res = await fetch(`${API}/api/top-menus`, {
+//       cache: "no-store",
+//     });
+
+//     if (!res.ok) {
+//       console.error("TopMenu API failed:", res.status);
+//       return { left: [], right: [] };
+//     }
+
+//     const json = await res.json();
+
+//     const left: { label: string; href: string }[] = [];
+//     const right: { label: string; href: string }[] = [];
+
+//     for (const item of json.data || []) {
+//       const link = {
+//         label: item.LinkLabel,
+//         href: item.LinkURL ? `/${item.LinkURL}` : "#",
+//       };
+
+//       if (item.Position === "Left") left.push(link);
+//       if (item.Position === "Right") right.push(link);
+//     }
+
+//     return { left, right };
+//   } catch (error) {
+//     console.error("TopMenu fetch error:", error);
+//     return { left: [], right: [] };
+//   }
+// }
+
 export async function getTopMenu() {
   try {
-    const res = await fetch(`${API}/api/top-menus`, {
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${API}/api/top-menus?pagination[pageSize]=100`,
+      {
+        cache: "no-store",
+      }
+    );
 
     if (!res.ok) {
       console.error("TopMenu API failed:", res.status);
@@ -69,15 +105,20 @@ export async function getTopMenu() {
     const left: { label: string; href: string }[] = [];
     const right: { label: string; href: string }[] = [];
 
-    for (const item of json.data || []) {
+    (json?.data || []).forEach((item: any) => {
+      const slug = item?.LinkURL?.trim();
+
       const link = {
-        label: item.LinkLabel,
-        href: item.LinkURL ? `/${item.LinkURL}` : "#",
+        label: item?.LinkLabel || "",
+        href: slug ? `/${slug.replace(/^\/+/, "")}` : "#",
       };
 
-      if (item.Position === "Left") left.push(link);
-      if (item.Position === "Right") right.push(link);
-    }
+      if (item?.Position === "Left") {
+        left.push(link);
+      } else if (item?.Position === "Right") {
+        right.push(link);
+      }
+    });
 
     return { left, right };
   } catch (error) {
