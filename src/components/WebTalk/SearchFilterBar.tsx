@@ -1,23 +1,22 @@
+'use client';
+
 import { ChevronDown, Search } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
-const CATEGORIES = [
-  'All',
-  'Research Highlights',
-  'Keynote Lectures',
-  'Panel Discussions',
-  'Workshops',
-  'Member Spotlights',
-  'Conferences',
-];
+interface VideoItem {
+  id: number;
+  Title: string;
+  VideoCategory: string;
+  HostName: string;
+}
 
 export default function SearchFilterBar({
-  search, 
-  setSearch, 
-  filterCategory, 
-  setFilterCategory, 
-  filterSort, 
-  setFilterSort, 
+  search,
+  setSearch,
+  filterCategory,
+  setFilterCategory,
+  filterSort,
+  setFilterSort,
   isShrunk = false,
 }: {
   search: string;
@@ -28,58 +27,45 @@ export default function SearchFilterBar({
   setFilterSort: (v: string) => void;
   isShrunk?: boolean;
 }) {
+
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState<VideoItem[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Fallback search suggestions when no video data provided
-  const getFallbackSuggestions = () => {
-    return [
-      'Research Highlights',
-      'Keynote Lectures',
-      'Panel Discussions',
-      'Workshops',
-      'Member Spotlights',
-      'Conferences',
-      'Advanced Materials',
-      'Sustainability',
-      'Innovation',
-      'Technology',
-      'Nanotechnology',
-      'Composite Materials',
-      'Materials for Energy Applications',
-      'Biomaterials',
-      'Smart Materials',
-      'Materials Characterization',
-      'Industrial Applications',
-      'Materials Processing',
-      'Computational Materials Science',
-      'Surface Engineering',
-      'Environmental Applications',
-      'Advanced Ceramics',
-      'Polymer Science',
-      'Metallic Materials',
-      'Electronic Materials',
-      'Aerospace Applications',
-      'Sustainable Manufacturing',
-    ];
-  };
+  /* ─────────────────────────────────────────────
+     FETCH SUGGESTIONS FROM STRAPI
+  ───────────────────────────────────────────── */
 
-  const searchSuggestions = getFallbackSuggestions();
-  
-  const filteredSuggestions = searchSuggestions.filter((suggestion): suggestion is string =>
-    suggestion !== undefined && suggestion.toLowerCase().includes(search.toLowerCase())
-  ).slice(0, 5);
+  useEffect(() => {
+    if (search.trim().length < 3) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearch(value);
-    setShowSuggestions(value.length >= 3);
-  };
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearch(suggestion);
-    setShowSuggestions(false);
-  };
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/search-videos?q=${encodeURIComponent(search)}`);
+        const json = await res.json();
+
+        setSuggestions(json.data || []);
+        setShowSuggestions(true);
+      } catch (error) {
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    }, 400);
+
+  }, [search]);
+
+  /* ─────────────────────────────────────────────
+     CLOSE DROPDOWN ON OUTSIDE CLICK
+  ───────────────────────────────────────────── */
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -88,98 +74,96 @@ export default function SearchFilterBar({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleSuggestionClick = (title: string) => {
+    setSearch(title);
+    setShowSuggestions(false);
+  };
 
   return (
     <div className="w-full bg-[#F6F6F6] border-b border-[#E7E7E7] fixed z-20">
       <div className={`max-w-[1440px] mx-auto px-4 lg:px-[30px] transition-all duration-200 ${isShrunk ? 'py-[8px]' : 'py-[14px]'}`}>
         <div className="flex flex-col sm:flex-row items-stretch gap-3">
 
-          {/* Search input */}
+          {/* SEARCH INPUT */}
           <div
-            className={
-              `relative flex items-center gap-3 bg-white rounded-[5px] border border-[#D1CFCF] flex-1 min-w-0 transition-all duration-200 ` +
-              (isShrunk ? 'px-[10px] py-[6px] h-[40px]' : 'px-[11px] py-[8px] h-[52px]')
-            }
             ref={searchRef}
+            className={`relative flex items-center gap-3 bg-white rounded-[5px] border border-[#D1CFCF] flex-1 min-w-0 transition-all duration-200 ${
+              isShrunk ? 'px-[10px] py-[6px] h-[40px]' : 'px-[11px] py-[8px] h-[52px]'
+            }`}
           >
             <Search size={isShrunk ? 18 : 20} className="text-[#696969] flex-shrink-0" />
+
             <input
               type="text"
               value={search}
-              onChange={handleSearchChange}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Search"
-              className={
-                `flex-1 bg-transparent outline-none text-[#1E1E1E] placeholder-[#696969] min-w-0 ` +
-                (isShrunk ? 'text-[15px]' : 'text-[18px]')
-              }
+              className={`flex-1 bg-transparent outline-none text-[#1E1E1E] placeholder-[#696969] min-w-0 ${
+                isShrunk ? 'text-[15px]' : 'text-[18px]'
+              }`}
             />
-            
-            {/* Autocomplete Dropdown */}
-            {showSuggestions && filteredSuggestions.length > 0 && (
+
+            {/* AUTOCOMPLETE DROPDOWN */}
+            {showSuggestions && suggestions.length > 0 && (
               <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto mt-1">
-                {filteredSuggestions.map((suggestion, index) => (
+                {suggestions.map((item) => (
                   <button
-                    key={index}
-                    onClick={() => handleSuggestionClick(suggestion)}
+                    key={item.id}
+                    onClick={() => handleSuggestionClick(item.Title)}
                     className="w-full text-left px-4 py-2 text-gray-900 hover:bg-gray-100 hover:text-[#1e40af] focus:bg-gray-100 focus:text-[#1e40af] focus:outline-none transition-colors text-sm"
                   >
-                    {suggestion}
+                    {item.Title}
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Dropdowns */}
+          {/* DROPDOWNS */}
           <div className="flex items-center gap-3 flex-shrink-0">
 
-            {/* Category — All */}
-            <div
-              className={
-                `relative flex items-center bg-white rounded-[5px] border border-[#D1CFCF] w-[48%] sm:w-[160px] lg:w-[203px] transition-all duration-200 ` +
-                (isShrunk ? 'px-[10px] h-[40px]' : 'px-[11px] h-[52px]')
-              }
-            >
+            {/* CATEGORY FILTER */}
+            <div className={`relative flex items-center bg-white rounded-[5px] border border-[#D1CFCF] w-[48%] sm:w-[160px] lg:w-[203px] transition-all duration-200 ${
+              isShrunk ? 'px-[10px] h-[40px]' : 'px-[11px] h-[52px]'
+            }`}>
               <select
                 value={filterCategory}
                 onChange={(e) => setFilterCategory(e.target.value)}
-                className={
-                  `w-full bg-transparent outline-none text-[#1E1E1E] appearance-none cursor-pointer pr-5 ` +
-                  (isShrunk ? 'text-[14px]' : 'text-[16px]')
-                }
+                className={`w-full bg-transparent outline-none text-[#1E1E1E] appearance-none cursor-pointer pr-5 ${
+                  isShrunk ? 'text-[14px]' : 'text-[16px]'
+                }`}
               >
-                {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+                <option>All</option>
+                <option>News</option>
+                <option>Stocks</option>
               </select>
               <ChevronDown size={isShrunk ? 12 : 14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#696969] pointer-events-none" />
             </div>
 
-            {/* Sort — Newest */}
-            <div
-              className={
-                `relative flex items-center bg-white rounded-[5px] border border-[#D1CFCF] w-[48%] sm:w-[160px] lg:w-[203px] transition-all duration-200 ` +
-                (isShrunk ? 'px-[10px] h-[40px]' : 'px-[11px] h-[52px]')
-              }
-            >
+            {/* SORT FILTER */}
+            <div className={`relative flex items-center bg-white rounded-[5px] border border-[#D1CFCF] w-[48%] sm:w-[160px] lg:w-[203px] transition-all duration-200 ${
+              isShrunk ? 'px-[10px] h-[40px]' : 'px-[11px] h-[52px]'
+            }`}>
               <select
                 value={filterSort}
                 onChange={(e) => setFilterSort(e.target.value)}
-                className={
-                  `w-full bg-transparent outline-none text-[#1E1E1E] appearance-none cursor-pointer pr-5 ` +
-                  (isShrunk ? 'text-[14px]' : 'text-[16px]')
-                }
+                className={`w-full bg-transparent outline-none text-[#1E1E1E] appearance-none cursor-pointer pr-5 ${
+                  isShrunk ? 'text-[14px]' : 'text-[16px]'
+                }`}
               >
                 <option>Newest</option>
                 <option>Oldest</option>
-                <option>Most Viewed</option>
                 <option>A–Z</option>
               </select>
               <ChevronDown size={isShrunk ? 12 : 14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#696969] pointer-events-none" />
             </div>
 
           </div>
+
         </div>
       </div>
     </div>

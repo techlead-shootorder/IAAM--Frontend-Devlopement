@@ -5,18 +5,20 @@ import Footer from '@/components/FooterNew';
 import SecureCloudflareVideo from '@/components/WebTalk/SecureCloudflareVideo';
 import Breadcrumb from '@/components/common/Breadcrumb';
 
+const BASE_URL = "https://admin.iaamonline.org/api";
+
 /* ────────────────────────────────────────────────────────────────
    Types
 ──────────────────────────────────────────────────────────────── */
-interface VideoCardProps {
-  thumbnail: string;
-  duration?: string;
-  title: string;
-  author: string;
-  date: string;
-  views: string;
-  category: string;
-  videoId: string;
+
+interface StrapiVideo {
+  id: number;
+  Title: string;
+  Description: any;
+  HostName: string;
+  VideoCategory: string;
+  VideoID: string;
+  createdAt: string;
 }
 
 interface CloudflareVideoResult {
@@ -25,57 +27,86 @@ interface CloudflareVideoResult {
   duration: number;
   meta: {
     name: string;
-    filename: string;
   };
   created: string;
-  readyToStream: boolean;
-  playback: {
-    hls: string;
-    dash: string;
-  };
 }
 
-async function fetchCloudflareVideo(videoId: string): Promise<CloudflareVideoResult | null> {
+/* ────────────────────────────────────────────────────────────────
+   Fetch Single Video
+──────────────────────────────────────────────────────────────── */
+
+async function getVideoByVideoId(videoId: string) {
+  const res = await fetch(
+    `${BASE_URL}/vedios?filters[VideoID][$eq]=${videoId}`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) throw new Error("Failed to fetch video");
+
+  const json = await res.json();
+  return json.data[0] as StrapiVideo;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Fetch Related Videos
+──────────────────────────────────────────────────────────────── */
+
+async function getRelatedVideos(category: string, currentVideoId: string) {
+  const res = await fetch(
+    `${BASE_URL}/vedios?filters[VideoCategory][$eqi]=${encodeURIComponent(category)}`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) throw new Error("Failed to fetch related videos");
+
+  const json = await res.json();
+
+  return (json.data as StrapiVideo[]).filter(
+    (video) => video.VideoID !== currentVideoId
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Fetch Cloudflare Video
+──────────────────────────────────────────────────────────────── */
+
+async function fetchCloudflareVideo(videoId: string) {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
   const apiToken = process.env.CLOUDFLARE_API_TOKEN;
 
-  if (!accountId || !apiToken) {
-    console.error('Missing CLOUDFLARE_ACCOUNT_ID or CLOUDFLARE_API_TOKEN env vars');
-    return null;
-  }
+  if (!accountId || !apiToken) return null;
 
-  try {
-    const res = await fetch(
-      `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${videoId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${apiToken}`,
-          'Content-Type': 'application/json',
-        },
-        next: { revalidate: 60 },
-      }
-    );
-
-    if (!res.ok) {
-      console.error(`Cloudflare API error: ${res.status} ${res.statusText}`);
-      return null;
+  const res = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${videoId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        'Content-Type': 'application/json',
+      },
+      next: { revalidate: 60 },
     }
+  );
 
-    const json = await res.json();
-    if (!json.success) return null;
+  if (!res.ok) return null;
 
-    return json.result as CloudflareVideoResult;
-  } catch (err) {
-    console.error('Failed to fetch Cloudflare video:', err);
-    return null;
-  }
+  const json = await res.json();
+  if (!json.success) return null;
+
+  return json.result as CloudflareVideoResult;
 }
+
+/* ────────────────────────────────────────────────────────────────
+   Helpers
+──────────────────────────────────────────────────────────────── */
 
 function formatDuration(seconds: number): string {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = Math.floor(seconds % 60);
-  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+  if (h > 0)
+    return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
@@ -87,20 +118,39 @@ function formatDate(iso: string): string {
   });
 }
 
+function renderDescription(desc: any) {
+  if (!desc) return null;
+
+  return desc.map((block: any, index: number) => {
+    if (block.type === "paragraph") {
+      return (
+        <p key={index} className="text-[#333333] text-[16px] sm:text-[18px] leading-relaxed opacity-90">
+          {block.children?.map((child: any) => child.text).join("")}
+        </p>
+      );
+    }
+    return null;
+  });
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Video Card (Related)
+──────────────────────────────────────────────────────────────── */
+
 function VideoCard({
   thumbnail,
-  duration = '05:32',
+  duration,
   title,
   author,
   date,
-  views,
   category,
   videoId,
-}: VideoCardProps) {
+}: any) {
   return (
     <Link href={`/web-talks/${encodeURIComponent(category)}/${videoId}`}>
       <div className="bg-white rounded-[10px] shadow-[2.7px_5.4px_25.6px_rgba(0,0,0,0.10)] overflow-hidden ring-[8px] ring-white flex flex-col group cursor-pointer hover:shadow-[2.7px_5.4px_40px_rgba(0,0,0,0.16)] transition-shadow duration-300">
-        <div className="relative w-full aspect-[449/269] bg-[#F3F3F3] overflow-hidden flex-shrink-0">
+
+        <div className="relative w-full aspect-[449/269] bg-[#F3F3F3] overflow-hidden">
           <Image
             src={thumbnail}
             alt={title}
@@ -108,105 +158,66 @@ function VideoCard({
             className="object-cover group-hover:scale-105 transition-transform duration-500"
             unoptimized
           />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-[56px] h-[56px] rounded-full bg-white/90 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-200">
-              <div
-                className="w-0 h-0 ml-[4px]"
-                style={{
-                  borderTop: '10px solid transparent',
-                  borderBottom: '10px solid transparent',
-                  borderLeft: '17px solid #1C3E9C',
-                }}
-              />
-            </div>
-          </div>
+
           <div className="absolute bottom-[10px] right-[11px] bg-[#202020]/90 rounded-[3px] px-[11px] py-[6px]">
-            <span className="text-white text-[14px] tracking-[0.27px]">{duration}</span>
+            <span className="text-white text-[14px] tracking-[0.27px]">
+              {duration}
+            </span>
           </div>
         </div>
 
-        <div className="px-[18px] pt-[10px] pb-[18px] flex flex-col gap-4 flex-1">
-          <h3 className="text-[#1E1E1E] text-[18px] lg:text-[20px] font-bold leading-snug tracking-[0.30px] line-clamp-2 min-h-[50px]">
+        <div className="px-[18px] pt-[10px] pb-[18px] flex flex-col gap-4">
+          <h3 className="text-[#1E1E1E] text-[18px] lg:text-[20px] font-bold leading-snug tracking-[0.30px] line-clamp-2">
             {title}
           </h3>
-          <div className="flex flex-col gap-[18px] mt-auto">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-[6px] text-[#333333] text-[14px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90">
-                <User size={18} strokeWidth={2} className="flex-shrink-0 text-[#1E1E1E]" />
-                {author}
-              </span>
-              <span className="flex items-center gap-[6px] text-[#333333] text-[14px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90">
-                <Calendar size={18} strokeWidth={2.25} className="flex-shrink-0" />
-                {date}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-[6px] text-[#333333] text-[14px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90">
-                <Eye size={18} strokeWidth={2.25} className="flex-shrink-0" />
-                {views}
-              </span>
-              <span className="px-[10px] py-[7px] bg-[rgba(28,62,156,0.05)] rounded-[27px] text-[#1C3E9C] text-[13px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90 whitespace-nowrap">
-                {category}
-              </span>
-            </div>
+
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-[6px] text-[#333333] text-[14px] opacity-90">
+              <User size={18} />
+              {author}
+            </span>
+
+            <span className="flex items-center gap-[6px] text-[#333333] text-[14px] opacity-90">
+              <Calendar size={18} />
+              {date}
+            </span>
           </div>
+
+          <span className="px-[10px] py-[7px] bg-[rgba(28,62,156,0.05)] rounded-[27px] text-[#1C3E9C] text-[13px] capitalize">
+            {category}
+          </span>
         </div>
       </div>
     </Link>
   );
 }
 
-const RELATED_VIDEOS: VideoCardProps[] = [
-  {
-    thumbnail: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=500&q=80',
-    duration: '05:32',
-    title: 'Shaping the Future of Advanced Materials — Together',
-    author: 'Dr. John Smith',
-    date: 'Dec 14, 2023',
-    views: '12.2K Views',
-    category: 'Research Highlights',
-    videoId: 'ba9870a482ae23109e437e6d56e53242',
-  },
-  {
-    thumbnail: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=500&q=80',
-    duration: '05:32',
-    title: 'Shaping the Future of Advanced Materials — Together',
-    author: 'Dr. John Smith',
-    date: 'Dec 14, 2023',
-    views: '12.2K Views',
-    category: 'Research Highlights',
-    videoId: 'different-video-id-1',
-  },
-  {
-    thumbnail: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&q=80',
-    duration: '05:32',
-    title: 'Shaping the Future of Advanced Materials — Together',
-    author: 'Dr. John Smith',
-    date: 'Dec 14, 2023',
-    views: '12.2K Views',
-    category: 'Research Highlights',
-    videoId: 'different-video-id-2',
-  },
-];
+/* ────────────────────────────────────────────────────────────────
+   MAIN PAGE
+──────────────────────────────────────────────────────────────── */
 
-export default async function WebTalksDetailPage({
-  params,
-}: {
+export default async function WebTalksDetailPage(props: {
   params: Promise<{ category: string; videoId: string }>;
 }) {
-  const { category, videoId } = await params;
+  const { category, videoId } = await props.params;
 
+  const decodedCategory = decodeURIComponent(category);
+
+  const strapiVideo = await getVideoByVideoId(videoId);
+  const relatedVideos = await getRelatedVideos(decodedCategory, videoId);
   const cfVideo = await fetchCloudflareVideo(videoId);
 
-  const title = cfVideo?.meta?.name?.replace(/\.[^/.]+$/, '') ?? 'Untitled Video';
-  const duration = cfVideo ? formatDuration(cfVideo.duration) : '—';
-  const createdAt = cfVideo ? formatDate(cfVideo.created) : '—';
-  const decodedCategory = decodeURIComponent(category);
+  const title = strapiVideo?.Title ?? "Untitled Video";
+  const description = strapiVideo?.Description;
+  const author = strapiVideo?.HostName ?? "Host";
+  const createdAt = formatDate(strapiVideo?.createdAt);
+  const duration = cfVideo ? formatDuration(cfVideo.duration) : "—";
 
   return (
     <>
       <main className="flex-1 bg-white">
         <div className="max-w-[1440px] mx-auto px-4 lg:px-[30px] py-10">
+
           <div className="lg:pt-8 pt-28 pb-4 translate-x-[-20px]">
             <Breadcrumb
               items={[
@@ -218,63 +229,94 @@ export default async function WebTalksDetailPage({
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-[31px] mb-[80px]">
-            <div className="w-full lg:w-[696px] flex-shrink-0">
-              <div className="bg-[#F2F0F0] rounded-[12px] overflow-hidden aspect-video touch-manipulation">
+
+            <div className="w-full lg:w-[696px]">
+              <div className="bg-[#F2F0F0] rounded-[12px] overflow-hidden aspect-video">
                 <SecureCloudflareVideo videoId={videoId} />
               </div>
             </div>
 
             <div className="flex-1 flex flex-col gap-[20px]">
-              <div className="flex flex-col gap-4">
-                <div className="inline-flex">
-                  <span className="px-[10px] py-[7px] bg-[rgba(28,62,156,0.05)] rounded-[27px] text-[#1C3E9C] text-[16px] capitalize tracking-[0.24px] opacity-87">
-                    {decodedCategory}
-                  </span>
-                </div>
 
-                <div className="flex flex-col gap-4">
-                  <h1 className="text-[#1E1E1E] text-[24px] sm:text-[28px] font-bold leading-tight tracking-[0.42px]">
-                    {title}
-                  </h1>
-                </div>
+              <div className="inline-flex">
+                <span className="px-[10px] py-[7px] bg-[rgba(28,62,156,0.05)] rounded-[27px] text-[#1C3E9C] text-[16px] capitalize">
+                  {decodedCategory}
+                </span>
+              </div>
+
+              <h1 className="text-[#1E1E1E] text-[24px] sm:text-[28px] font-bold leading-tight tracking-[0.42px]">
+                {title}
+              </h1>
+
+              <div className="flex flex-col gap-4 mt-4">
+                {renderDescription(description)}
               </div>
 
               <div className="flex flex-col gap-[15px]">
+
                 <div className="flex items-center gap-[6px]">
-                  <Calendar size={20} strokeWidth={2.25} className="text-[#333333] flex-shrink-0" />
-                  <span className="text-[#333333] text-[16px] sm:text-[18px] capitalize tracking-[0.27px] opacity-87">
+                  <User size={20} className="text-[#333333]" />
+                  <span className="text-[#333333] text-[16px] sm:text-[18px] opacity-90">
+                    {author}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-[6px]">
+                  <Calendar size={20} className="text-[#333333]" />
+                  <span className="text-[#333333] text-[16px] sm:text-[18px] opacity-90">
                     {createdAt}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-[6px]">
-                  <Clock size={20} strokeWidth={2.25} className="text-[#333333] flex-shrink-0" />
-                  <span className="text-[#333333] text-[16px] sm:text-[18px] capitalize tracking-[0.27px] opacity-87">
+                  <Clock size={20} className="text-[#333333]" />
+                  <span className="text-[#333333] text-[16px] sm:text-[18px] opacity-90">
                     {duration}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-[6px]">
-                  <Eye size={20} strokeWidth={2.25} className="text-[#333333] flex-shrink-0" />
-                  <span className="text-[#333333] text-[16px] sm:text-[18px] capitalize tracking-[0.27px] opacity-87">
+                  <Eye size={20} className="text-[#333333]" />
+                  <span className="text-[#333333] text-[16px] sm:text-[18px] opacity-90">
                     0 Views
                   </span>
                 </div>
               </div>
+
+              {/* DESCRIPTION */}
+              
+
             </div>
           </div>
 
+          {/* RELATED VIDEOS */}
           <section className="flex flex-col gap-10 pb-[90px]">
             <h2 className="text-[#1E1E1E] text-[22px] sm:text-[28px] font-bold tracking-[0.42px]">
               Related Videos
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {RELATED_VIDEOS.map((v, i) => (
-                <VideoCard key={i} {...v} />
-              ))}
+              {await Promise.all(
+                relatedVideos.slice(0, 3).map(async (video) => {
+                  const cf = await fetchCloudflareVideo(video.VideoID);
+
+                  return (
+                    <VideoCard
+                      key={video.id}
+                      thumbnail={cf?.thumbnail || "/placeholder.jpg"}
+                      duration={cf ? formatDuration(cf.duration) : "—"}
+                      title={video.Title}
+                      author={video.HostName}
+                      date={formatDate(video.createdAt)}
+                      category={video.VideoCategory}
+                      videoId={video.VideoID}
+                    />
+                  );
+                })
+              )}
             </div>
           </section>
+
         </div>
       </main>
 
