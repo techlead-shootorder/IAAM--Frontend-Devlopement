@@ -210,6 +210,7 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
                   isShrunk ? 'w-[46px] sm:w-[56px] lg:w-[64px]' : 'w-[80px] sm:w-[110px] lg:w-[140px]'
                 }`}
               >
+                <Link href="/">
                 <LazyImage
                   src="/1704818354IAAM-Logo-SVG 1.svg"
                   alt="IAAM Logo"
@@ -218,6 +219,7 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
                   className="w-full h-auto object-contain"
                   priority
                 />
+              </Link>
               </div>
 
               <div className="min-w-0">
