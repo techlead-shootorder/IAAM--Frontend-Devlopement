@@ -1,184 +1,221 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Footer() {
+const API =
+  process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, "") ||
+  "https://admin.iaamonline.org";
+
+/* =========================================================
+   FETCH MENU SECTIONS
+========================================================= */
+
+async function getFooterMenus() {
+  const res = await fetch(
+    `${API}/api/menu-sections?filters[MenuPlacement][$eq]=Footer&populate[Links][populate]=Sublinks`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) return [];
+
+  const json = await res.json();
+  return json?.data || [];
+}
+
+/* =========================================================
+   FETCH CONTACT DATA
+========================================================= */
+
+async function getContactData() {
+  const res = await fetch(
+    `${API}/api/generals?populate[Communication][populate]=IconImage&populate[SocialMedia][populate]=PlatformLogo&populate[WeChat][populate]=Image`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) return null;
+
+  const json = await res.json();
+  return json?.data?.[0] || null;
+}
+
+/* =========================================================
+   MAIN COMPONENT
+========================================================= */
+
+export default async function Footer() {
+  const menus = await getFooterMenus();
+  const general = await getContactData();
+
+  const normalize = (str: string) =>
+    str?.replace(/\u200B/g, "").trim();
+
+  const getSection = (title: string) =>
+    menus.find(
+      (m: any) => normalize(m.Title) === normalize(title)
+    );
+
   return (
-    <footer className="w-full bg-white border-t border-border pt-12">
-      <div className="max-w-[1440px] mx-auto px-[30px]">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-[14px] gap-y-10">
-          
-          {/* Column 1 */}
+    <footer className="w-full bg-white border-t pt-14">
+      <div className="max-w-[1440px] mx-auto px-[20px]">
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-[20px] gap-y-10">
+
+          {/* ================= COLUMN 1 ================= */}
           <div className="flex flex-col gap-10">
-            <FooterSection title="Advance Material Congress" links={[
-              "About IAAM​","Vision, Mission & Values​","Leadership & Governance​","Global Presence​",
-              "Our Impact","IAAM Structure (Societies, Councils & Institutes)","IAAM Divisions",
-              "History & Milestones​","Ethics, Integrity & Compliance​","Donation Options​",
-            ]}/>
-            <FooterSection title="What we do" links={[
-              "Research & Innovation","Net-Zero & Sustainability","Programs & Initiatives",
-              "Innovation & Technology Transfer","Education & Training","Policy & Strategy Engagement",
-            ]}/>
-            <FooterSection title="Engage with IAAM" links={[
-              "Partner with IAAM​","Propose a Program or Society","Host an IAAM Event",
-              "Volunteer & Ambassador Program​","Careers & Opportunities​",
-            ]}/>
+            <FooterSection section={getSection("Advance Material Congress")} />
+            <FooterSection section={getSection("What we do")} />
+            <FooterSection section={getSection("Engage with IAAM")} />
           </div>
 
-          {/* Column 2 */}
+          {/* ================= COLUMN 2 ================= */}
           <div className="flex flex-col gap-10">
-            <FooterSection title="Membership" links={[
-              "Membership Overview","Join IAAM","IAAM Fellow Club​","IAAM Societies",
-              "National & Regional Councils​","Student & Young Researcher Chapters​",
-              "Industry & Institutional","Membership",
-            ]}/>
-            <FooterSection title="Community" links={[
-              "Advanced Materials Society​","Broadening Participation​","Shared Interest Groups​",
-              "Student Engagement​","Volunteer with IAAM​","University Chapters",
-              "Industry Chapters","Policy & Governance Chapters​",
-            ]}/>
+            <FooterSection section={getSection("Membership")} />
+            <FooterSection section={getSection("Community")} />
           </div>
 
-          {/* Column 3 */}
+          {/* ================= COLUMN 3 ================= */}
           <div className="flex flex-col gap-10">
-            <FooterSection title="Meetings, Knowledge & Publishing​" links={[
-              "Conferences & Congresses​","Upcoming Events​","Call for Abstracts​",
-              "WebTalks & Lecture Series​","Journals & Proceedings​",
-              "Video Proceedings of Advanced Materials​",
-            ]}/>
-            <FooterSection title="Research, Innovation & Net-Zero" links={[
-              "Research & Development​","Innovation & Technology","Transfer",
-              "Net-Zero & Sustainability","Climate-Neutral Materials Initiative",
-              "Centres of Excellence","Translational Research","Programs",
-              "Focus on Sustainability","Advocacy","Sustainability Charters​",
-            ]}/>
+            <FooterSection section={getSection("Meetings, Knowledge & Publishing")} />
+            <FooterSection section={getSection("Research, Innovation & Net-Zero")} />
           </div>
 
-          {/* Column 4 */}
+          {/* ================= COLUMN 4 ================= */}
           <div className="flex flex-col gap-10">
-            <FooterSection title="Recognition & Engagement​" links={[
-              "Awards & Recognition​","Fellowships & Honors​","Nominate Excellence​",
-              "Partner with IAAM​","Host an IAAM Event​","Volunteer & Ambassador​",
-              "Local Sections​","Industry Resources​","International Chapters​",
-              "International Resources​","Student Chapters​","High School Club",
-            ]}/>
-            <FooterSection title="Funding and Undertakings​" links={[
-              "Funding Opportunities​","Grant Recipients​","Net Zero Technology​",
-              "Donor Recognition​","Low Carbon Roundtables​",
-            ]}/>
-            <FooterSection title="Learn Advanced Materials​" links={[
-              "Articles​","IAAM Symposium & Webinars​","Sustainability & Net-Zero​",
-              "Safety","Advanced Matters Podcast","News Releases",
-              "Reactions Videos​","Materials History Landmarks​","Headline Materials​",
-            ]}/>
+            <FooterSection section={getSection("Recognition & Engagement")} />
+            <FooterSection section={getSection("Funding and Undertakings")} />
+            <FooterSection section={getSection("Learn Advanced Materials")} />
           </div>
 
-          {/* Column 5 */}
+          {/* ================= COLUMN 5 ================= */}
           <div className="flex flex-col gap-10">
-            <FooterSection title="Contact & Connect" links={[
-              "Contact Us","Secretariat Offices","Email & Phone",
-              "Newsletter Subscription",
-              "LinkedIn | X | WeChat | YouTube | Blog | Podcast",
-            ]}/>
-            <FooterSection title="Legal & Policies" links={[
-              "Privacy Policy","Terms & Conditions​","Cookie Policy",
-              "Data Protection (GDPR)","Accessibility Statement",
-            ]}/>
-            <FooterSection title="Resources​" links={[
-              "News & Press Releases","Media Kit","Reports & Roadmaps",
-              "FAQs","Sitemap​",
-            ]}/>
+            <FooterSection section={getSection("Contact & Connect")} />
+            <FooterSection section={getSection("Legal & Policies")} />
+            <FooterSection section={getSection("Resources")} />
+
+            <ContactInfo general={general} />
           </div>
+
         </div>
       </div>
-
-{/* ===== EXACT MATCH BLUE SECTION ===== */}
-<div className="w-full bg-black/70 mt-16">
-  <div className="max-w-[1440px] mx-auto px-6 md:px-[30px] py-6 relative">
-
-    {/* RIGHT WATERMARK LOGO */}
-    <div className="absolute right-6 top-1/2 -translate-y-1/2 hidden md:block">
-      <Link href="/">
-        <Image
-          src="/1704818354IAAM-Logo-SVG 1 (2).svg"
-          alt="IAAM Logo"
-          width={90}
-          height={80}
-          className="object-contain"
-          priority
-        />
-      </Link>
-    </div>
-
-    {/* CENTER CONTENT */}
-    <div className="flex flex-col items-center text-center gap-3">
-
-      {/* LEGAL LINKS */}
-      <div className="flex flex-wrap justify-center items-center text-white font-semibold text-[15px] md:text-[16px] tracking-wide">
-
-        <span className="hover:underline cursor-pointer px-2">
-          Legal Information
-        </span>
-
-        <span className="px-2 opacity-70">|</span>
-
-        <span className="hover:underline cursor-pointer px-2">
-          Privacy Statement
-        </span>
-
-        <span className="px-2 opacity-70">|</span>
-
-        <span className="hover:underline cursor-pointer px-2">
-          Accessibility Statement
-        </span>
-
-        <span className="px-2 opacity-70">|</span>
-
-        <span className="hover:underline cursor-pointer px-2">
-          Cookie Settings
-        </span>
-
-      </div>
-
-      {/* COPYRIGHT TEXT */}
-      <p className="text-white text-[13.5px] md:text-[14px] opacity-90 leading-relaxed max-w-[900px]">
-        © International Association of Advanced Materials.
-        All rights reserved.
-      </p>
-
-    </div>
-    <p className="text-center text-white text-[13.5px] md:text-[14px]">
-        IAAM is a global, non-profit scientific organization dedicated to advancing
-        materials science, engineering, and technology for the benefit of society.
-      </p>
-  </div>
-</div>
     </footer>
   );
 }
 
-/* ========================= */
+/* =========================================================
+   FOOTER SECTION
+========================================================= */
 
-const FooterSection = ({
-  title,
-  links,
-}: {
-  title: string;
-  links: string[];
-}) => (
-  <div className="flex flex-col gap-3">
-    <h3 className="font-bold text-[18px] text-[#1C3E9C] capitalize tracking-[0.27px]">
-      {title}
-    </h3>
+function FooterSection({ section }: any) {
+  if (!section) return null;
+
+  return (
     <div className="flex flex-col gap-2">
-      {links.map((link, i) => (
-        <a
-          key={i}
-          href="#"
-          className="text-[16px] text-[#1E1E1E] opacity-[0.87] capitalize tracking-[0.24px] hover:text-[#1C3E9C] hover:opacity-100 transition"
-        >
-          {link}
-        </a>
-      ))}
+      <h3 className="font-bold text-[16px] text-[#1C3E9C]">
+        {section.Title}
+      </h3>
+
+      <div className="flex flex-col gap-2">
+        {section.Links?.map((link: any) => (
+          <Link
+            key={link.id}
+            href={link.LinkURL || "#"}
+            className="text-[15px] text-[#1E1E1E] opacity-90 hover:text-[#1C3E9C]"
+          >
+            {link.LinkTitle}
+          </Link>
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+}
+
+/* =========================================================
+   CONTACT INFO (EXACT MATCH POSITIONING)
+========================================================= */
+
+function ContactInfo({ general }: any) {
+  if (!general) return null;
+
+  const communication = general?.Communication || [];
+  const social = general?.SocialMedia || [];
+  const weChat = general?.WeChat;
+
+  return (
+    <div className="flex flex-col gap-4">
+
+      <h3 className="font-bold text-[15px] text-[#1C3E9C]">
+        Contact Info
+      </h3>
+
+      {communication.map((item: any) => {
+        const icon = item?.IconImage?.url
+          ? API + item.IconImage.url
+          : null;
+
+        return (
+          <div key={item.id} className="flex items-start gap-3">
+            {icon && (
+              <Image
+                src={icon}
+                alt=""
+                width={18}
+                height={18}
+                unoptimized
+              />
+            )}
+            <div className="text-[14px] leading-snug">
+              <p className="font-medium text-[#1E1E1E]">
+                {item.Label}
+              </p>
+              <p className="text-[#1E1E1E] opacity-90">
+                {item.Description}
+              </p>
+            </div>
+          </div>
+        );
+      })}
+
+      <div className="flex gap-8 items-start">
+
+        {weChat?.Image?.url && (
+          <div>
+            <p className="font-bold text-[#1C3E9C] mb-2">
+              {weChat.Title}
+            </p>
+            <Image
+              src={API + weChat.Image.url}
+              alt="WeChat"
+              width={75}
+              height={75}
+              unoptimized
+            />
+          </div>
+        )}
+
+        <div>
+          <p className="font-bold text-[#1C3E9C] mb-2">
+            Follow Us On
+          </p>
+
+          <div className="flex gap-1">
+            {social.map((s: any) => (
+              <Link
+                key={s.id}
+                href={s.PlatformNameLink || "#"}
+                className="w-7 h-7 border border-gray-300 rounded-full flex items-center justify-center"
+              >
+                <Image
+                  src={API + s.PlatformLogo.url}
+                  alt={s.PlatformName}
+                  width={14}
+                  height={14}
+                  unoptimized
+                />
+              </Link>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
