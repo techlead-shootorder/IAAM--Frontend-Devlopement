@@ -22,12 +22,12 @@ async function getFooterMenus() {
 }
 
 /* =========================================================
-   FETCH CONTACT DATA
+   FETCH CONTACT DATA (INCLUDING LEGAL)
 ========================================================= */
 
 async function getContactData() {
   const res = await fetch(
-    `${API}/api/generals?populate[Communication][populate]=IconImage&populate[SocialMedia][populate]=PlatformLogo&populate[WeChat][populate]=Image`,
+    `${API}/api/generals?populate[Communication][populate]=IconImage&populate[SocialMedia][populate]=PlatformLogo&populate[WeChat][populate]=Image&populate[Legal]=true`,
     { cache: "no-store" }
   );
 
@@ -55,37 +55,38 @@ export default async function Footer() {
 
   return (
     <footer className="w-full bg-white border-t pt-14">
+
       <div className="max-w-[1440px] mx-auto px-[20px]">
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-[20px] gap-y-10">
 
-          {/* ================= COLUMN 1 ================= */}
+          {/* COLUMN 1 */}
           <div className="flex flex-col gap-10">
             <FooterSection section={getSection("Advance Material Congress")} />
             <FooterSection section={getSection("What we do")} />
             <FooterSection section={getSection("Engage with IAAM")} />
           </div>
 
-          {/* ================= COLUMN 2 ================= */}
+          {/* COLUMN 2 */}
           <div className="flex flex-col gap-10">
             <FooterSection section={getSection("Membership")} />
             <FooterSection section={getSection("Community")} />
           </div>
 
-          {/* ================= COLUMN 3 ================= */}
+          {/* COLUMN 3 */}
           <div className="flex flex-col gap-10">
             <FooterSection section={getSection("Meetings, Knowledge & Publishing")} />
             <FooterSection section={getSection("Research, Innovation & Net-Zero")} />
           </div>
 
-          {/* ================= COLUMN 4 ================= */}
+          {/* COLUMN 4 */}
           <div className="flex flex-col gap-10">
             <FooterSection section={getSection("Recognition & Engagement")} />
             <FooterSection section={getSection("Funding and Undertakings")} />
             <FooterSection section={getSection("Learn Advanced Materials")} />
           </div>
 
-          {/* ================= COLUMN 5 ================= */}
+          {/* COLUMN 5 */}
           <div className="flex flex-col gap-10">
             <FooterSection section={getSection("Contact & Connect")} />
             <FooterSection section={getSection("Legal & Policies")} />
@@ -96,6 +97,71 @@ export default async function Footer() {
 
         </div>
       </div>
+
+      {/* ===== EXACT MATCH GRAY SECTION (ORIGINAL LAYOUT) ===== */}
+<div className="w-full bg-black/70 mt-16">
+  <div className="max-w-[1440px] mx-auto px-6 md:px-[30px] py-6 relative">
+
+    {/* RIGHT WATERMARK LOGO */}
+    <div className="absolute right-6 top-1/2 -translate-y-1/2 hidden md:block">
+      <Link href="/">
+        <Image
+          src="/1704818354IAAM-Logo-SVG 1 (2).svg"
+          alt="IAAM Logo"
+          width={90}
+          height={80}
+          className="object-contain"
+          priority
+        />
+      </Link>
+    </div>
+
+    {/* CENTER CONTENT */}
+    <div className="flex flex-col items-center text-center gap-3">
+
+      {/* LEGAL LINKS */}
+      <div className="flex flex-wrap justify-center items-center text-white font-semibold text-[15px] md:text-[16px] tracking-wide">
+
+        {general?.Legal?.map((item: any, index: number) => (
+          <span key={item.id} className="flex items-center">
+
+            {item.LabelLink ? (
+              <Link
+                href={item.LabelLink}
+                className="hover:underline cursor-pointer px-2"
+              >
+                {item.Label}
+              </Link>
+            ) : (
+              <span className="px-2">{item.Label}</span>
+            )}
+
+            {index !== general.Legal.length - 1 && (
+              <span className="px-2 opacity-70">|</span>
+            )}
+
+          </span>
+        ))}
+
+      </div>
+
+      {/* COPYRIGHT TEXT */}
+      <p className="text-white text-[13.5px] md:text-[14px] opacity-90 leading-relaxed max-w-[900px]">
+        © International Association of Advanced Materials.
+        All rights reserved.
+      </p>
+
+    </div>
+
+    {/* BELOW DESCRIPTION LINE (FULL WIDTH CENTER) */}
+    <p className="text-center text-white text-[13.5px] md:text-[14px] opacity-90">
+      IAAM is a global, non-profit scientific organization dedicated to advancing
+      materials science, engineering, and technology for the benefit of society.
+    </p>
+
+  </div>
+</div>
+
     </footer>
   );
 }
@@ -129,7 +195,7 @@ function FooterSection({ section }: any) {
 }
 
 /* =========================================================
-   CONTACT INFO (EXACT MATCH POSITIONING)
+   CONTACT INFO
 ========================================================= */
 
 function ContactInfo({ general }: any) {
