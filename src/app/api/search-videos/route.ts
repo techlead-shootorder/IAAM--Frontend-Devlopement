@@ -34,6 +34,7 @@ export async function GET(req: Request) {
       data: json.data || [],
     });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ data: [] });
   }
 }

@@ -30,11 +30,32 @@ export default function SearchFilterBar({
 
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<VideoItem[]>([]);
+  const [categories, setCategories] = useState<string[]>(["All"]);
   const searchRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   /* ─────────────────────────────────────────────
-     FETCH SUGGESTIONS FROM STRAPI
+     FETCH CATEGORY OPTIONS FROM STRAPI
+  ───────────────────────────────────────────── */
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch("/api/video-filters");
+        const json = await res.json();
+        if (json.categories) {
+          setCategories(json.categories);
+        }
+      } catch (error) {
+        setCategories(["All"]);
+      }
+    }
+
+    fetchCategories();
+  }, []);
+
+  /* ─────────────────────────────────────────────
+     FETCH SEARCH SUGGESTIONS
   ───────────────────────────────────────────── */
 
   useEffect(() => {
@@ -52,7 +73,6 @@ export default function SearchFilterBar({
       try {
         const res = await fetch(`/api/search-videos?q=${encodeURIComponent(search)}`);
         const json = await res.json();
-
         setSuggestions(json.data || []);
         setShowSuggestions(true);
       } catch (error) {
@@ -64,7 +84,7 @@ export default function SearchFilterBar({
   }, [search]);
 
   /* ─────────────────────────────────────────────
-     CLOSE DROPDOWN ON OUTSIDE CLICK
+     CLOSE SUGGESTIONS ON OUTSIDE CLICK
   ───────────────────────────────────────────── */
 
   useEffect(() => {
@@ -107,14 +127,13 @@ export default function SearchFilterBar({
               }`}
             />
 
-            {/* AUTOCOMPLETE DROPDOWN */}
             {showSuggestions && suggestions.length > 0 && (
               <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto mt-1">
                 {suggestions.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => handleSuggestionClick(item.Title)}
-                    className="w-full text-left px-4 py-2 text-gray-900 hover:bg-gray-100 hover:text-[#1e40af] focus:bg-gray-100 focus:text-[#1e40af] focus:outline-none transition-colors text-sm"
+                    className="w-full text-left px-4 py-2 text-gray-900 hover:bg-gray-100 hover:text-[#1e40af] transition-colors text-sm"
                   >
                     {item.Title}
                   </button>
@@ -123,7 +142,7 @@ export default function SearchFilterBar({
             )}
           </div>
 
-          {/* DROPDOWNS */}
+          {/* FILTER DROPDOWNS */}
           <div className="flex items-center gap-3 flex-shrink-0">
 
             {/* CATEGORY FILTER */}
@@ -137,14 +156,15 @@ export default function SearchFilterBar({
                   isShrunk ? 'text-[14px]' : 'text-[16px]'
                 }`}
               >
-                <option>All</option>
-                <option>News</option>
-                <option>Stocks</option>
+                {categories.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
               </select>
+
               <ChevronDown size={isShrunk ? 12 : 14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#696969] pointer-events-none" />
             </div>
 
-            {/* SORT FILTER */}
+            {/* SORT FILTER (can also be dynamic later) */}
             <div className={`relative flex items-center bg-white rounded-[5px] border border-[#D1CFCF] w-[48%] sm:w-[160px] lg:w-[203px] transition-all duration-200 ${
               isShrunk ? 'px-[10px] h-[40px]' : 'px-[11px] h-[52px]'
             }`}>
@@ -159,11 +179,11 @@ export default function SearchFilterBar({
                 <option>Oldest</option>
                 <option>A–Z</option>
               </select>
+
               <ChevronDown size={isShrunk ? 12 : 14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#696969] pointer-events-none" />
             </div>
 
           </div>
-
         </div>
       </div>
     </div>

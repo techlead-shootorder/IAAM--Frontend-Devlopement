@@ -48,7 +48,7 @@ function VideoCard({ video }: any) {
             <div className="flex items-center justify-between">
               <span className="flex items-center gap-[6px] text-[#333333] text-[14px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90">
                 <Eye size={18} strokeWidth={2.25} />
-                -- Views
+                {video.Views || 0} Views
               </span>
               <span className="px-[10px] py-[7px] bg-[rgba(28,62,156,0.05)] rounded-[27px] text-[#1C3E9C] text-[13px] lg:text-[16px] capitalize tracking-[0.24px] opacity-90 whitespace-nowrap">
                 {video.VideoCategory}

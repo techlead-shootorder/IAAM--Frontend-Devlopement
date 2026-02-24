@@ -4,6 +4,7 @@ import { User, Calendar, Clock, Eye } from 'lucide-react';
 import Footer from '@/components/FooterNew';
 import SecureCloudflareVideo from '@/components/WebTalk/SecureCloudflareVideo';
 import Breadcrumb from '@/components/common/Breadcrumb';
+import ViewCount from '@/components/ViewCount';
 
 const BASE_URL = "https://admin.iaamonline.org/api";
 
@@ -19,6 +20,7 @@ interface StrapiVideo {
   VideoCategory: string;
   VideoID: string;
   createdAt: string;
+  Views: number;
 }
 
 interface CloudflareVideoResult {
@@ -234,6 +236,7 @@ export default async function WebTalksDetailPage(props: {
               <div className="bg-[#F2F0F0] rounded-[12px] overflow-hidden aspect-video">
                 <SecureCloudflareVideo videoId={videoId} />
               </div>
+              
             </div>
 
             <div className="flex-1 flex flex-col gap-[20px]">
@@ -276,15 +279,18 @@ export default async function WebTalksDetailPage(props: {
                 </div>
 
                 <div className="flex items-center gap-[6px]">
-                  <Eye size={20} className="text-[#333333]" />
-                  <span className="text-[#333333] text-[16px] sm:text-[18px] opacity-90">
-                    0 Views
-                  </span>
-                </div>
+                <Eye size={20} className="text-[#333333]" />
+                <span className="text-[#333333] text-[16px] sm:text-[18px] opacity-90">
+                  <ViewCount
+                    videoId={videoId}
+                    initialViews={strapiVideo?.Views || 0}
+                  />
+                </span>
+              </div>
               </div>
 
               {/* DESCRIPTION */}
-              
+
 
             </div>
           </div>
