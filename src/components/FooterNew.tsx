@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import LazyImage from "@/components/common/LazyImage";
 
 const API =
   process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/\/$/, "") ||
@@ -99,68 +99,68 @@ export default async function Footer() {
       </div>
 
       {/* ===== EXACT MATCH GRAY SECTION (ORIGINAL LAYOUT) ===== */}
-<div className="w-full bg-black/70 mt-16">
-  <div className="max-w-[1440px] mx-auto px-6 md:px-[30px] py-6 relative">
+      <div className="w-full bg-black/70 mt-16">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-[30px] py-6 relative">
 
-    {/* RIGHT WATERMARK LOGO */}
-    <div className="absolute right-6 top-1/2 -translate-y-1/2 hidden md:block">
-      <Link href="/">
-        <Image
-          src="/1704818354IAAM-Logo-SVG 1 (2).svg"
-          alt="IAAM Logo"
-          width={90}
-          height={80}
-          className="object-contain"
-          priority
-        />
-      </Link>
-    </div>
+          {/* RIGHT WATERMARK LOGO */}
+          <div className="absolute right-6 top-1/2 -translate-y-1/2 hidden md:block">
+            <Link href="/">
+              <LazyImage
+                src="/1704818354IAAM-Logo-SVG 1 (2).svg"
+                alt="IAAM Logo"
+                width={90}
+                height={80}
+                className="object-contain"
+                priority
+              />
+            </Link>
+          </div>
 
-    {/* CENTER CONTENT */}
-    <div className="flex flex-col items-center text-center gap-3">
+          {/* CENTER CONTENT */}
+          <div className="flex flex-col items-center text-center gap-3">
 
-      {/* LEGAL LINKS */}
-      <div className="flex flex-wrap justify-center items-center text-white font-semibold text-[15px] md:text-[16px] tracking-wide">
+            {/* LEGAL LINKS */}
+            <div className="flex flex-wrap justify-center items-center text-white font-semibold text-[15px] md:text-[16px] tracking-wide">
 
-        {general?.Legal?.map((item: any, index: number) => (
-          <span key={item.id} className="flex items-center">
+              {general?.Legal?.map((item: any, index: number) => (
+                <span key={item.id} className="flex items-center">
 
-            {item.LabelLink ? (
-              <Link
-                href={item.LabelLink}
-                className="hover:underline cursor-pointer px-2"
-              >
-                {item.Label}
-              </Link>
-            ) : (
-              <span className="px-2">{item.Label}</span>
-            )}
+                  {item.LabelLink ? (
+                    <Link
+                      href={item.LabelLink}
+                      className="hover:underline cursor-pointer px-2"
+                    >
+                      {item.Label}
+                    </Link>
+                  ) : (
+                    <span className="px-2">{item.Label}</span>
+                  )}
 
-            {index !== general.Legal.length - 1 && (
-              <span className="px-2 opacity-70">|</span>
-            )}
+                  {index !== general.Legal.length - 1 && (
+                    <span className="px-2 opacity-70">|</span>
+                  )}
 
-          </span>
-        ))}
+                </span>
+              ))}
 
+            </div>
+
+            {/* COPYRIGHT TEXT */}
+            <p className="text-white text-[13.5px] md:text-[14px] opacity-90 leading-relaxed max-w-[900px]">
+              International Association of Advanced Materials.
+              All rights reserved.
+            </p>
+
+          </div>
+
+          {/* BELOW DESCRIPTION LINE (FULL WIDTH CENTER) */}
+          <p className="text-center text-white text-[13.5px] md:text-[14px] opacity-90">
+            IAAM is a global, non-profit scientific organization dedicated to advancing
+            materials science, engineering, and technology for the benefit of society.
+          </p>
+
+        </div>
       </div>
-
-      {/* COPYRIGHT TEXT */}
-      <p className="text-white text-[13.5px] md:text-[14px] opacity-90 leading-relaxed max-w-[900px]">
-        © International Association of Advanced Materials.
-        All rights reserved.
-      </p>
-
-    </div>
-
-    {/* BELOW DESCRIPTION LINE (FULL WIDTH CENTER) */}
-    <p className="text-center text-white text-[13.5px] md:text-[14px] opacity-90">
-      IAAM is a global, non-profit scientific organization dedicated to advancing
-      materials science, engineering, and technology for the benefit of society.
-    </p>
-
-  </div>
-</div>
 
     </footer>
   );
@@ -220,7 +220,7 @@ function ContactInfo({ general }: any) {
         return (
           <div key={item.id} className="flex items-start gap-3">
             {icon && (
-              <Image
+              <LazyImage
                 src={icon}
                 alt=""
                 width={18}
@@ -247,7 +247,7 @@ function ContactInfo({ general }: any) {
             <p className="font-bold text-[#1C3E9C] mb-2">
               {weChat.Title}
             </p>
-            <Image
+            <LazyImage
               src={API + weChat.Image.url}
               alt="WeChat"
               width={75}
@@ -269,7 +269,7 @@ function ContactInfo({ general }: any) {
                 href={s.PlatformNameLink || "#"}
                 className="w-7 h-7 border border-gray-300 rounded-full flex items-center justify-center"
               >
-                <Image
+                <LazyImage
                   src={API + s.PlatformLogo.url}
                   alt={s.PlatformName}
                   width={14}
