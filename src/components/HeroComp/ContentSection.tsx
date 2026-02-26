@@ -88,67 +88,81 @@ export default function ContentSection({ sections = [] }: any) {
 
           {/* ================= CONTENT ================= */}
           <main className="flex-1 space-y-16">
-            {sections.map((s: any, i: number) => {
-              if (!s?.Heading) return null;
+  {sections.map((s: any, i: number) => {
+    if (!s?.Heading) return null;
 
-              const id = s.Heading.replace(/\s+/g, "-");
+    const id = s.Heading.replace(/\s+/g, "-");
 
-              const imageUrl =
-                s?.Image?.url && (s?.ImagePostion === "Left" || s?.ImagePostion === "Right")
-                  ? `${API}${s.Image.url}`
-                  : null;
+    const imageUrl =
+      s?.Image?.url &&
+      (s?.ImagePostion === "Left" || s?.ImagePostion === "Right")
+        ? `${API}${s.Image.url}`
+        : null;
 
-              const isRight = s?.ImagePostion === "Right";
+    const isRight = s?.ImagePostion === "Right";
 
-              return (
-                <section id={id} key={i} className="scroll-mt-60">
-                  <h2 className="text-[40px] leading-[48px] font-light mb-6">
-                    {s.Heading}
-                  </h2>
+    return (
+      <section id={id} key={i} className="scroll-mt-60">
 
-                  {/* ======= IF IMAGE EXISTS AND POSITION IS LEFT OR RIGHT ======= */}
-                  {imageUrl ? (
-                    <div
-                      className={`flex flex-col lg:flex-row gap-10 items-start
-                        ${isRight ? "lg:flex-row-reverse" : ""}
-                      `}
-                    >
-                      {/* IMAGE */}
-                      <div className="w-full lg:w-[40%]">
-                        <LazyImage
-                          src={imageUrl}
-                          alt={s?.Heading}
-                          width={400}
-                          height={350}
-                          className="w-full max-h-[350px] object-contain rounded-lg"
-                        />
-                      </div>
+        {imageUrl ? (
+          <div
+            className={`flex flex-col lg:flex-row gap-10 items-start
+              ${isRight ? "lg:flex-row-reverse" : ""}
+            `}
+          >
+            {/* IMAGE */}
+            <div className="w-full lg:w-[40%] order-2 lg:order-none">
+              <LazyImage
+                src={imageUrl}
+                alt={s?.Heading}
+                width={400}
+                height={350}
+                className="w-full max-h-[350px] object-contain rounded-lg"
+              />
+            </div>
 
-                      {/* TEXT */}
-                      <div className="w-full lg:w-[60%] text-[18px] leading-[28px] text-gray-800 space-y-4">
-                        {Array.isArray(s.Description) &&
-                          s.Description.map((block: any, idx: number) => (
-                            <p key={idx}>
-                              {block.children?.[0]?.text}
-                            </p>
-                          ))}
-                      </div>
-                    </div>
-                  ) : (
-                    /* ======= NO IMAGE OR POSITION NONE ======= */
-                    <div className="max-w-3xl text-[18px] leading-[28px] text-gray-800 space-y-4">
-                      {Array.isArray(s.Description) &&
-                        s.Description.map((block: any, idx: number) => (
-                          <p key={idx}>
-                            {block.children?.[0]?.text}
-                          </p>
-                        ))}
-                    </div>
-                  )}
-                </section>
-              );
-            })}
-          </main>
+            {/* TEXT BLOCK */}
+            <div className="w-full lg:w-[60%] text-gray-800 space-y-6">
+
+              {/* HEADING */}
+              <h2 className="text-[40px] leading-[48px] font-light">
+                {s.Heading}
+              </h2>
+
+              {/* DESCRIPTION */}
+              <div className="text-[18px] leading-[28px] space-y-4">
+                {Array.isArray(s.Description) &&
+                  s.Description.map((block: any, idx: number) => (
+                    <p key={idx}>
+                      {block.children?.[0]?.text}
+                    </p>
+                  ))}
+              </div>
+
+            </div>
+          </div>
+        ) : (
+          /* ===== NO IMAGE ===== */
+          <div className="max-w-3xl text-gray-800 space-y-6">
+            <h2 className="text-[40px] leading-[48px] font-light">
+              {s.Heading}
+            </h2>
+
+            <div className="text-[18px] leading-[28px] space-y-4">
+              {Array.isArray(s.Description) &&
+                s.Description.map((block: any, idx: number) => (
+                  <p key={idx}>
+                    {block.children?.[0]?.text}
+                  </p>
+                ))}
+            </div>
+          </div>
+        )}
+
+      </section>
+    );
+  })}
+</main>
         </div>
       </div>
     </div>
