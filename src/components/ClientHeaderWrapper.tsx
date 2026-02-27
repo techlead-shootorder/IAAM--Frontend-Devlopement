@@ -9,7 +9,7 @@ import SearchFilterBar from "@/components/WebTalk/SearchFilterBar";
 import WebTalksTopBar from "@/components/WebTalk/WebTalksTopBar";
 
 export default function ClientHeaderWrapper() {
-  const [mobileMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
   const [isShrunk, setIsShrunk] = useState(false);
@@ -80,7 +80,7 @@ export default function ClientHeaderWrapper() {
         >
           {/* {isWebTalksPage ? <WebTalksTopBar /> : <TopBar />} */}
           <TopBar />
-          <Header isShrunk={effectiveShrunk} />
+          <Header isShrunk={effectiveShrunk} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
           <MainNav mobileMenuOpen={mobileMenuOpen} />
           {isWebTalksPage && (
             <SearchFilterBar

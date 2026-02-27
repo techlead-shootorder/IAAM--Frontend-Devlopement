@@ -5,6 +5,7 @@ import { ChevronDown } from "lucide-react";
 import LazyImage from "@/components/common/LazyImage";
 import { useRouter } from "next/navigation";
 import { dropdownData, DropdownDataItem } from "@/lib/dropdownData";
+import MobileAuth from "@/app/_shared/MobileAuth";
 
 interface MainNavProps {
   mobileMenuOpen: boolean;
@@ -100,7 +101,11 @@ export default function MainNav({ mobileMenuOpen }: MainNavProps) {
       {/* ================= MOBILE NAV ================= */}
       {mobileMenuOpen && (
         <nav className="lg:hidden bg-white border-b border-border">
-          <div className="px-4 py-2 space-y-1 max-h-[calc(100vh-120px)] overflow-y-auto">
+          {/* Mobile Auth Section - Top */}
+          <MobileAuth />
+
+          {/* Navigation Items */}
+          <div className="px-4 py-2 space-y-1 max-h-[calc(100vh-200px)] overflow-y-auto">
             {navItems.map((item, index) => (
               <MobileNavItem
                 key={item.title}

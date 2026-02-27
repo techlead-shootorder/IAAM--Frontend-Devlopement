@@ -1,14 +1,20 @@
 'use client';
 
 import { useState, useRef, useEffect, useMemo } from "react";
+
 import { Search, Menu, ChevronRight, ArrowLeft } from "lucide-react";
 import LazyImage from "@/components/common/LazyImage";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { dropdownData } from "@/lib/dropdownData";
+import MobileAuth from "@/app/_shared/MobileAuth";
 
-export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
-  const [mobileOpen, setMobileOpen] = useState(false);
+export default function Header({ isShrunk = false, mobileMenuOpen, setMobileMenuOpen }: {
+  isShrunk?: boolean;
+  mobileMenuOpen?: boolean;
+  setMobileMenuOpen?: (open: boolean) => void;
+}) {
+
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [pageContent, setPageContent] = useState<string[]>([]);
@@ -179,17 +185,32 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mql = window.matchMedia('(min-width: 1024px)');
+
+    const handleChange = () => {
+      if (mql.matches) {
+        setMobileMenuOpen?.(false);
+      }
+    };
+
+    handleChange();
+    mql.addEventListener('change', handleChange);
+    return () => mql.removeEventListener('change', handleChange);
+  }, [setMobileMenuOpen]);
+
   // Extract page content when pathname changes (DOM content changes on navigation)
   const pageContentMemo = useMemo(() => {
     return extractPageContent();
-  }, [pathname]); // pathname dependency needed because DOM content changes on page navigation
+  }, []); // extractPageContent() doesn't use pathname, so no dependency needed
 
   useEffect(() => {
     setPageContent(pageContentMemo);
   }, [pageContentMemo]);
 
   const closeDrawer = () => {
-    setMobileOpen(false);
+    setMobileMenuOpen?.(false);
   };
 
   return (
@@ -212,7 +233,7 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
               >
                 <Link href="/">
                 <LazyImage
-                  src="/1704818354IAAM-Logo-SVG 1.svg"
+                  src="/IAAM-Logo.svg"
                   alt="IAAM Logo"
                   width={120}
                   height={120}
@@ -304,7 +325,7 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
             {/* ================= MOBILE MENU BUTTON ================= */}
             <button
               className="lg:hidden p-2"
-              onClick={() => setMobileOpen(true)}
+              onClick={() => setMobileMenuOpen?.(true)}
               aria-label="Open Menu"
             >
               <Menu size={28} color="#1e40af" />
@@ -316,69 +337,73 @@ export default function Header({ isShrunk = false }: { isShrunk?: boolean }) {
 
       {/* ================= OVERLAY ================= */}
       <div
-        className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
-          mobileOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 lg:hidden ${
+          mobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
         onClick={closeDrawer}
       />
 
       {/* ================= MOBILE DRAWER ================= */}
       <div
-        className={`fixed top-0 right-0 h-full w-[90%] max-w-[420px] bg-[#f3f4f6] z-50 transform transition-transform duration-300 ${
-          mobileOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed top-0 right-0 h-full mb-3 w-[90%] max-w-[420px] bg-[#f3f4f6] z-50 transform transition-transform duration-300 lg:hidden flex flex-col ${
+          mobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
 
-        {/* Drawer Header with Back */}
-        <div className="flex items-center justify-between px-4 py-4 bg-white border-b border-gray-300">
-          <button
-            onClick={closeDrawer}
-            className="flex items-center gap-2 text-gray-700"
-          >
-            <ArrowLeft size={20} className="text-gray-800" />
-            <span className="text-sm">Back</span>
-          </button>
-        </div>
+        {/* Mobile Auth Section - Top */}
+        <MobileAuth />
 
-        {/* MAIN NAV */}
-        <div>
-          {navItems.map((item) => (
-            <Link
-              key={item.title}
-              href={`/${item.slug}`}
+        {/* Scrollable Navigation Content */}
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          {/* Drawer Header with Back */}
+          <div className="flex items-center justify-between px-4 py-4 bg-white border-b border-gray-300">
+            <button
               onClick={closeDrawer}
-              className="w-full flex justify-between items-center px-5 py-4 bg-[#e5e7eb] border-b border-gray-400 text-gray-800 text-[15px] font-medium"
+              className="flex items-center gap-2 text-gray-700"
             >
-              {item.title}
-              <ChevronRight size={18} />
-            </Link>
-          ))}
-        </div>
-
-        {/* QUICK LINKS SECTION */}
-        <div className="mt-6">
-          <div className="px-5 py-3 text-gray-800 font-semibold text-[15px]">
-            Quick Links
+              <ArrowLeft size={20} className="text-gray-800" />
+              <span className="text-sm">Back</span>
+            </button>
           </div>
 
-          {quickLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              onClick={closeDrawer}
-              className="w-full flex justify-between items-center px-5 py-4 bg-[#e5e7eb] border-b border-gray-400 text-gray-800 text-[14px]"
-            >
-              {link.label}
-              <ChevronRight size={16} />
-            </Link>
-          ))}
-        </div>
+          {/* MAIN NAV */}
+          <div>
+            {navItems.map((item) => (
+              <Link
+                key={item.title}
+                href={`/${item.slug}`}
+                onClick={closeDrawer}
+                className="w-full flex justify-between items-center px-5 py-4 bg-[#e5e7eb] border-b border-gray-400 text-gray-800 text-[15px] font-medium"
+              >
+                {item.title}
+                <ChevronRight size={18} />
+              </Link>
+            ))}
+          </div>
 
+          {/* QUICK LINKS SECTION */}
+          <div className="mt-6">
+            <div className="px-5 py-3 text-gray-800 font-semibold text-[15px]">
+              Quick Links
+            </div>
+
+            {quickLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={closeDrawer}
+                className="w-full flex justify-between items-center px-5 py-4 bg-[#e5e7eb] border-b border-gray-400 text-gray-800 text-[14px]"
+              >
+                {link.label}
+                <ChevronRight size={16} />
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );
 }
-
 
 
 
