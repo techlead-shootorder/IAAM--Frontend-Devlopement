@@ -1,4 +1,4 @@
-import Footer from "@/components/Footer";
+import Footer from "@/components/FooterNew";
 import LazyImage from "@/components/common/LazyImage";
 import Link from "next/link";
 
