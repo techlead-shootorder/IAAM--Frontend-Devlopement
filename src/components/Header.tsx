@@ -351,7 +351,7 @@ export default function Header({ isShrunk = false, mobileMenuOpen, setMobileMenu
       >
 
         {/* Mobile Auth Section - Top */}
-        <MobileAuth />
+        <MobileAuth onCloseDrawer={closeDrawer} />
 
         {/* Scrollable Navigation Content */}
         <div className="flex-1 min-h-0 overflow-y-auto">

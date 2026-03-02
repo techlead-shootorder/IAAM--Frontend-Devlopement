@@ -7,6 +7,10 @@ import BecomeMemberForm from '@/components/Membership/BecomeMemberForm';
 import LazyImage from '@/components/common/LazyImage';
 import { MoreVertical } from 'lucide-react';
 
+type MobileAuthProps = {
+  onCloseDrawer?: () => void;
+};
+
 function getProfileImageUrl(profileImage: {
   id?: number;
   name?: string;
@@ -34,7 +38,7 @@ function getProfileImageUrl(profileImage: {
   return url.startsWith('http') ? url : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'https://admin.iaamonline.org'}${url}`;
 }
 
-export default function MobileAuth() {
+export default function MobileAuth({ onCloseDrawer }: MobileAuthProps) {
   const { user, logout } = useAuth();
   const router = useRouter();
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -49,12 +53,14 @@ export default function MobileAuth() {
   const handleOpenProfile = () => {
     setProfileDropdownOpen(false);
     setAuthModalOpen(false);
+    onCloseDrawer?.();
     router.push('/profile');
   };
 
   const handleLogout = () => {
     setProfileDropdownOpen(false);
     setAuthModalOpen(false);
+    onCloseDrawer?.();
     logout();
     router.push('/');
   };

@@ -50,25 +50,13 @@ function getProfileImageUrl(profileImage: {
   id?: number;
   name?: string;
   url?: string;
-  formats?: {
-    thumbnail?: {
-      url?: string;
-    };
-  };
+  formats?: { thumbnail?: { url?: string } };
 } | string | null | undefined): string | null {
   if (!profileImage) return null;
-
-  // If it's a string, treat it as the URL directly
   if (typeof profileImage === 'string') {
     return profileImage.startsWith('http') ? profileImage : `${STRAPI_URL}${profileImage}`;
   }
-
-  // If it's an object, extract the URL
-  const url =
-    profileImage?.formats?.thumbnail?.url ||
-    profileImage?.url ||
-    null;
-
+  const url = profileImage?.formats?.thumbnail?.url || profileImage?.url || null;
   if (!url) return null;
   return url.startsWith('http') ? url : `${STRAPI_URL}${url}`;
 }
@@ -83,11 +71,7 @@ async function getTopMenu(): Promise<{ left: MenuItem[]; right: MenuItem[] }> {
       'https://admin.iaamonline.org/api/top-menus?pagination[pageSize]=100',
       { cache: 'no-store' }
     );
-
-    if (!res.ok) {
-      console.error('TopMenu API failed:', res.status);
-      return { left: [], right: [] };
-    }
+    if (!res.ok) return { left: [], right: [] };
 
     const json = await res.json();
     const left: MenuItem[] = [];
@@ -104,8 +88,7 @@ async function getTopMenu(): Promise<{ left: MenuItem[]; right: MenuItem[] }> {
     });
 
     return { left, right };
-  } catch (error) {
-    console.error('TopMenu fetch error:', error);
+  } catch {
     return { left: [], right: [] };
   }
 }
@@ -138,44 +121,53 @@ export default function TopBar() {
       .catch(console.error);
   }, []);
 
-  /* ---- Close dropdown when clicking outside both button and panel ---- */
+  /* ---- Close dropdown on outside click ---- */
   useEffect(() => {
     if (!dropdownOpen) return;
     const handler = (e: MouseEvent) => {
       const target = e.target as Node;
-      const insideButton = buttonRef.current?.contains(target);
-      const insideDropdown = dropdownRef.current?.contains(target);
-      if (!insideButton && !insideDropdown) setDropdownOpen(false);
+      if (
+        !buttonRef.current?.contains(target) &&
+        !dropdownRef.current?.contains(target)
+      ) {
+        setDropdownOpen(false);
+      }
     };
-    document.addEventListener('click', handler);
-    return () => document.removeEventListener('click', handler);
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
   }, [dropdownOpen]);
 
-  /* ---- Open profile dropdown at correct position ---- */
+  /* ---- Close dropdown on scroll ---- */
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const handler = () => setDropdownOpen(false);
+    window.addEventListener('scroll', handler, { passive: true });
+    return () => window.removeEventListener('scroll', handler);
+  }, [dropdownOpen]);
+
+  /* ---- Toggle dropdown with correct viewport-relative position ---- */
   const handleProfileClick = () => {
     if (!dropdownOpen && buttonRef.current) {
+      // getBoundingClientRect() returns viewport coordinates — correct for fixed positioning
       const rect = buttonRef.current.getBoundingClientRect();
       setDropdownPos({
-        top: rect.bottom + window.scrollY + 6,
-        left: rect.left + rect.width / 2,
+        top: rect.bottom + 6,   // ← NO window.scrollY — fixed element uses viewport coords
+        left: rect.right,       // align right edge of dropdown to right edge of button
       });
     }
     setDropdownOpen((v) => !v);
   };
 
-  /* ---- Open auth modal ---- */
   const openAuthModal = (mode: 'login' | 'register') => {
     setAuthModalMode(mode);
     setAuthModalOpen(true);
   };
 
-  /* ---- Go to profile page ---- */
   const handleOpenProfile = () => {
     setDropdownOpen(false);
     router.push('/profile');
   };
 
-  /* ---- Logout ---- */
   const handleLogout = () => {
     setDropdownOpen(false);
     logout();
@@ -195,16 +187,10 @@ export default function TopBar() {
 
   const profileImageUrl = getProfileImageUrl(user?.ProfileImage);
 
-  /* ===============================
-     RENDER
-  ================================= */
-
   return (
     <>
       <div className="hidden md:block w-full bg-iaam-bg-gray">
         <div className="max-w-[1440px] mx-auto px-4 lg:px-[30px]">
-
-          {/* Simple flex: left nav | spacer | right nav + auth */}
           <div className="flex items-center justify-between h-[34px] text-[13px]">
 
             {/* ════════ LEFT NAV ════════ */}
@@ -227,8 +213,6 @@ export default function TopBar() {
 
             {/* ════════ RIGHT NAV + AUTH ════════ */}
             <div className="flex items-center">
-
-              {/* Right nav links */}
               {topRight.map((link, index) => (
                 <span key={link.label + index} className="flex items-center">
                   {index > 0 && <span className="mx-2 text-gray-400">|</span>}
@@ -241,10 +225,8 @@ export default function TopBar() {
                 </span>
               ))}
 
-              {/* Separator between nav links and auth */}
               <span className="mx-2 text-gray-400">|</span>
 
-              {/* Auth — profile pill or login/signup */}
               {user ? (
                 <button
                   ref={buttonRef}
@@ -252,15 +234,9 @@ export default function TopBar() {
                   onClick={handleProfileClick}
                   className="flex items-center gap-1.5 px-2 py-0.5 bg-[#1e40af] text-white rounded-full text-xs font-semibold hover:bg-[#1c3e9c] transition"
                 >
-                  {/* Avatar — image or initials */}
                   <span className="relative w-5 h-5 rounded-full overflow-hidden bg-blue-200 text-[#1e40af] flex items-center justify-center text-[10px] font-black flex-shrink-0">
                     {profileImageUrl ? (
-                      <LazyImage
-                        src={profileImageUrl}
-                        alt={displayName}
-                        fill
-                        className="object-cover"
-                      />
+                      <LazyImage src={profileImageUrl} alt={displayName} fill className="object-cover" />
                     ) : (
                       initials
                     )}
@@ -300,29 +276,24 @@ export default function TopBar() {
         </div>
       </div>
 
-      {/* ════════ PROFILE DROPDOWN — fixed position, escapes overflow ════════ */}
+      {/* ════════ PROFILE DROPDOWN ════════ */}
       {dropdownOpen && user && (
         <div
           ref={dropdownRef}
           className="fixed z-[9999] w-52 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden"
           style={{
             top: dropdownPos.top,
+            // Align right edge of dropdown with right edge of button
             left: dropdownPos.left,
-            transform: 'translateX(-60%)',
+            transform: 'translateX(-100%)',
           }}
         >
           {/* Header */}
           <div className="px-4 py-3 bg-gradient-to-r from-[#1e40af] to-[#2563eb] text-white">
             <div className="flex items-center gap-2.5">
-              {/* Avatar */}
               <div className="relative w-9 h-9 rounded-full overflow-hidden bg-blue-200 text-[#1e40af] flex items-center justify-center text-xs font-black flex-shrink-0 border-2 border-white/30">
                 {profileImageUrl ? (
-                  <LazyImage
-                    src={profileImageUrl}
-                    alt={displayName}
-                    fill
-                    className="object-cover"
-                  />
+                  <LazyImage src={profileImageUrl} alt={displayName} fill className="object-cover" />
                 ) : (
                   initials
                 )}

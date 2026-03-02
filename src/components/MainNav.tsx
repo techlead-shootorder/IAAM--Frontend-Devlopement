@@ -9,9 +9,10 @@ import MobileAuth from "@/app/_shared/MobileAuth";
 
 interface MainNavProps {
   mobileMenuOpen: boolean;
+  onCloseDrawer?: () => void;
 }
 
-export default function MainNav({ mobileMenuOpen }: MainNavProps) {
+export default function MainNav({ mobileMenuOpen, onCloseDrawer }: MainNavProps) {
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
@@ -102,7 +103,7 @@ export default function MainNav({ mobileMenuOpen }: MainNavProps) {
       {mobileMenuOpen && (
         <nav className="lg:hidden bg-white border-b border-border">
           {/* Mobile Auth Section - Top */}
-          <MobileAuth />
+          <MobileAuth onCloseDrawer={onCloseDrawer} />
 
           {/* Navigation Items */}
           <div className="px-4 py-2 space-y-1 max-h-[calc(100vh-200px)] overflow-y-auto">

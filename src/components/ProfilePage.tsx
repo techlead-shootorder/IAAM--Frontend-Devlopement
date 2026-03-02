@@ -21,6 +21,7 @@ interface PasswordFormData {
 
 const STRAPI_URL = 'https://admin.iaamonline.org';
 
+/* ─────────────────────────── helpers ─────────────────────────── */
 function getBiographyText(bio: any[]): string {
   if (!Array.isArray(bio)) return '';
   return bio
@@ -48,43 +49,26 @@ function getImageUrl(profileImage: any): string | null {
   return url.startsWith('http') ? url : `${STRAPI_URL}${url}`;
 }
 
-function Card({
-  children,
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  delay?: number;
-}) {
+/* ─────────────────────────── shared UI ─────────────────────────── */
+function Card({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), delay);
     return () => clearTimeout(t);
   }, [delay]);
-
   return (
     <div
       className="bg-white rounded-2xl border border-blue-100/60 overflow-hidden transition-all duration-700"
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(16px)',
-      }}
+      style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)' }}
     >
       {children}
     </div>
   );
 }
 
-function SectionHeader({
-  icon,
-  title,
-  subtitle,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  subtitle?: string;
-}) {
+function SectionHeader({ icon, title, subtitle }: { icon: React.ReactNode; title: string; subtitle?: string }) {
   return (
-    <div className="flex items-center gap-3 px-6 py-4 border-b border-blue-50">
+    <div className="flex items-center gap-3 px-4 sm:px-6 py-4 border-b border-blue-50">
       <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-[#1e40af] flex-shrink-0">
         {icon}
       </div>
@@ -99,41 +83,40 @@ function SectionHeader({
 function ReadField({ label, value }: { label: string; value?: string }) {
   return (
     <div>
-      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
-        {label}
-      </p>
-      <p className="text-sm text-gray-800 bg-slate-50 rounded-xl px-4 py-2.5 border border-transparent">
+      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{label}</p>
+      <p className="text-sm text-gray-800 bg-slate-50 rounded-xl px-3 py-2.5">
         {value || <span className="text-gray-300 italic">Not set</span>}
       </p>
     </div>
   );
 }
 
-function MsgBox({
-  msg,
-}: {
-  msg: { type: 'success' | 'error'; text: string } | null;
-}) {
+function MsgBox({ msg }: { msg: { type: 'success' | 'error'; text: string } | null }) {
   if (!msg) return null;
   return (
-    <div
-      className={`text-sm px-4 py-3 rounded-xl flex items-start gap-2 ${
-        msg.type === 'success'
-          ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-          : 'bg-red-50 text-red-700 border border-red-100'
-      }`}
-    >
-      <span className="mt-0.5 flex-shrink-0">
-        {msg.type === 'success' ? '✓' : '✕'}
-      </span>
+    <div className={`text-sm px-4 py-3 rounded-xl flex items-start gap-2 ${
+      msg.type === 'success'
+        ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+        : 'bg-red-50 text-red-700 border border-red-100'
+    }`}>
+      <span className="mt-0.5 flex-shrink-0">{msg.type === 'success' ? '✓' : '✕'}</span>
       {msg.text}
     </div>
   );
 }
 
-/* =============================================
+function Spinner() {
+  return (
+    <svg className="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+    </svg>
+  );
+}
+
+/* ════════════════════════════════════════════════════════
    PROFILE IMAGE MODAL
-============================================= */
+════════════════════════════════════════════════════════ */
 function ProfileImageModal({
   user,
   jwt,
@@ -155,12 +138,6 @@ function ProfileImageModal({
   const currentImageUrl = getImageUrl(user?.ProfileImage);
   const displayImage = previewUrl || currentImageUrl;
 
-  // Close on backdrop click
-  const handleBackdrop = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) onClose();
-  };
-
-  // Close on ESC
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', handler);
@@ -176,39 +153,27 @@ function ProfileImageModal({
       setImageMsg({ type: 'error', text: 'Image must be smaller than 5MB.' });
       return;
     }
-
-    const objectUrl = URL.createObjectURL(file);
-    setPreviewUrl(objectUrl);
+    setPreviewUrl(URL.createObjectURL(file));
     setImageMsg(null);
     setUploading(true);
-
     try {
       const formData = new FormData();
       formData.append('files', file);
-      formData.append('ref', 'plugin::users-permissions.user');
-      formData.append('refId', String(user.id));
-      formData.append('field', 'ProfileImage');
-
       const uploadRes = await fetch(`${STRAPI_URL}/api/upload`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${jwt}` },
         body: formData,
       });
-
       const uploadJson = await uploadRes.json();
       if (!uploadRes.ok) throw new Error(uploadJson?.error?.message || 'Upload failed.');
-
       const uploadedFile = Array.isArray(uploadJson) ? uploadJson[0] : uploadJson;
-
       const updateRes = await fetch(`${STRAPI_URL}/api/users/${user.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jwt}` },
         body: JSON.stringify({ ProfileImage: uploadedFile.id }),
       });
-
       const updateJson = await updateRes.json();
       if (!updateRes.ok) throw new Error(updateJson?.error?.message || 'Failed to link image.');
-
       onUpdate(uploadedFile);
       setImageMsg({ type: 'success', text: 'Profile photo updated!' });
     } catch (err: any) {
@@ -236,7 +201,6 @@ function ProfileImageModal({
     if (!user?.ProfileImage?.id) return;
     setDeleting(true);
     setImageMsg(null);
-
     try {
       const updateRes = await fetch(`${STRAPI_URL}/api/users/${user.id}`, {
         method: 'PUT',
@@ -247,12 +211,10 @@ function ProfileImageModal({
         const j = await updateRes.json();
         throw new Error(j?.error?.message || 'Failed to remove image.');
       }
-
       await fetch(`${STRAPI_URL}/api/upload/files/${user.ProfileImage.id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${jwt}` },
       });
-
       onUpdate(null);
       setPreviewUrl(null);
       setImageMsg({ type: 'success', text: 'Profile photo removed.' });
@@ -266,21 +228,16 @@ function ProfileImageModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
-      onClick={handleBackdrop}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-modal-in"
+        className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden"
         style={{ animation: 'modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1) both' }}
       >
-        <style>{`
-          @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.92) translateY(12px); }
-            to   { opacity: 1; transform: scale(1) translateY(0); }
-          }
-        `}</style>
+        <style>{`@keyframes modalIn { from { opacity:0; transform:scale(0.92) translateY(12px); } to { opacity:1; transform:scale(1) translateY(0); } }`}</style>
 
-        {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <div>
             <h3 className="text-sm font-bold text-gray-900">Profile Photo</h3>
             <p className="text-xs text-gray-400 mt-0.5">JPG, PNG, GIF · Max 5MB</p>
@@ -295,20 +252,18 @@ function ProfileImageModal({
           </button>
         </div>
 
-        {/* Modal Body */}
-        <div className="p-6 space-y-5">
-          {/* Current / Preview Image */}
+        {/* Body */}
+        <div className="p-5 space-y-4">
+          {/* Preview */}
           <div className="flex justify-center">
-            <div className="relative">
-              <div className="w-28 h-28 rounded-2xl overflow-hidden border-4 border-blue-50 shadow-lg bg-gradient-to-br from-[#1e40af] to-[#2563eb] flex items-center justify-center">
-                {displayImage ? (
-                  <LazyImage src={displayImage} alt="Profile" fill className="object-cover" />
-                ) : (
-                  <span className="text-white text-3xl font-black">{getInitials(user)}</span>
-                )}
-              </div>
+            <div className="relative w-28 h-28 rounded-2xl overflow-hidden border-4 border-blue-50 shadow-lg bg-gradient-to-br from-[#1e40af] to-[#2563eb] flex items-center justify-center">
+              {displayImage ? (
+                <LazyImage src={displayImage} alt="Profile" fill className="object-cover" />
+              ) : (
+                <span className="text-white text-3xl font-black">{getInitials(user)}</span>
+              )}
               {uploading && (
-                <div className="absolute inset-0 rounded-2xl bg-black/50 flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                   <svg className="w-6 h-6 text-white animate-spin" viewBox="0 0 24 24" fill="none">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
@@ -318,12 +273,10 @@ function ProfileImageModal({
             </div>
           </div>
 
-          {/* Drag & Drop Zone */}
+          {/* Drop zone */}
           <div
-            className={`relative border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all duration-200 ${
-              dragOver
-                ? 'border-[#1e40af] bg-blue-50'
-                : 'border-gray-200 hover:border-[#1e40af]/50 hover:bg-blue-50/30'
+            className={`relative border-2 border-dashed rounded-2xl p-5 text-center cursor-pointer transition-all duration-200 ${
+              dragOver ? 'border-[#1e40af] bg-blue-50' : 'border-gray-200 hover:border-[#1e40af]/50 hover:bg-blue-50/30'
             }`}
             onClick={() => fileInputRef.current?.click()}
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
@@ -335,42 +288,24 @@ function ProfileImageModal({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
               </svg>
             </div>
-            <p className="text-sm font-semibold text-gray-700">
-              {uploading ? 'Uploading…' : 'Click or drag & drop'}
-            </p>
+            <p className="text-sm font-semibold text-gray-700">{uploading ? 'Uploading…' : 'Click or drag & drop'}</p>
             <p className="text-xs text-gray-400 mt-0.5">to upload a new photo</p>
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileChange}
-            />
+            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
           </div>
 
-          {/* Message */}
           {imageMsg && <MsgBox msg={imageMsg} />}
 
           {/* Actions */}
-          <div className="flex gap-3">
+          <div className="flex gap-2.5">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading || deleting}
               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-[#1e40af] text-white rounded-xl text-xs font-bold hover:bg-[#1c3e9c] transition disabled:opacity-50 shadow-md shadow-blue-100"
             >
-              {uploading ? (
+              {uploading ? <><Spinner /> Uploading…</> : (
                 <>
-                  <svg className="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                  </svg>
-                  Uploading…
-                </>
-              ) : (
-                <>
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
@@ -378,7 +313,6 @@ function ProfileImageModal({
                 </>
               )}
             </button>
-
             {displayImage && (
               <button
                 type="button"
@@ -386,12 +320,7 @@ function ProfileImageModal({
                 disabled={uploading || deleting}
                 className="flex items-center justify-center gap-1.5 px-4 py-2.5 border border-red-200 text-red-500 rounded-xl text-xs font-bold hover:bg-red-50 transition disabled:opacity-50"
               >
-                {deleting ? (
-                  <svg className="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                  </svg>
-                ) : (
+                {deleting ? <Spinner /> : (
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
@@ -406,9 +335,72 @@ function ProfileImageModal({
   );
 }
 
-/* =============================================
+/* ════════════════════════════════════════════════════════
+   PHOTO ROW — inline inside profile card
+════════════════════════════════════════════════════════ */
+function PhotoRow({
+  user,
+  onOpen,
+}: {
+  user: any;
+  onOpen: () => void;
+}) {
+  const imageUrl = getImageUrl(user?.ProfileImage);
+  return (
+    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+      {/* Avatar button */}
+      <button
+        type="button"
+        onClick={onOpen}
+        className="relative group flex-shrink-0 focus:outline-none"
+        title="Change profile photo"
+      >
+        <div className="w-14 h-14 rounded-xl overflow-hidden border-2 border-white shadow bg-gradient-to-br from-[#1e40af] to-[#2563eb] flex items-center justify-center">
+          {imageUrl ? (
+            <LazyImage src={imageUrl} alt="Profile" fill className="object-cover" />
+          ) : (
+            <span className="text-white text-lg font-black">{getInitials(user)}</span>
+          )}
+        </div>
+        {/* Camera overlay on hover */}
+        <div className="absolute inset-0 rounded-xl bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+      </button>
+
+      {/* Text — takes remaining space, min-w-0 prevents overflow */}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-bold text-gray-800 truncate leading-tight">
+          {(user.FirstName || user.LastName)
+            ? `${user.FirstName || ''} ${user.LastName || ''}`.trim()
+            : user.username}
+        </p>
+        <p className="text-[11px] text-gray-400 mt-0.5 leading-tight">
+          {imageUrl ? 'Profile photo set' : 'No profile photo yet'}
+        </p>
+      </div>
+
+      {/* CTA button — flex-shrink-0 so it never squishes */}
+      <button
+        type="button"
+        onClick={onOpen}
+        className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 border border-[#1e40af]/25 bg-white text-[#1e40af] rounded-xl text-xs font-bold hover:bg-blue-50 hover:border-[#1e40af]/50 transition shadow-sm"
+      >
+        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+        </svg>
+        {imageUrl ? 'Change' : 'Upload'}
+      </button>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════
    MAIN PAGE
-============================================= */
+════════════════════════════════════════════════════════ */
 export default function ProfilePage() {
   const { user, jwt, logout, updateUser } = useAuth();
   const router = useRouter();
@@ -428,12 +420,7 @@ export default function ProfilePage() {
     return () => clearTimeout(t);
   }, []);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset: resetProfile,
-  } = useForm<ProfileFormData>({
+  const { register, handleSubmit, formState: { errors }, reset: resetProfile } = useForm<ProfileFormData>({
     defaultValues: {
       FirstName: user?.FirstName || '',
       LastName: user?.LastName || '',
@@ -442,14 +429,7 @@ export default function ProfilePage() {
     },
   });
 
-  const {
-    register: regPwd,
-    handleSubmit: handlePwdSubmit,
-    formState: { errors: pwdErrors },
-    watch,
-    reset: resetPassword,
-  } = useForm<PasswordFormData>();
-
+  const { register: regPwd, handleSubmit: handlePwdSubmit, formState: { errors: pwdErrors }, watch, reset: resetPassword } = useForm<PasswordFormData>();
   const newPwdValue = watch('newPassword');
 
   if (!user) {
@@ -464,10 +444,7 @@ export default function ProfilePage() {
           <h2 className="text-2xl font-black text-gray-900">Not Signed In</h2>
           <p className="text-gray-500 text-sm mt-1">Please sign in to access your IAAM profile.</p>
         </div>
-        <button
-          onClick={() => router.push('/')}
-          className="px-6 py-2.5 bg-[#1e40af] text-white rounded-full text-sm font-bold hover:bg-[#1c3e9c] transition shadow-lg shadow-blue-200"
-        >
+        <button onClick={() => router.push('/')} className="px-6 py-2.5 bg-[#1e40af] text-white rounded-full text-sm font-bold hover:bg-[#1c3e9c] transition shadow-lg shadow-blue-200">
           Back to Home
         </button>
       </div>
@@ -527,10 +504,7 @@ export default function ProfilePage() {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    router.push('/');
-  };
+  const handleLogout = () => { logout(); router.push('/'); };
 
   const handleCancelEdit = () => {
     setIsEditingProfile(false);
@@ -543,10 +517,9 @@ export default function ProfilePage() {
     });
   };
 
-  const inputClass =
-    'w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-[#1e40af]/20 focus:border-[#1e40af] transition placeholder:text-gray-300';
-  const labelClass =
-    'block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5';
+  /* shared style strings */
+  const inputClass = 'w-full px-3 sm:px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-[#1e40af]/20 focus:border-[#1e40af] transition placeholder:text-gray-300';
+  const labelClass = 'block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5';
   const errorClass = 'text-red-500 text-xs mt-1 flex items-center gap-1';
 
   const tabs = [
@@ -570,16 +543,15 @@ export default function ProfilePage() {
     },
   ];
 
-  const displayName =
-    user.FirstName || user.LastName
-      ? `${user.FirstName || ''} ${user.LastName || ''}`.trim()
-      : user.username;
+  const displayName = user.FirstName || user.LastName
+    ? `${user.FirstName || ''} ${user.LastName || ''}`.trim()
+    : user.username;
 
   const currentImageUrl = getImageUrl(user?.ProfileImage);
 
   return (
     <div className="min-h-screen bg-[#f0f4ff]">
-      {/* Profile Image Modal */}
+      {/* Modal */}
       {showImageModal && (
         <ProfileImageModal
           user={user}
@@ -589,28 +561,40 @@ export default function ProfilePage() {
         />
       )}
 
-      <div className="max-w-6xl mx-auto px-4 py-8 lg:py-12">
-        <div className="flex flex-col lg:flex-row gap-6 items-start">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 py-6 lg:py-12">
+        <div className="flex flex-col lg:flex-row gap-5 items-start">
 
-          {/* ══════════════════════════════════════════════
-              LEFT — Sticky Profile Sidebar
-          ══════════════════════════════════════════════ */}
+          {/* ══════════════════════════════════════
+              LEFT — Sticky Sidebar (desktop only)
+          ══════════════════════════════════════ */}
           <div
             className="w-full lg:w-72 flex-shrink-0 lg:sticky lg:top-8 transition-all duration-700"
             style={{ opacity: mounted ? 1 : 0, transform: mounted ? 'translateX(0)' : 'translateX(-20px)' }}
           >
             <div className="bg-white rounded-3xl border border-blue-100 overflow-hidden">
-              <div className="px-6 pb-6 py-8">
+              <div className="px-5 py-6 sm:px-6">
+                {/* Avatar */}
                 <div className="flex flex-col items-center">
-                  {/* Avatar */}
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden border-4 border-white shadow-lg bg-gradient-to-br from-[#1e40af] to-[#2563eb] flex items-center justify-center">
-                    {currentImageUrl ? (
-                      <LazyImage src={currentImageUrl} alt="Profile" fill className="object-cover" />
-                    ) : (
-                      <span className="text-white text-2xl font-black">{getInitials(user)}</span>
-                    )}
-                  </div>
-
+                  <button
+                    type="button"
+                    onClick={() => setShowImageModal(true)}
+                    className="relative group focus:outline-none"
+                    title="Change profile photo"
+                  >
+                    <div className="w-20 h-20 rounded-2xl overflow-hidden border-4 border-white shadow-lg bg-gradient-to-br from-[#1e40af] to-[#2563eb] flex items-center justify-center">
+                      {currentImageUrl ? (
+                        <LazyImage src={currentImageUrl} alt="Profile" fill className="object-cover" />
+                      ) : (
+                        <span className="text-white text-2xl font-black">{getInitials(user)}</span>
+                      )}
+                    </div>
+                    <span className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-lg bg-[#1e40af] border-2 border-white flex items-center justify-center shadow group-hover:bg-[#1c3e9c] transition">
+                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </span>
+                  </button>
                   <div className="mt-3 text-center">
                     <h1 className="text-lg font-black text-gray-900 leading-tight">{displayName}</h1>
                     <p className="text-xs text-gray-400 mt-0.5">@{user.username}</p>
@@ -619,6 +603,7 @@ export default function ProfilePage() {
 
                 <div className="my-4 border-t border-dashed border-blue-100" />
 
+                {/* Info rows */}
                 <div className="space-y-2.5">
                   <div className="flex items-center gap-2.5 text-xs text-gray-500">
                     <div className="w-6 h-6 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
@@ -628,7 +613,6 @@ export default function ProfilePage() {
                     </div>
                     <span className="truncate">{user.email}</span>
                   </div>
-
                   {user.Phone && (
                     <div className="flex items-center gap-2.5 text-xs text-gray-500">
                       <div className="w-6 h-6 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
@@ -639,7 +623,6 @@ export default function ProfilePage() {
                       <span>{user.Phone}</span>
                     </div>
                   )}
-
                   <div className="flex items-center gap-2.5 text-xs text-gray-500">
                     <div className="w-6 h-6 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
                       <svg className="w-3 h-3 text-[#1e40af]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -664,7 +647,7 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-black hover:text-black rounded-xl transition border border-transparent"
+                  className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-gray-500 hover:text-gray-800 rounded-xl transition"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -675,24 +658,22 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* ══════════════════════════════════════════════
-              RIGHT — Tab Content
-          ══════════════════════════════════════════════ */}
+          {/* ══════════════════════════════════════
+              RIGHT — Tab content
+          ══════════════════════════════════════ */}
           <div
-            className="flex-1 min-w-0 transition-all duration-700"
+            className="flex-1 min-w-0 w-full transition-all duration-700"
             style={{ opacity: mounted ? 1 : 0, transform: mounted ? 'translateX(0)' : 'translateX(20px)' }}
           >
-            {/* Tab Navigation */}
-            <div className="flex gap-1 mb-5 bg-white rounded-2xl p-1.5 border border-blue-100">
+            {/* Tab nav */}
+            <div className="flex gap-1 mb-4 bg-white rounded-2xl p-1.5 border border-blue-100">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-200 ${
-                    activeTab === tab.id
-                      ? 'bg-[#1e40af] text-white'
-                      : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                    activeTab === tab.id ? 'bg-[#1e40af] text-white' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                   }`}
                 >
                   {tab.icon}
@@ -701,206 +682,113 @@ export default function ProfilePage() {
               ))}
             </div>
 
-            {/* ══════════════════
-                TAB: PROFILE
-            ══════════════════ */}
+            {/* ══════════ PROFILE TAB ══════════ */}
             {activeTab === 'profile' && (
-              <div className="space-y-4">
-                {/* ---- Combined Profile Info + Photo Card ---- */}
-                <Card delay={100}>
-                  <SectionHeader
-                    icon={
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                    }
-                    title="Profile Information"
-                    subtitle="Manage your personal details visible to IAAM"
-                  />
+              <Card delay={100}>
+                <SectionHeader
+                  icon={
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  }
+                  title="Profile Information"
+                  subtitle="Manage your personal details visible to IAAM"
+                />
 
-                  <div className="p-6">
-                    {!isEditingProfile ? (
-                      <div className="space-y-5">
-                        {/* ── Photo Row (inline, no separate card) ── */}
-                        <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                          {/* Avatar with click to open modal */}
-                          <button
-                            type="button"
-                            onClick={() => setShowImageModal(true)}
-                            className="relative group flex-shrink-0 focus:outline-none"
-                            title="Change profile photo"
-                          >
-                            <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white shadow-md bg-gradient-to-br from-[#1e40af] to-[#2563eb] flex items-center justify-center">
-                              {currentImageUrl ? (
-                                <LazyImage src={currentImageUrl} alt="Profile" fill className="object-cover" />
-                              ) : (
-                                <span className="text-white text-xl font-black">{getInitials(user)}</span>
-                              )}
-                            </div>
-                            {/* Hover overlay */}
-                            <div className="absolute inset-0 rounded-2xl bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                              </svg>
-                            </div>
-                          </button>
+                {/* ── Card body: consistent padding across all states ── */}
+                <div className="px-4 sm:px-6 py-5 space-y-5">
 
-                          {/* Text + button */}
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-gray-800 truncate">{displayName}</p>
-                            <p className="text-xs text-gray-400 mt-0.5">
-                              {currentImageUrl ? 'Profile photo set' : 'No profile photo yet'}
-                            </p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setShowImageModal(true)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 border border-[#1e40af]/30 text-[#1e40af] rounded-xl text-xs font-bold hover:bg-blue-50 transition flex-shrink-0"
-                          >
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                            </svg>
-                            {currentImageUrl ? 'Change' : 'Upload'}
-                          </button>
-                        </div>
+                  {/* Photo row — always visible, above fields */}
+                  <PhotoRow user={user} onOpen={() => setShowImageModal(true)} />
 
-                        {/* ── Divider ── */}
-                        <div className="border-t border-dashed border-gray-100" />
+                  {/* Divider */}
+                  <div className="border-t border-dashed border-gray-100" />
 
-                        {/* ── Fields ── */}
-                        <div className="grid grid-cols-2 gap-4">
-                          <ReadField label="First Name" value={user.FirstName} />
-                          <ReadField label="Last Name" value={user.LastName} />
-                        </div>
-                        <ReadField label="Phone Number" value={user.Phone} />
+                  {!isEditingProfile ? (
+                    /* ── READ MODE ── */
+                    <>
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                        <ReadField label="First Name" value={user.FirstName} />
+                        <ReadField label="Last Name" value={user.LastName} />
+                      </div>
+                      <ReadField label="Phone Number" value={user.Phone} />
+                      <div>
+                        <p className={labelClass}>Biography</p>
+                        <p className="text-sm text-gray-700 bg-slate-50 rounded-xl px-3 py-3 min-h-[80px] leading-relaxed whitespace-pre-wrap">
+                          {getBiographyText(user.Biography || []) || <span className="text-gray-300 italic">Not set</span>}
+                        </p>
+                      </div>
+
+                      <MsgBox msg={profileMsg} />
+
+                      <button
+                        type="button"
+                        onClick={() => { setIsEditingProfile(true); setProfileMsg(null); }}
+                        className="flex items-center gap-2 px-5 py-2.5 bg-[#1e40af] text-white rounded-xl text-sm font-bold hover:bg-[#1c3e9c] transition shadow-md shadow-blue-100"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                        Edit Profile
+                      </button>
+                    </>
+                  ) : (
+                    /* ── EDIT MODE ── */
+                    <form onSubmit={handleSubmit(handleProfileSave)} className="space-y-4">
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                          <p className={labelClass}>Biography</p>
-                          <p className="text-sm text-gray-700 bg-slate-50 rounded-xl px-4 py-3 border border-transparent min-h-[80px] leading-relaxed whitespace-pre-wrap">
-                            {getBiographyText(user.Biography || []) || (
-                              <span className="text-gray-300 italic">Not set</span>
-                            )}
-                          </p>
+                          <label className={labelClass}>First Name</label>
+                          <input {...register('FirstName')} type="text" className={inputClass} placeholder="John" />
                         </div>
+                        <div>
+                          <label className={labelClass}>Last Name</label>
+                          <input {...register('LastName')} type="text" className={inputClass} placeholder="Doe" />
+                        </div>
+                      </div>
 
-                        <MsgBox msg={profileMsg} />
+                      <div>
+                        <label className={labelClass}>Phone Number</label>
+                        <input {...register('Phone')} type="tel" className={inputClass} placeholder="+1 (555) 123-4567" />
+                      </div>
 
+                      <div>
+                        <label className={labelClass}>Biography</label>
+                        <textarea
+                          {...register('Biography', { minLength: { value: 10, message: 'At least 10 characters' } })}
+                          rows={5}
+                          className={`${inputClass} resize-none`}
+                          placeholder="Tell us about yourself, your research, and interests…"
+                        />
+                        {errors.Biography && <p className={errorClass}>⚠ {errors.Biography.message}</p>}
+                      </div>
+
+                      <MsgBox msg={profileMsg} />
+
+                      <div className="flex gap-3 pt-1">
+                        <button
+                          type="submit"
+                          disabled={profileSaving}
+                          className="flex-1 py-2.5 bg-[#1e40af] text-white rounded-xl text-sm font-bold hover:bg-[#1c3e9c] transition disabled:opacity-50 shadow-md shadow-blue-100"
+                        >
+                          {profileSaving ? (
+                            <span className="flex items-center justify-center gap-2"><Spinner /> Saving…</span>
+                          ) : 'Save Changes'}
+                        </button>
                         <button
                           type="button"
-                          onClick={() => { setIsEditingProfile(true); setProfileMsg(null); }}
-                          className="flex items-center gap-2 px-5 py-2.5 bg-[#1e40af] text-white rounded-xl text-sm font-bold hover:bg-[#1c3e9c] transition shadow-md shadow-blue-100"
+                          onClick={handleCancelEdit}
+                          className="flex-1 py-2.5 border border-gray-200 text-gray-600 rounded-xl text-sm font-bold hover:bg-gray-50 transition"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                          </svg>
-                          Edit Profile
+                          Cancel
                         </button>
                       </div>
-                    ) : (
-                      <form onSubmit={handleSubmit(handleProfileSave)} className="space-y-5">
-                        {/* ── Photo Row in Edit Mode ── */}
-                        <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                          <button
-                            type="button"
-                            onClick={() => setShowImageModal(true)}
-                            className="relative group flex-shrink-0 focus:outline-none"
-                            title="Change profile photo"
-                          >
-                            <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white shadow-md bg-gradient-to-br from-[#1e40af] to-[#2563eb] flex items-center justify-center">
-                              {currentImageUrl ? (
-                                <LazyImage src={currentImageUrl} alt="Profile" fill className="object-cover" />
-                              ) : (
-                                <span className="text-white text-xl font-black">{getInitials(user)}</span>
-                              )}
-                            </div>
-                            <div className="absolute inset-0 rounded-2xl bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                              </svg>
-                            </div>
-                          </button>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-gray-700">Profile Photo</p>
-                            <p className="text-xs text-gray-400 mt-0.5">Click photo or button to change</p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setShowImageModal(true)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 border border-[#1e40af]/30 text-[#1e40af] rounded-xl text-xs font-bold hover:bg-blue-50 transition flex-shrink-0"
-                          >
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                            </svg>
-                            {currentImageUrl ? 'Change' : 'Upload'}
-                          </button>
-                        </div>
-
-                        <div className="border-t border-dashed border-gray-100" />
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className={labelClass}>First Name</label>
-                            <input {...register('FirstName')} type="text" className={inputClass} placeholder="John" />
-                          </div>
-                          <div>
-                            <label className={labelClass}>Last Name</label>
-                            <input {...register('LastName')} type="text" className={inputClass} placeholder="Doe" />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className={labelClass}>Phone Number</label>
-                          <input {...register('Phone')} type="tel" className={inputClass} placeholder="+1 (555) 123-4567" />
-                        </div>
-
-                        <div>
-                          <label className={labelClass}>Biography</label>
-                          <textarea
-                            {...register('Biography', { minLength: { value: 10, message: 'At least 10 characters' } })}
-                            rows={5}
-                            className={`${inputClass} resize-none`}
-                            placeholder="Tell us about yourself, your research, and interests…"
-                          />
-                          {errors.Biography && <p className={errorClass}>⚠ {errors.Biography.message}</p>}
-                        </div>
-
-                        <MsgBox msg={profileMsg} />
-
-                        <div className="flex gap-3 pt-1">
-                          <button
-                            type="submit"
-                            disabled={profileSaving}
-                            className="flex-1 py-2.5 bg-[#1e40af] text-white rounded-xl text-sm font-bold hover:bg-[#1c3e9c] transition disabled:opacity-50 shadow-md shadow-blue-100"
-                          >
-                            {profileSaving ? (
-                              <span className="flex items-center justify-center gap-2">
-                                <svg className="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                                </svg>
-                                Saving…
-                              </span>
-                            ) : 'Save Changes'}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={handleCancelEdit}
-                            className="flex-1 py-2.5 border border-gray-200 text-gray-600 rounded-xl text-sm font-bold hover:bg-gray-50 transition"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </form>
-                    )}
-                  </div>
-                </Card>
-              </div>
+                    </form>
+                  )}
+                </div>
+              </Card>
             )}
 
-            {/* ══════════════════
-                TAB: SECURITY
-            ══════════════════ */}
+            {/* ══════════ SECURITY TAB ══════════ */}
             {activeTab === 'security' && (
               <Card delay={100}>
                 <SectionHeader
@@ -913,23 +801,21 @@ export default function ProfilePage() {
                   subtitle="Keep your IAAM account secure"
                 />
 
-                <div className="p-6">
+                <div className="px-4 sm:px-6 py-5">
                   {!isChangingPassword ? (
                     <div className="space-y-5">
-                      <div className="flex items-center gap-4 p-4 bg-gray-100 rounded-2xl border border-gray-100">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-200 flex items-center justify-center flex-shrink-0">
-                          <svg className="w-5 h-5 text-[#1E40AF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="flex items-center gap-3 sm:gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                          <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                           </svg>
                         </div>
                         <div>
                           <p className="text-sm font-bold text-gray-900">Account is Secured</p>
-                          <p className="text-xs text-gray-600 mt-0.5">Your password is set. Change it periodically.</p>
+                          <p className="text-xs text-gray-500 mt-0.5">Your password is set. Change it periodically.</p>
                         </div>
                       </div>
-
                       <MsgBox msg={passwordMsg} />
-
                       <button
                         type="button"
                         onClick={() => { setIsChangingPassword(true); setPasswordMsg(null); }}
@@ -942,7 +828,7 @@ export default function ProfilePage() {
                       </button>
                     </div>
                   ) : (
-                    <form onSubmit={handlePwdSubmit(handlePasswordSave)} className="space-y-5">
+                    <form onSubmit={handlePwdSubmit(handlePasswordSave)} className="space-y-4">
                       <div>
                         <label className={labelClass}>Current Password</label>
                         <input
@@ -959,10 +845,7 @@ export default function ProfilePage() {
                       <div>
                         <label className={labelClass}>New Password</label>
                         <input
-                          {...regPwd('newPassword', {
-                            required: 'New password is required',
-                            minLength: { value: 8, message: 'Must be at least 8 characters' },
-                          })}
+                          {...regPwd('newPassword', { required: 'New password is required', minLength: { value: 8, message: 'Must be at least 8 characters' } })}
                           type="password"
                           className={inputClass}
                           placeholder="Min. 8 characters"
@@ -973,10 +856,7 @@ export default function ProfilePage() {
                       <div>
                         <label className={labelClass}>Confirm New Password</label>
                         <input
-                          {...regPwd('confirmPassword', {
-                            required: 'Please confirm your new password',
-                            validate: (v) => v === newPwdValue || 'Passwords do not match',
-                          })}
+                          {...regPwd('confirmPassword', { required: 'Please confirm your new password', validate: (v) => v === newPwdValue || 'Passwords do not match' })}
                           type="password"
                           className={inputClass}
                           placeholder="Re-enter new password"
@@ -993,13 +873,7 @@ export default function ProfilePage() {
                           className="flex-1 py-2.5 bg-[#1e40af] text-white rounded-xl text-sm font-bold hover:bg-[#1c3e9c] transition disabled:opacity-50 shadow-md shadow-blue-100"
                         >
                           {passwordSaving ? (
-                            <span className="flex items-center justify-center gap-2">
-                              <svg className="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                              </svg>
-                              Updating…
-                            </span>
+                            <span className="flex items-center justify-center gap-2"><Spinner /> Updating…</span>
                           ) : 'Update Password'}
                         </button>
                         <button
