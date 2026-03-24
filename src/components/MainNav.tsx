@@ -21,8 +21,8 @@ export default function MainNav({ mobileMenuOpen, onCloseDrawer }: MainNavProps)
     { title: "Membership", slug: "membership" },
     { title: "Meetings & Events", slug: "meetings-events" },
     { title: "Innovation & Sustainability", slug: "innovation-sustainability" },
-    { title: "Awards & Recognitions", slug: "awards-recognitions" },
     { title: "Journals & Proceedings", slug: "journals-proceedings" },
+    { title: "Awards & Recognitions", slug: "awards-recognitions" },
     { title: "Discover IAAM", slug: "discover-iaam" },
   ];
 
@@ -150,23 +150,22 @@ const DropdownContent = ({
             className="object-cover"
           />
         </div>
+        <button
+          onClick={() => navigateTo(`/${parentSlug}${data.card.ctaUrl}`)}
+          className="w-full py-[10px] px-[8px] bg-iaam-primary text-whitetext-[20px] font-bold shadow-md hover:brightness-110 transition text-center"
+        >
+          {data.card.cta}
+        </button>
 
         <div className="p-[8px] pt-[24px] flex flex-col gap-6">
           <div>
             <h3 className="font-bold text-[20px] text-iaam-text-dark leading-tight tracking-[0.3px]">
               {data.card.title}
             </h3>
-            <p className="text-[12px] text-iaam-text-body leading-[17px] mt-2">
+            <p className="text-[16px] text-iaam-text-body leading-[17px] mt-2">
               {data.card.description}
             </p>
           </div>
-
-          <button
-            onClick={() => navigateTo(`/${parentSlug}${data.card.ctaUrl}`)}
-            className="w-full py-[10px] px-[8px] bg-iaam-primary text-white font-medium text-[18px] rounded-[3px] shadow-md hover:brightness-110 transition text-center"
-          >
-            {data.card.cta}
-          </button>
         </div>
       </div>
 

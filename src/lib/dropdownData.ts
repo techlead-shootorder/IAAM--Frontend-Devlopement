@@ -32,7 +32,7 @@ export const dropdownData: DropdownDataItem[] = [
     },
     title: "Membership",
     description: "Become part of a truly global IAAM ecosystem spanning 150+ countries, 250,000+ researchers & professionals, 5000+ institutions & industries, and 80+ National Councils, Societies, and International Charters, enabling local collaboration with global impact.",
-    outlineCta: "Join or Renew Membership",
+    outlineCta: "Learn More About Membership",
     outlineCtaUrl: "/join-membership",
     columns: [
       [
@@ -67,13 +67,13 @@ export const dropdownData: DropdownDataItem[] = [
         {
           header: "Nomination For IAAM Fellow",
           links: [
-            { text: "Follow & Honors", url: "/fellow-honors" },
+            { text: "Fellow & Honors", url: "/fellow-honors" },
           ],
         },
         {
           header: "Membership & Subscription Catalog",
           links: [
-            { text: "Follow & Honors", url: "/membership-subscription-catalog" },
+            { text: "Membership Fees", url: "/membership-fees" },
           ],
         },
         {
@@ -101,7 +101,7 @@ export const dropdownData: DropdownDataItem[] = [
   {
     card: {
       image: "Meeting 1_ 457x380px.jpg",
-      title: "Advance Materials Through Global Collaboration",
+      title: "Advancing Materials Through Global Collaboration",
       description: "Bringing Together Researchers, Industry Leaders, Policymakers, And Innovators To Accelerate Progress In Advanced Materials, Sustainability, And Technological Innovation.",
       cta: "Submit Conference Proposal",
       ctaUrl: "/submit-conference-proposal",
@@ -113,6 +113,7 @@ export const dropdownData: DropdownDataItem[] = [
     rightLinks: [
       { header: "Find An IAAM Conference Or Event Near You", headerUrl: "/find-conference", links: [] },
       { header: "Upcoming Conferences", headerUrl: "/upcoming-conferences", links: [] },
+      { header: "Virtual Events", headerUrl: "/virtual-events", links: [] },
       { header: "Plan A Conference", headerUrl: "/plan-conference", links: [] },
       { header: "Conference Application", headerUrl: "/conference-application", links: [] },
     ],
@@ -181,11 +182,10 @@ export const dropdownData: DropdownDataItem[] = [
         {
           header: "Support & Information",
           links: [
-            { text: "Follow & Honors", url: "/events-follow-honors" },
             { text: "Event Guidelines", url: "/event-guidelines" },
             { text: "FAQs – IAAM Meetings & Events", url: "/faqs-meetings-events" },
             { text: "Apply For Conference Grant", url: "/apply-conference-grant" },
-            { text: "IAAM Code Of Conduct", url: "/iaam-code-of-conduct" },
+            { text: "IAAM Code Of Conduct", url: "/iaam-code-of-conduct-1" },
             { text: "Developing Countries Engagement", url: "/developing-countries-engagement" },
           ],
         },
@@ -272,14 +272,75 @@ export const dropdownData: DropdownDataItem[] = [
             { text: "Contribute To Policy Dialogue And Strategic Foresight", url: "/contribute-policy-dialogue-strategic-foresight" },
           ],
         },
+        {
+          header: "Join Innovation & Sustainability",
+          links: [
+            { text: "Advance responsible innovation and sustainable technologies through global collaboration and action.", url: "/advance-responsible-innovation-and-sustainable-technologies-through-global-collaboration-and-action" },
+          ],
+        },
         { header: "Explore Innovation Programs", headerUrl: "/explore-innovation-programs" },
         { header: "Join Sustainability Initiatives", headerUrl: "/join-sustainability-initiatives" },
-        { header: "WebCongress™", headerUrl: "/webcongress" },
+        // { header: "WebCongress™", headerUrl: "/webcongress" },
         { header: "Contact Innovation & Sustainability Office", headerUrl: "/contact-innovation-sustainability-office" },
       ],
     ],
   },
-  // 3: Awards & Recognition
+  // 3: Journal & Proceedings
+  {
+    card: {
+      image: "Publication 1_ 457x380px.jpg",
+      title: "Advancing Knowledge through Highly Ranked Trusted Researchers",
+      description: "Providing open-access, peer-reviewed journals and proceedings that support rigorous research, transparency, and global knowledge sharing.",
+      cta: "Submit Article",
+      ctaUrl: "/submit-publication",
+    },
+    title: "Journal & Proceedings",
+    description: "IAAM Publishes Nonprofit, Peer-Reviewed Journals, Conference Proceedings, And Technical Literature, Including Research Articles, Video Lectures, White Papers, Books, And Case Studies.",
+    outlineCta: "Learn More About IAAM's Literature",
+    outlineCtaUrl: "/iaam-literature",
+    columns: [
+      [
+        {
+          header: "Technical Publications",
+          links: [
+            { text: "Advanced Materials Letters", url: "/advanced-materials-letters" },
+            { text: "Advanced Materials Proceedings", url: "/advanced-materials-proceedings" },
+            { text: "Video Proceedings Of Advanced Materials", url: "/video-proceedings-advanced-materials" },
+            { text: "Advanced Materials Charters", url: "/advanced-materials-charters" },
+            { text: "IAAM Publications Recommender", url: "/iaam-publications-recommender" },
+          ],
+        },
+      ],
+      [
+        {
+          header: "Publish With IAAM",
+          links: [
+            { text: "Why Choose IAAM Publications?", url: "/why-choose-iaam-publications" },
+            { text: "How To Publish With IAAM", url: "/how-to-publish-with-iaam" },
+            { text: "Submit Proposal For Special Issue", url: "/submit-proposal-special-issue" },
+            { text: "Nonprofit Publication", url: "/nonprofit-publication" },
+            { text: "Open Access Solutions", url: "/open-access-solutions" },
+            { text: "Submit An Article", url: "/submit-article" },
+          ],
+        },
+      ],
+      [
+        { header: "IAAM Blog", headerUrl: "/iaam-blog" },
+        {
+          header: "Advanced Materials Video Lectures",
+          links: [
+            { text: "How To Join As A Publication Partner", url: "/join-publication-partner" },
+            { text: "How To Join As Editor", url: "/join-as-editor" },
+            { text: "Publication Guidelines", url: "/publication-guidelines" },
+            { text: "FAQs – IAAM Publications", url: "/faqs-iaam-publications" },
+          ],
+        },
+        { header: "Contact Editorial Office", headerUrl: "/contact-editorial-office" },
+      ],
+    ],
+  },
+
+  // 4: Awards & Recognition
   {
     card: {
       image: "Award 1_ 457x380px.jpg",
@@ -376,6 +437,7 @@ export const dropdownData: DropdownDataItem[] = [
       [
         { header: "Nominate A Candidate", headerUrl: "/nominate-candidate" },
         { header: "View Awards Calendar", headerUrl: "/view-awards-calendar" },
+        { header: "Contact IAAM Awards Office", headerUrl: "/contact-iaam-awards-office" },
         {
           header: "Nomination & Selection",
           links: [
@@ -412,60 +474,7 @@ export const dropdownData: DropdownDataItem[] = [
       ],
     ],
   },
-  // 4: Journal & Proceedings
-  {
-    card: {
-      image: "Publication 1_ 457x380px.jpg",
-      title: "Celebrating Excellence. Inspiring Leadership. Advancing Scientific Impact.",
-      description: "Celebrating Scientific Excellence And Leadership That Shape The Future Of Materials Research And Innovation.",
-      cta: "Submit Award Nomination",
-      ctaUrl: "/submit-publication",
-    },
-    title: "Journal & Proceedings",
-    description: "IAAM Publishes Nonprofit, Peer-Reviewed Journals, Conference Proceedings, And Technical Literature, Including Research Articles, Video Lectures, White Papers, Books, And Case Studies.",
-    outlineCta: "Learn More About IAAM's Literature",
-    outlineCtaUrl: "/iaam-literature",
-    columns: [
-      [
-        {
-          header: "Technical Publications",
-          links: [
-            { text: "Advanced Materials Letters", url: "/advanced-materials-letters" },
-            { text: "Advanced Materials Proceedings", url: "/advanced-materials-proceedings" },
-            { text: "Video Proceedings Of Advanced Materials", url: "/video-proceedings-advanced-materials" },
-            { text: "Advanced Materials Charters", url: "/advanced-materials-charters" },
-            { text: "IAAM Publications Recommender", url: "/iaam-publications-recommender" },
-          ],
-        },
-      ],
-      [
-        {
-          header: "Publish With IAAM",
-          links: [
-            { text: "Why Choose IAAM Publications?", url: "/why-choose-iaam-publications" },
-            { text: "How To Publish With IAAM", url: "/how-to-publish-with-iaam" },
-            { text: "Submit Proposal For Special Issue", url: "/submit-proposal-special-issue" },
-            { text: "Nonprofit Publication", url: "/nonprofit-publication" },
-            { text: "Open Access Solutions", url: "/open-access-solutions" },
-            { text: "Submit An Article", url: "/submit-article" },
-          ],
-        },
-      ],
-      [
-        { header: "IAAM Blog", headerUrl: "/iaam-blog" },
-        {
-          header: "Advanced Materials Video Lectures",
-          links: [
-            { text: "How To Join As A Publication Partner", url: "/join-publication-partner" },
-            { text: "How To Join As Editor", url: "/join-as-editor" },
-            { text: "Publication Guidelines", url: "/publication-guidelines" },
-            { text: "FAQs – IAAM Publications", url: "/faqs-iaam-publications" },
-          ],
-        },
-        { header: "Contact Editorial Office", headerUrl: "/contact-editorial-office" },
-      ],
-    ],
-  },
+
   // 5: Discover IAAM
   {
     card: {
