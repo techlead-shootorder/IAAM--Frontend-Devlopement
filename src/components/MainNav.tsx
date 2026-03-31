@@ -137,7 +137,7 @@ const DropdownContent = ({
   return (
     <div className="flex gap-[30px] pb-4 items-stretch">
       {/* LEFT CARD */}
-      <div className="w-[30%] flex-shrink-0 bg-iaam-bg-gray rounded overflow-hidden">
+      <div className="w-[26%] flex-shrink-0 bg-iaam-bg-gray rounded overflow-hidden">
         <div className="h-[300px] bg-white overflow-hidden relative">
           <LazyImage
             src={
@@ -147,12 +147,12 @@ const DropdownContent = ({
             }
             alt={data.card.title}
             fill
-            className="object-cover"
+            className="object-contain"
           />
         </div>
         <button
           onClick={() => navigateTo(`/${parentSlug}${data.card.ctaUrl}`)}
-          className="w-full py-[10px] px-[8px] bg-iaam-primary text-whitetext-[20px] font-bold shadow-md hover:brightness-110 transition text-center"
+          className="w-full py-[10px] px-[8px] bg-iaam-primary text-whitetext-[20px] translate-y-[-20%] font-bold shadow-md hover:brightness-110 transition text-center"
         >
           {data.card.cta}
         </button>
