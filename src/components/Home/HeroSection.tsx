@@ -24,8 +24,7 @@ export default async function HeroSection() {
 
   // 🔥 Use medium format for faster load
   const imagePath =
-    imageObj?.formats?.medium?.url ||
-    imageObj?.formats?.small?.url ||
+    imageObj?.formats?.url ||
     imageObj?.url ||
     null;
 
