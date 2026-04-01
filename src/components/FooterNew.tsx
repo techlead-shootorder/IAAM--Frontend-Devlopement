@@ -106,7 +106,7 @@ export default async function Footer() {
           <div className="absolute right-6 top-1/2 -translate-y-1/2 hidden md:block">
             <Link href="/">
               <LazyImage
-                src="/IAAM-Footer-Logo.svg"
+                src="/image.png"
                 alt="IAAM Logo"
                 width={90}
                 height={80}

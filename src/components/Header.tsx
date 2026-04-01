@@ -233,7 +233,7 @@ export default function Header({ isShrunk = false, mobileMenuOpen, setMobileMenu
               >
                 <Link href="/">
                 <LazyImage
-                  src="/IAAM-Logo.svg"
+                  src="/image.png"
                   alt="IAAM Logo"
                   width={120}
                   height={120}
