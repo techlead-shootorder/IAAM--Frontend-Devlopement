@@ -88,7 +88,7 @@ export default async function Footer() {
 
           {/* COLUMN 5 */}
           <div className="flex flex-col gap-10">
-            <FooterSection section={getSection("Contact & Connect")} />
+            {/* <FooterSection section={getSection("Contact & Connect")} /> */}
             <FooterSection section={getSection("Legal & Policies")} />
             <FooterSection section={getSection("Resources")} />
 

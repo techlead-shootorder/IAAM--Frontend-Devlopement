@@ -56,7 +56,7 @@ export default function MainNav({ mobileMenuOpen, onCloseDrawer }: MainNavProps)
         <div className="max-w-[1440px] mx-auto px-[30px]">
           <ul className="flex items-center justify-between h-[48px]">
             {navItems.map((item, index) => (
-              <li key={item.title} className="relative h-full flex items-center">
+              <li key={item.title} className="h-full flex items-center">
                 <button
                   type="button"
                   className="font-semibold text-[15px] text-iaam-text-dark hover:text-iaam-primary transition-colors flex items-center gap-1 px-2 py-2"
@@ -74,8 +74,7 @@ export default function MainNav({ mobileMenuOpen, onCloseDrawer }: MainNavProps)
 
                 {activeDropdown === index && (
                   <div
-                    className="fixed inset-x-0 bg-white z-50 border-b border-border max-h-[calc(100vh-140px)] overflow-y-auto shadow-sm"
-                    style={{ top: 'var(--mainnav-dropdown-top, 235px)' }}
+                    className="absolute inset-x-0 top-full bg-white z-50 border-b border-border max-h-[calc(100vh-140px)] overflow-y-auto shadow-sm"
                     onMouseEnter={() => {
                       if (timeoutRef.current) {
                         clearTimeout(timeoutRef.current);
