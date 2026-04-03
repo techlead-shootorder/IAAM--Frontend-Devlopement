@@ -147,7 +147,7 @@ export default async function Footer() {
 
             {/* COPYRIGHT TEXT */}
             <p className="text-white text-[13.5px] md:text-[14px] opacity-90 leading-relaxed max-w-[900px]">
-              (c) International Association of Advanced Materials 2026 - All rights reserved.
+              © International Association of Advanced Materials 2026 - All rights reserved.
             </p>
 
           </div>
