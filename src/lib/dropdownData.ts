@@ -288,7 +288,7 @@ export const dropdownData: DropdownDataItem[] = [
   // 3: Journal & Proceedings
   {
     card: {
-      image: "Journal & Proceedings 1.jpg",
+      image: "Journal%20%26%20Proceedings%201.jpg",
       title: "Advancing Knowledge through Highly Ranked Trusted Researchers",
       description: "Providing open-access, peer-reviewed journals and proceedings that support rigorous research, transparency, and global knowledge sharing.",
       cta: "Submit Article",
