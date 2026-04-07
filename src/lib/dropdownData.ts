@@ -24,7 +24,7 @@ export const dropdownData: DropdownDataItem[] = [
   // 0: Membership
   {
     card: {
-      image: "Membership.jpg",
+      image: "Membership 1_ 457x380px.jpg",
       title: "Shaping the Future of Advanced Materials — Together",
       description: "Advance your career, institution, or organization within IAAM's global ecosystem of Advanced Materials science, technology, and sustainability.",
       cta: "Join or Renew Membership",
@@ -100,7 +100,7 @@ export const dropdownData: DropdownDataItem[] = [
   // 1: Meetings & Events
   {
     card: {
-      image: "Meeting & Events.jpg",
+      image: "Meeting 1_ 457x380px.jpg",
       title: "Advancing Materials Through Global Collaboration",
       description: "Bringing Together Researchers, Industry Leaders, Policymakers, And Innovators To Accelerate Progress In Advanced Materials, Sustainability, And Technological Innovation.",
       cta: "Submit Conference Proposal",
@@ -205,7 +205,7 @@ export const dropdownData: DropdownDataItem[] = [
   // 2: Innovation & Sustainability
   {
     card: {
-      image: "Innovation & Sustainability.jpg",
+      image: "Innovation 1_ 457x380px.jpg",
       title: "Inspiring Global Innovation Through Advanced Materials",
       description: "Connecting Research, Industry, And Policy To Transform Ideas Into Sustainable, Real-World Impact.",
       cta: "Join R&D World Links",
@@ -343,7 +343,7 @@ export const dropdownData: DropdownDataItem[] = [
   // 4: Awards & Recognition
   {
     card: {
-      image: "Awards & Recognition.jpg",
+      image: "Award 1_ 457x380px.jpg",
       title: "Celebrating Excellence. Inspiring Leadership. Advancing Scientific Impact.",
       description: "Celebrating Scientific Excellence And Leadership That Shape The Future Of Materials Research And Innovation.",
       cta: "Submit Award Nomination",
@@ -478,7 +478,7 @@ export const dropdownData: DropdownDataItem[] = [
   // 5: Discover IAAM
   {
     card: {
-      image: "Discover IAAM 2.jpg",
+      image: "Discover IAAM 2_ 457x380px.jpg",
       title: "Connecting Science. Innovation. Global Impact.",
       description: "IAAM Is A Global, Nonprofit Organization Dedicated To Advancing Materials Science, Engineering, And Technology Through Collaboration, Innovation, And Sustainability.",
       cta: "Collaborate with IAAM",
