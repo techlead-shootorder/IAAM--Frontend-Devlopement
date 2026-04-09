@@ -42,7 +42,7 @@ export default async function HeroSection() {
   const ctaLink = dynamicLink || staticLink;
 
   return (
-    <section className="relative w-full h-[460px] bg-black">
+    <section className="relative w-full h-[60vh] min-h-[460px] max-h-[600px] bg-black">
 
       {/* ===== HERO IMAGE ===== */}
       {imageUrl && (
@@ -51,7 +51,7 @@ export default async function HeroSection() {
           alt={hero?.HeroBannerTitle || "Hero Banner"}
           fill
           priority
-          className="object-cover"
+          className="object-cover object-top"
           containerClassName="absolute inset-0"
         />
       )}
@@ -60,12 +60,12 @@ export default async function HeroSection() {
       <div className="absolute inset-0 flex items-start justify-start z-10">
         <div className="w-full max-w-7xl px-14 text-white pt-24">
 
-          <h1 className="text-3xl md:text-4xl lg:text-5xl max-w-3xl leading-tight">
+          <h1 className="text-3xl text-black md:text-4xl lg:text-5xl max-w-3xl leading-tight">
             {hero?.HeroBannerTitle}
           </h1>
 
           {hero?.HeroBannerDescription && (
-            <p className="mt-4 text-lg max-w-2xl">
+            <p className="mt-4 text-lg text-black max-w-2xl">
               {hero.HeroBannerDescription}
             </p>
           )}

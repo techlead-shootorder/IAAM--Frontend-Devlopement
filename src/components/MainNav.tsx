@@ -151,7 +151,7 @@ const DropdownContent = ({
         </div>
         <button
           onClick={() => navigateTo(`/${parentSlug}${data.card.ctaUrl}`)}
-          className="w-full py-[10px] px-[8px] bg-iaam-primary text-whitetext-[20px] translate-y-[-20%] font-bold shadow-md hover:brightness-110 transition text-center"
+          className="w-full py-[10px] px-[8px] bg-iaam-primary text-white text-[20px] translate-y-[-20%] font-bold shadow-md hover:brightness-110 transition text-center"
         >
           {data.card.cta}
         </button>
