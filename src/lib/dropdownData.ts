@@ -42,7 +42,7 @@ export const dropdownData: DropdownDataItem[] = [
             { text: "Who Can Join IAAM", url: "/who-can-join-iaam" },
             { text: "Join As a Professional", url: "/join-as-a-professional" },
             { text: "Join As a Student", url: "/join-as-a-student" },
-            { text: "Student & Emerging Talent Programs", url: "/student-and-@emerging-talent-programs" },
+            { text: "Student & Emerging Talent Programs", url: "/student-and-emerging-talent-programs-1" },
             { text: "Membership Regulations", url: "/membership-regulations" },
             { text: "IAAM Code Of Conduct", url: "/iaam-code-of-conduct" },
             { text: "Developing Countries Engagement", url: "/developing-countries-engagement" },
@@ -265,7 +265,7 @@ export const dropdownData: DropdownDataItem[] = [
         {
           header: "Get Involved",
           links: [
-            { text: "IAAM Invites Researchers, Institutions, Industries, Startups, And Policymakers To:", url: "/get-involved" },
+            { text: "IAAM Invites Researchers, Institutions, Industries, Startups, And Policymakers To:", url: "/iaam-invites-researchers-institutions-industries-startups-and-policymakers-to" },
             { text: "Join Innovation And Sustainability Programs", url: "/join-innovation-sustainability-programs" },
             { text: "Participate In Global Consortia And Pilots", url: "/participate-global-consortia-pilots" },
             { text: "Collaborate On Net-Zero And Climate Initiatives", url: "/collaborate-net-zero-climate-initiatives" },
@@ -504,15 +504,15 @@ export const dropdownData: DropdownDataItem[] = [
           links: [
             { text: "Meetings & Events", url: "/meetings-events" },
             { text: "Innovation & Sustainability", url: "/innovation-sustainability" },
-            { text: "Journals & Proceedings", url: "/journals-proceedings" },
-            { text: "Awards & Recognitions", url: "/awards-recognitions" },
+            { text: "Journals & Proceedings", url: "/journals-and-proceedings-1" },
+            { text: "Awards & Recognitions", url: "/awards-recognitions-iaam" },
           ],
         },
         {
           header: "Global Network",
           links: [
             { text: "National Councils", url: "/national-councils" },
-            { text: "Societies & ChartersQ", url: "/societies-charters" },
+            { text: "Societies & ChartersQ", url: "/societies-and-charters-q" },
             { text: "R&D World Links & Consortia", url: "/rd-world-links-consortia" },
             { text: "International Partnerships", url: "/international-partnerships" },
           ],

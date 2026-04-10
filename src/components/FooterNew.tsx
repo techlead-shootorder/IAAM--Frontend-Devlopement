@@ -266,6 +266,8 @@ function ContactInfo({ general }: any) {
               <Link
                 key={s.id}
                 href={s.PlatformNameLink || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-7 h-7 border border-gray-300 rounded-full flex items-center justify-center"
               >
                 <LazyImage
