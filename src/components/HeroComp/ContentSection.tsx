@@ -132,11 +132,32 @@ export default function ContentSection({ sections = [] }: any) {
               {/* DESCRIPTION */}
               <div className="text-[18px] leading-[28px] space-y-4">
                 {Array.isArray(s.Description) &&
-                  s.Description.map((block: any, idx: number) => (
-                    <p key={idx}>
-                      {block.children?.[0]?.text}
-                    </p>
-                  ))}
+                  s.Description.map((block: any, idx: number) => {
+                    if (block.type === "paragraph") {
+                      return (
+                        <p key={idx}>
+                          {block.children?.[0]?.text}
+                        </p>
+                      );
+                    }
+                    
+                    if (block.type === "list") {
+                      const ListTag = block.format === "ordered" ? "ol" : "ul";
+                      return (
+                        <ListTag key={idx} className={block.format === "ordered" ? "list-decimal pl-6 space-y-1" : "list-disc pl-6 space-y-1"}>
+                          {block.children?.map((item: any, itemIdx: number) => (
+                            <li key={itemIdx}>
+                              {item.children?.map((child: any, childIdx: number) => (
+                                <span key={childIdx}>{child.text}</span>
+                              ))}
+                            </li>
+                          ))}
+                        </ListTag>
+                      );
+                    }
+                    
+                    return null;
+                  })}
               </div>
 
             </div>
@@ -150,11 +171,32 @@ export default function ContentSection({ sections = [] }: any) {
 
             <div className="text-[18px] leading-[28px] space-y-4">
               {Array.isArray(s.Description) &&
-                s.Description.map((block: any, idx: number) => (
-                  <p key={idx}>
-                    {block.children?.[0]?.text}
-                  </p>
-                ))}
+                s.Description.map((block: any, idx: number) => {
+                  if (block.type === "paragraph") {
+                    return (
+                      <p key={idx}>
+                        {block.children?.[0]?.text}
+                      </p>
+                    );
+                  }
+                  
+                  if (block.type === "list") {
+                    const ListTag = block.format === "ordered" ? "ol" : "ul";
+                    return (
+                      <ListTag key={idx} className={block.format === "ordered" ? "list-decimal pl-6 space-y-1" : "list-disc pl-6 space-y-1"}>
+                        {block.children?.map((item: any, itemIdx: number) => (
+                          <li className="lg:ml-[-7px]" key={itemIdx}>
+                            {item.children?.map((child: any, childIdx: number) => (
+                              <span key={childIdx} className="ml-[-5px]">{child.text}</span>
+                            ))}
+                          </li>
+                        ))}
+                      </ListTag>
+                    );
+                  }
+                  
+                  return null;
+                })}
             </div>
           </div>
         )}
