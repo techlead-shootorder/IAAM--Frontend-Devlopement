@@ -28,12 +28,12 @@ export const dropdownData: DropdownDataItem[] = [
       title: "Shaping the Future of Advanced Materials — Together",
       description: "Advance your career, institution, or organization within IAAM's global ecosystem of Advanced Materials science, technology, and sustainability.",
       cta: "Join or Renew Membership",
-      ctaUrl: "/join-membership",
+      ctaUrl: "/join-iaam",
     },
     title: "Membership",
     description: "Become part of a truly global IAAM ecosystem spanning 150+ countries, 250,000+ researchers & professionals, 5000+ institutions & industries, and 80+ National Councils, Societies, and International Charters, enabling local collaboration with global impact.",
     outlineCta: "Learn More About Membership",
-    outlineCtaUrl: "/join-membership",
+    outlineCtaUrl: "/join-iaam",
     columns: [
       [
         {
@@ -209,7 +209,7 @@ export const dropdownData: DropdownDataItem[] = [
       title: "Inspiring Global Innovation Through Advanced Materials",
       description: "Connecting Research, Industry, And Policy To Transform Ideas Into Sustainable, Real-World Impact.",
       cta: "Join R&D World Links",
-      ctaUrl: "/join-rd-world-links",
+      ctaUrl: "/join-r-and-d-world-links",
     },
     title: "Innovation & Sustainability",
     description: "IAAM Drives The Translation Of Advanced Materials Research Into Real-World Impact, Supporting Global Goals In Sustainability, Climate Neutrality, And Responsible Innovation.",
@@ -292,7 +292,7 @@ export const dropdownData: DropdownDataItem[] = [
       title: "Advancing Knowledge through Highly Ranked Trusted Researchers",
       description: "Providing open-access, peer-reviewed journals and proceedings that support rigorous research, transparency, and global knowledge sharing.",
       cta: "Submit Article",
-      ctaUrl: "/submit-publication",
+      ctaUrl: "/submit-article-1",
     },
     title: "Journal & Proceedings",
     description: "IAAM Publishes Nonprofit, Peer-Reviewed Journals, Conference Proceedings, And Technical Literature, Including Research Articles, Video Lectures, White Papers, Books, And Case Studies.",
@@ -478,7 +478,7 @@ export const dropdownData: DropdownDataItem[] = [
   // 5: Discover IAAM
   {
     card: {
-      image: "Dropdown/Discover-IAAM.jpg",
+      image: "Dropdown/Discover-IAAM.jpeg",
       title: "Connecting Science. Innovation. Global Impact.",
       description: "IAAM Is A Global, Nonprofit Organization Dedicated To Advancing Materials Science, Engineering, And Technology Through Collaboration, Innovation, And Sustainability.",
       cta: "Collaborate with IAAM",
