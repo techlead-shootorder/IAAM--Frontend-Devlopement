@@ -25,7 +25,9 @@ export default function MobileNavPage({ pageIndex, title, slug }: Props) {
     <div className="lg:hidden min-h-screen bg-[#f1f1f1]">
 
       {/* Breadcrumb */}
-      <Breadcrumb items={breadcrumbItems} />
+      <div className="mt-5 px-4 py-0 text-black bg-[#FFFFFF]">
+        <Breadcrumb items={breadcrumbItems} />
+      </div>
 
       {/* ===== Top Header (Image Matching) ===== */}
       <div className="flex items-center gap-3 px-4 py-4 text-black bg-[#e9e9e9] border-b border-gray-300">

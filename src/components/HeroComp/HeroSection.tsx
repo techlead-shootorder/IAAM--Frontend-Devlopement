@@ -15,7 +15,7 @@ export default function HeroSection({ data }: Props) {
     heroTitle: "Advancing Materials Science for a Sustainable Future",
     heroDescription: "Join the global community of researchers, scientists, and innovators working together to shape tomorrow's world through advanced materials research and innovation.",
     buttonLabel: "Join IAAM Today",
-    buttonLink: "/membership",
+    buttonLink: "/iaam-membership",
     fallbackImage: true
   };
 

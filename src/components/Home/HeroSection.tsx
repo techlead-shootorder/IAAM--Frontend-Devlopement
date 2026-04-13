@@ -36,7 +36,7 @@ export default async function HeroSection() {
   const dynamicLink = hero?.HeroBannerButtonLink;
 
   const staticLabel = "Join or Renew Membership";
-  const staticLink = "/membership";
+  const staticLink = "/iaam-membership";
 
   const ctaLabel = dynamicLabel || staticLabel;
   const ctaLink = dynamicLink || staticLink;
